@@ -21,7 +21,7 @@ export async function GET() {
 
       const absolutePath = path.join(process.cwd(), cat.folder);
 
-      let files = [];
+      let files: { name: string; path: string }[] = [];
 
       if (fs.existsSync(absolutePath)) {
 
