@@ -3,55 +3,50 @@ import fs from "fs";
 import path from "path";
 
 const categories = [
-  { folder: "arrays_strings", name: "Arrays & Strings" },
-  { folder: "hash_maps", name: "Hash Maps" },
-  { folder: "LinkedLists", name: "Linked Lists" },
-  { folder: "stacks_queues", name: "Stacks & Queues" },
-  { folder: "trees_graphs", name: "Trees & Graphs" },
-  { folder: "Heaps", name: "Heaps" },
-  { folder: "binary_search", name: "Binary Search" },
-  { folder: "Backtracking", name: "Backtracking" },
-  { folder: "dynamic_programming", name: "Dynamic Programming" }
+  { name: "Arrays & Strings", folder: "public/code-vault/arrays_strings", url: "arrays_strings" },
+  { name: "Hash Maps", folder: "public/code-vault/hash_maps", url: "hash_maps" },
+  { name: "Linked Lists", folder: "public/code-vault/LinkedLists", url: "LinkedLists" },
+  { name: "Stacks & Queues", folder: "public/code-vault/stacks_queues", url: "stacks_queues" },
+  { name: "Trees & Graphs", folder: "public/code-vault/trees_graphs", url: "trees_graphs" },
+  { name: "Heaps", folder: "public/code-vault/Heaps", url: "Heaps" },
+  { name: "Binary Search", folder: "public/code-vault/binary_search", url: "binary_search" },
+  { name: "Backtracking", folder: "public/code-vault/Backtracking", url: "Backtracking" },
+  { name: "Dynamic Programming", folder: "public/code-vault/dynamic_programming", url: "dynamic_programming" }
 ];
 
 export async function GET() {
   try {
-    const baseDir = path.join(process.cwd(), "public", "code-vault");
-
-    console.log("BASE DIR:", baseDir);
 
     const data = categories.map((cat) => {
-      const categoryPath = path.join(baseDir, cat.folder);
 
-      console.log("CHECKING:", categoryPath);
+      const absolutePath = path.join(process.cwd(), cat.folder);
 
-      let files: any[] = [];
+      let files = [];
 
-      if (fs.existsSync(categoryPath)) {
-        const fileList = fs.readdirSync(categoryPath);
+      if (fs.existsSync(absolutePath)) {
 
-        console.log("FILES:", fileList);
+        const fileList = fs.readdirSync(absolutePath);
 
         files = fileList
           .filter((file) => file.endsWith(".md"))
           .map((file) => ({
             name: file.replace(".md", "").replace(/_/g, " "),
-            path: `/code-vault/${cat.folder}/${file}`
+            path: `/code-vault/${cat.url}/${file}`
           }));
-      } else {
-        console.log("FOLDER NOT FOUND:", categoryPath);
+
       }
 
       return {
         category: cat.name,
         files
       };
+
     });
 
     return NextResponse.json(data);
 
   } catch (err) {
-    console.error(err);
+    console.error("Vault API error:", err);
     return NextResponse.json([]);
   }
 }
