@@ -39,11 +39,11 @@ export default function ResumeSection() {
         <div className="flex space-x-4">
           <button className="bg-cyan-600 hover:bg-cyan-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center space-x-2">
             <Linkedin size={18} />
-            <span>LinkedIn Connect</span>
+            <span><a href='https://www.linkedin.com/in/karan-bedi-9414a9241/' target="_blank" rel="noopener noreferrer">LinkedIn Connect</a></span>
           </button>
           <button className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center space-x-2">
             <Github size={18} />
-            <span>GitHub</span>
+            <span><a href="https://github.com/kbaylake" target="_blank" rel="noopener noreferrer">GitHub</a></span>
           </button>
         </div>
       </section>
