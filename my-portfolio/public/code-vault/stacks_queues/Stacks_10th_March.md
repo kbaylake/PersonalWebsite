@@ -167,3 +167,211 @@ Final Time Complexity $O(n)$
 Final Space Complexity $O(n)$
 
 # 933. Number of Recent Calls
+
+## Intuition
+
+We are given with a series of separate `int` inputs. Each input is a ping at time `t` , our objective is to return the number of pings in the last 3000ms. We need to return a `int` which represents the number of pings in the last 3000ms.
+
+## Core idea
+
+Check if the oldest pings are within 3000ms i.e. t-3000 and pop
+
+Append new pings to the queue
+
+at each step return len queue
+
+## Code
+
+```python
+#10-3-2026
+#933, Number of recent calls
+from collections import deque
+class RecentCounter:
+
+    def __init__(self):
+        self.queue=deque()    
+    def ping(self, t: int) -> int:
+        while self.queue and self.queue[0]<t-3000:
+            self.queue.popleft()
+        self.queue.append(t)
+        return len(self.queue)
+```
+
+## Time and Space Complexity Analysis
+
+1. Time Complexity
+    1. As we are using a deque our time complexity for this is $O(n)$
+    2. For the while loop $O(n)$ as each append and pop operation cost $O(1)$ iterated a worst case of $n$ times
+    
+    Final Time Complexity is $O(n)$
+    
+2. Space Complexity
+    1. We are creating a deque based on the input thus its  a worst case $O(n)$ space
+    2. Operations in the while loop simply append to the queue so those are conisdered
+
+Final Space Complexity is $O(n)$ 
+
+# **Moving Average from Data Stream**
+
+https://leetcode.com/problems/moving-average-from-data-stream/
+
+## Intuition
+
+We are given a series of int inputs and we need to return their moving average so according to val. Eg if input is 3, then we return the moving average of a maximum of 3 numbers.
+
+## Core Idea
+
+1. Create an empty queue
+2. Create a total variable
+3. In the `next` function
+    1. Add the current value to the total
+    2. Append the value to the queue
+    3. If len(queue)>size
+        1. Then pop the left most element
+        2. Subtract siad element from the total
+    4. Return  `total/len(queue)`
+
+# Code
+
+```python
+#Moving Data From Stream
+```
+from collections import deque
+class MovingAverage:
+
+    def __init__(self, size: int):
+        self.queue=deque()
+        self.max=size
+        self.total=0
+
+    def next(self, val: int) -> float:
+        self.total+=val
+        self.queue.append(val)
+        if len(self.queue)>self.max:
+            a=self.queue.popleft()
+            print(a)
+            self.total-=a
+        return self.total/len(self.queue)
+        
+# Your MovingAverage object will be instantiated and called as such:
+# obj = MovingAverage(size)
+# param_1 = obj.next(val)
+```
+
+## Space and Time Complexity
+
+1. Time Complexity
+    1. As every operation done is $O(1)$ in a deque, we get $O(1)$
+
+Total $O(1)$
+
+1. Space Complexity
+    1. As we use a queue our space complexity is $O(n)$ for the queue
+    2. All other operations are $O(1)$
+
+Overall $O(n)$
+
+# Next Greatest Element
+
+https://leetcode.com/problems/next-greater-element-i/description/
+
+## Intuition
+
+We are given 2 lists of ints and we  need to return a `list[int]` of the next greatest value i.e. the first value in the list which is greater than the current number, if it exists else -1.
+
+1. Find the position of the element in the list `nums2` 
+2. If the next element i.e. `nums2[pos+1]>curr` then add it to the queue
+3. Else add -1
+4. If the number is the last element in `nums2` then return -1
+
+## Core Idea
+
+This would be a bure force approach.
+
+Instead we use a stack to create a dictionary.
+
+We start by adding elements to the stack from `nums2` if the element is greater keep popping. In any case push it to the stack.
+
+We then use a simple list comphrension statment to return the matching values.
+
+If value exists in dictionary, this means the next greatest value exists and is a part of the dict.
+
+Else return -1
+
+## Code
+
+```python
+#Date: 12-03-2026
+#496. Next Greatest Element 1
+from collections import deque
+class Solution:
+    def nextGreaterElement(self, nums1: List[int], nums2: List[int]) -> List[int]:
+        stack=[]
+        dc={}
+        for i in range(len(nums2)):
+            while stack and  nums2[i]>stack[-1]:
+                dc[stack.pop()]=nums2[i]
+            stack.append(nums2[i])
+        return [dict.get(i, -1) for i in nums1]
+            
+```
+
+## Space & Time Complexity Analysis
+
+1. Time Complexity
+    1. The first loop which we use to create the hash map has all $O(1)$ operaions 
+    2. The return list comp has $O(1)$ operations too
+    
+    Final Time Complexity is $O(m+n)$ where $m$ is the lsize of `nums2` and $n$ is the size of `nums1`
+    
+    The reason its + not * is that we run both loops in sequence not nested
+    
+2. Space Complexity
+    1. As we are creating a hashmap its worst case space complexity is $O(m)$ as worst case all elements in `nums2` have a next greatest element same for the stack
+    2. The return dictionary costs $O(n)$ as its size is proportional to the size of `nums1` 
+
+Overall Space Complexity is $O(m)$ as $m>n$ we can ignore n
+
+# Daily Temperature
+
+## Intuition
+
+We are given a list of ints. We need to return a list of ints, which has the number of days for the temperature to be greater than the current days temp.
+
+### Core idea
+
+1. Create a stack
+2. As you iterate through the list keep pushing elements to the stack
+3. If any element is greater than the element at the top keep popping until the top element is greater than the current element
+4. When you pop subtract the indexes to get the answer
+
+## Code
+
+```python
+#Date: 12-03-2026
+#739. Daily Temperatures
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        stack=[]
+        ans=[0]*len(temperatures)
+        for i in range(len(temperatures)):
+            while stack and temperatures[i]>temperatures[stack[-1]]:
+                idx=stack.pop()
+                ans[idx]=(i-idx)
+            stack.append(i)
+        return ans
+```
+
+## Time and Space Complexity Analysis
+
+1. Time Complexity
+    1. As we are iterating through the entire input list our loops complexity is $O(n)$
+    2. Each operation in the loop is $O(1)$
+
+Overall Time Complexity is $O(n)$
+
+1. Space complexity
+    1. Our stack has a worst case of $O(n)$ as its proportional to the input size
+    2. The variable idx in the while loop is $O(1)$
+
+Overall Space Complexity $O(n)$
