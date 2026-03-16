@@ -375,3 +375,32 @@ Overall Time Complexity is $O(n)$
     2. The variable idx in the while loop is $O(1)$
 
 Overall Space Complexity $O(n)$
+
+# Online Stock Span
+
+https://leetcode.com/problems/online-stock-span/description/
+
+## Intuition
+
+We are given a series of `int` inputs which represent the price of a stock on that particular day. For each input we need to return the number of days where the stock price is ≤ the current i.e. todays stock price.
+
+## Core idea
+
+`[[], [100], [80], [60], [70], [60], [75], [85]]`
+
+Lets take this series of inputs for example. 
+
+When we are at the first day, value is 100, we will add it to our queue. 
+
+We are now at day 2. As 80 is less than 100, we pop 100 and push 80 to the queue.
+
+ans → [None,1,1,1,2,1,4,6]
+
+1. Create an empty double ended queue
+2. Keep appending the current stock to the list
+    1. `if queue[-1]>curr`
+        1. `queue.clear()` 
+    2. `queue.append(curr)`
+    3. `return len(queue)+1` 
+
+The reason we clear the queue instead of pop is that we want the number of consecutive days, if we don’t clear we will include non consecutive days when the price was ≤ current price.
