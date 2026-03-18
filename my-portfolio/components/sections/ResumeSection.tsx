@@ -1,4 +1,4 @@
-import { MapPin, Mail, Phone, Terminal, GraduationCap, Award, Github, Linkedin } from 'lucide-react';
+import { MapPin, Mail, Phone, Terminal, GraduationCap, Award, Github, Linkedin, Briefcase } from 'lucide-react';
 import { skills, leadership } from '@/data/content';
 
 export default function ResumeSection() {
@@ -11,14 +11,14 @@ export default function ResumeSection() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
           </span>
-          <span>Seeking Software Engineering roles in Mumbai</span>
+          <span>Seeking AI & Computer Science Roles</span>
         </div>
-        
+
         <h1 className="text-5xl md:text-7xl font-bold text-slate-100 tracking-tight mb-6">
           Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Intelligence.</span><br />
           Designing <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Mobility.</span>
         </h1>
-        
+
         <p className="text-lg md:text-xl text-slate-400 leading-relaxed mb-8 max-w-2xl">
           AI and Data Analytics professional building machine learning and computer vision solutions. 
           Passionate about bridging scalable software systems with future automotive architectures.
@@ -48,14 +48,52 @@ export default function ResumeSection() {
         </div>
       </section>
 
-      {/* SKILLS */}
+      {/* EXPERIENCE */}
+      <section className="mb-20">
+        <div className="flex items-center space-x-3 mb-8">
+          <Briefcase className="text-cyan-500" size={24} />
+          <h2 className="text-2xl font-semibold text-slate-100">Experience</h2>
+        </div>
+
+        <div className="border-b border-slate-800/50 pb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="md:w-1/3">
+              <h3 className="font-medium text-slate-200">Senior Assistant Engineer (Intern)</h3>
+              <p className="text-sm text-cyan-500">Samsung India, Noida</p>
+              <p className="text-xs text-slate-500 mt-1">Jan 2026 - Present</p>
+            </div>
+            <div className="md:w-2/3 space-y-2">
+              <p className="text-sm text-slate-400">• Built AI-driven computer vision pipelines for defect detection and pattern analysis.</p>
+              <p className="text-sm text-slate-400">• Developed ETL workflows using Pandas, NumPy, and MySQL for large-scale data processing.</p>
+              <p className="text-sm text-slate-400">• Created Power BI dashboards to visualize operational metrics and defect trends.</p>
+              <p className="text-sm text-slate-400">• Collaborated with cross-functional teams to drive ML-based process optimization.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SKILLS (AI-FOCUSED REFRAME) */}
       <section className="mb-20">
         <div className="flex items-center space-x-3 mb-8">
           <Terminal className="text-cyan-500" size={24} />
           <h2 className="text-2xl font-semibold text-slate-100">Technical Arsenal</h2>
         </div>
         <div className="flex flex-wrap gap-3">
-          {skills.map((skill, idx) => (
+          {[
+            "Python for AI/ML",
+            "Machine Learning (Supervised & Unsupervised)",
+            "Computer Vision (OpenCV, Image Processing)",
+            "Data Preprocessing & Feature Engineering",
+            "Model Evaluation & Optimization",
+            "Pandas & NumPy",
+            "SQL (MySQL) for Data Pipelines",
+            "ETL & Data Pipelines",
+            "REST APIs & AI Integration",
+            "Power BI (AI-driven Analytics)",
+            "Data Visualization",
+            "Applied AI Systems",
+            "Git & Docker"
+          ].map((skill, idx) => (
             <span key={idx} className="bg-slate-900 border border-slate-800 text-slate-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-cyan-800 hover:text-cyan-300 transition-colors cursor-default">
               {skill}
             </span>
