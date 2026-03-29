@@ -5,7 +5,8 @@
       "Bash(taskkill /PID 7436 /F)",
       "Bash(taskkill /IM node.exe /F)",
       "Bash(cmd /c \"taskkill /PID 7436 /F & taskkill /IM node.exe /F\")",
-      "Bash(cmd /c \"taskkill /IM node.exe /F 2>&1\")"
+      "Bash(cmd /c \"taskkill /IM node.exe /F 2>&1\")",
+      "Bash(powershell -Command \"Remove-Item -Force ''d:\\\\Files\\\\BediFutureWorks\\\\KaranWebsite\\\\PersonalWebsite\\\\my-portfolio\\\\.next\\\\dev\\\\lock'' -ErrorAction SilentlyContinue; Write-Host done\")"
     ]
   }
 }

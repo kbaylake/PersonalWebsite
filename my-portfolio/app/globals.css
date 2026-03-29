@@ -4,7 +4,25 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom keyframes for fade-in animations that we used in the components */
+/* Subtle engineering grid overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245, 158, 11, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 158, 11, 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ensure content sits above the grid */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
 @layer utilities {
   .animate-fade-in-up {
     animation: fadeInUp 0.5s ease-out forwards;
@@ -22,12 +40,11 @@
   }
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera (used in Navbar) */
+/* Hide scrollbar */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
-/* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
