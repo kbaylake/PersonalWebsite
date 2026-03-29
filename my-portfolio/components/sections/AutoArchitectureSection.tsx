@@ -20,6 +20,7 @@ useEffect(() => {
     .then(res => res.json())
     .then(json => {
       setPosts(json.files);
+      if (json.files.length > 0) setSelectedPost(json.files[0]);
       setLoading(false);
     })
     .catch(() => setLoading(false));
@@ -27,12 +28,11 @@ useEffect(() => {
 
   // Fetch markdown content when selected
   useEffect(() => {
-    if (selectedPost) {
-      setContent("");
-      fetch(selectedPost.path)
-        .then((res) => res.text())
-        .then((text) => setContent(text));
-    }
+    if (!selectedPost) return;
+    fetch(selectedPost.path)
+      .then((res) => res.text())
+      .then((text) => setContent(text))
+      .catch(() => setContent(""));
   }, [selectedPost]);
 
   if (loading) {
