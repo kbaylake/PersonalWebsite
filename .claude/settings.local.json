@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(taskkill /PID 7436 /F)",
+      "Bash(taskkill /IM node.exe /F)",
+      "Bash(cmd /c \"taskkill /PID 7436 /F & taskkill /IM node.exe /F\")",
+      "Bash(cmd /c \"taskkill /IM node.exe /F 2>&1\")"
+    ]
+  }
+}
