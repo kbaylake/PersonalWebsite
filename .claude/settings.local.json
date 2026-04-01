@@ -6,7 +6,10 @@
       "Bash(taskkill /IM node.exe /F)",
       "Bash(cmd /c \"taskkill /PID 7436 /F & taskkill /IM node.exe /F\")",
       "Bash(cmd /c \"taskkill /IM node.exe /F 2>&1\")",
-      "Bash(powershell -Command \"Remove-Item -Force ''d:\\\\Files\\\\BediFutureWorks\\\\KaranWebsite\\\\PersonalWebsite\\\\my-portfolio\\\\.next\\\\dev\\\\lock'' -ErrorAction SilentlyContinue; Write-Host done\")"
+      "Bash(powershell -Command \"Remove-Item -Force ''d:\\\\Files\\\\BediFutureWorks\\\\KaranWebsite\\\\PersonalWebsite\\\\my-portfolio\\\\.next\\\\dev\\\\lock'' -ErrorAction SilentlyContinue; Write-Host done\")",
+      "Bash(cmd /c \"wmic process where \"\"name=''node.exe''\"\" get processid /format:list\")",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host ''All node processes killed''\")",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host done\")"
     ]
   }
 }
