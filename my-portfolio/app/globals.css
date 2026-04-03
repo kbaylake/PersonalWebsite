@@ -23,9 +23,10 @@ body > * {
   z-index: 1;
 }
 
+/* ── Base fade-in-up (page load) ─────────────────── */
 @layer utilities {
   .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
+    animation: fadeInUp 0.6s ease-out forwards;
   }
 }
 
@@ -40,7 +41,113 @@ body > * {
   }
 }
 
-/* Hide scrollbar */
+/* ── Slide-down (hero tag / hero label) ─────────── */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in-down {
+  animation: slideInDown 0.5s ease-out forwards;
+}
+
+/* ── Scale-in (for badges / chips) ──────────────── */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.35s ease-out both;
+}
+
+/* ── Stagger delay helpers ───────────────────────── */
+.delay-100 { animation-delay: 0.1s; }
+.delay-150 { animation-delay: 0.15s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+
+/* ── Scroll-driven section reveals ──────────────── */
+/*  Fallback: always visible for Safari / old browsers */
+.scroll-reveal {
+  opacity: 1;
+}
+
+@supports (animation-timeline: view()) {
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    animation: fadeInUp 0.65s ease-out both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+/* ── Amber hover glow (cards, skill chips) ───────── */
+.hover-amber-glow {
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.hover-amber-glow:hover {
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.18);
+}
+
+/* ── Skill chip shine on hover ───────────────────── */
+.skill-chip {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.skill-chip::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(245, 158, 11, 0.08) 60%, transparent 80%);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+.skill-chip:hover::after {
+  transform: translateX(100%);
+}
+.skill-chip:hover {
+  border-color: rgba(217, 119, 6, 0.6);
+  color: rgb(252, 211, 77);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.12);
+}
+
+/* ── Subtle amber underline on section headings ─── */
+.section-heading {
+  position: relative;
+  display: inline-flex;
+}
+
+/* ── Project carousel slide transitions ─────────── */
+@keyframes carouselInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+@keyframes carouselInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+.carousel-slide-right { animation: carouselInRight 0.35s ease-out forwards; }
+.carousel-slide-left  { animation: carouselInLeft  0.35s ease-out forwards; }
+
+/* ── Hide scrollbar ──────────────────────────────── */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }

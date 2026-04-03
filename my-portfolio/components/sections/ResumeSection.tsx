@@ -1,17 +1,18 @@
 import { MapPin, Mail, Phone, Terminal, GraduationCap, Award, Github, Linkedin, Briefcase } from 'lucide-react';
 import { leadership } from '@/data/content';
+import ProjectCarousel from '@/components/sections/ProjectCarousel';
 
 export default function ResumeSection() {
   return (
     <div className="animate-fade-in-up">
       {/* HERO */}
       <section className="mb-20">
-        <div className="inline-flex items-center space-x-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-1.5 text-sm font-medium text-amber-400 mb-6">
+        <div className="inline-flex items-center space-x-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-1.5 text-sm font-medium text-amber-400 mb-6 animate-slide-in-down">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
-          <span>AI Engineer × Automotive Systems</span>
+          <span>Open to AI · ML · SDE Roles — Mumbai</span>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 tracking-tight mb-6">
@@ -20,8 +21,8 @@ export default function ResumeSection() {
         </h1>
 
         <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8 max-w-2xl">
-          AI and Data Analytics engineer building machine learning, computer vision, and agentic AI systems.
-          Bridging scalable software with the future of automotive architecture.
+          Agentic AI engineer specialising in <span className="text-zinc-300 font-medium">MCP-orchestrated pipelines</span>, production RAG systems, LLM fine-tuning, and computer vision — building AI that reasons, retrieves, and acts autonomously.
+          Driven by the same precision-engineering mindset I bring to <span className="text-amber-500/80 font-medium">automotive architecture</span>.
         </p>
 
         <div className="flex flex-wrap items-center gap-6 text-sm text-zinc-400 mb-10">
@@ -49,7 +50,7 @@ export default function ResumeSection() {
       </section>
 
       {/* EXPERIENCE */}
-      <section className="mb-20">
+      <section className="mb-20 scroll-reveal">
         <div className="flex items-center space-x-3 mb-8">
           <Briefcase className="text-amber-500" size={24} />
           <h2 className="text-2xl font-semibold text-zinc-100">Experience</h2>
@@ -72,8 +73,11 @@ export default function ResumeSection() {
         </div>
       </section>
 
+      {/* PROJECTS CAROUSEL */}
+      <ProjectCarousel />
+
       {/* SKILLS */}
-      <section className="mb-20">
+      <section className="mb-20 scroll-reveal">
         <div className="flex items-center space-x-3 mb-8">
           <Terminal className="text-amber-500" size={24} />
           <h2 className="text-2xl font-semibold text-zinc-100">Technical Arsenal</h2>
@@ -95,7 +99,11 @@ export default function ResumeSection() {
             "Data Visualization",
             "Git & Docker"
           ].map((skill, idx) => (
-            <span key={idx} className="bg-zinc-900 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-lg text-sm font-medium hover:border-amber-800 hover:text-amber-300 transition-colors cursor-default">
+            <span
+              key={idx}
+              className="skill-chip animate-scale-in bg-zinc-900 border border-zinc-800 text-zinc-300 px-4 py-2 rounded-lg text-sm font-medium cursor-default"
+              style={{ animationDelay: `${idx * 0.04}s` }}
+            >
               {skill}
             </span>
           ))}
@@ -103,7 +111,7 @@ export default function ResumeSection() {
       </section>
 
       {/* LEADERSHIP */}
-      <section className="mb-20">
+      <section className="mb-20 scroll-reveal">
         <div className="flex items-center space-x-3 mb-8">
           <Award className="text-amber-500" size={24} />
           <h2 className="text-2xl font-semibold text-zinc-100">My Leadership Journey</h2>
@@ -125,7 +133,7 @@ export default function ResumeSection() {
       </section>
 
       {/* EDUCATION */}
-      <section>
+      <section className="scroll-reveal">
         <div className="flex items-center space-x-3 mb-8">
           <GraduationCap className="text-amber-500" size={24} />
           <h2 className="text-2xl font-semibold text-zinc-100">Education</h2>

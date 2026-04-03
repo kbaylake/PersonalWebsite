@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Terminal, Car, Folder, Wrench, Rocket } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Terminal, Car, Folder, Wrench, Rocket, Menu, X } from 'lucide-react';
 
 const navItems = [
   { href: '/', label: 'Resume', icon: null },
@@ -15,6 +16,12 @@ const navItems = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Close menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-zinc-950/85 backdrop-blur-md border-b border-zinc-800">
@@ -33,21 +40,76 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* --- NAV TABS --- */}
-        <div className="flex space-x-6 text-sm font-medium overflow-x-auto no-scrollbar px-2 w-full justify-start sm:justify-end">
+        {/* --- DESKTOP NAV --- */}
+        <div className="hidden md:flex space-x-6 text-sm font-medium">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex-shrink-0 flex items-center space-x-1.5 transition-colors hover:text-amber-400 ${isActive ? 'text-amber-400' : 'text-zinc-400'}`}
+                className={`flex items-center space-x-1.5 transition-colors hover:text-amber-400 ${isActive ? 'text-amber-400' : 'text-zinc-400'}`}
               >
                 {Icon && <Icon size={14} />}
                 <span>{label}</span>
               </Link>
             );
           })}
+        </div>
+
+        {/* --- MOBILE HAMBURGER BUTTON --- */}
+        <button
+          className="md:hidden relative text-zinc-400 hover:text-amber-400 transition-colors p-2 -mr-2"
+          onClick={() => setIsOpen(prev => !prev)}
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isOpen}
+        >
+          <span
+            className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${isOpen ? 'opacity-100 rotate-0' : 'opacity-0 rotate-90'}`}
+          >
+            <X size={22} />
+          </span>
+          <span
+            className={`flex items-center justify-center transition-all duration-200 ${isOpen ? 'opacity-0 -rotate-90' : 'opacity-100 rotate-0'}`}
+          >
+            <Menu size={22} />
+          </span>
+        </button>
+      </div>
+
+      {/* --- MOBILE DROPDOWN MENU --- */}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="border-t border-zinc-800 bg-zinc-950/95 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col">
+            {navItems.map(({ href, label, icon: Icon }) => {
+              const isActive = pathname === href;
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`flex items-center space-x-3 px-3 py-3 rounded-lg transition-colors ${
+                    isActive
+                      ? 'text-amber-400 bg-amber-500/10'
+                      : 'text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/60'
+                  }`}
+                >
+                  {Icon ? (
+                    <Icon size={16} className="flex-shrink-0" />
+                  ) : (
+                    <span className="w-4 h-4 flex-shrink-0 flex items-center justify-center text-xs font-bold text-amber-500/60">▸</span>
+                  )}
+                  <span className="text-sm font-medium">{label}</span>
+                  {isActive && (
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-amber-400" />
+                  )}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </nav>
