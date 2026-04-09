@@ -8,7 +8,7 @@ export default function FutureBuildsSection() {
 
       <div className="space-y-6">
         {[1, 2].map((i) => (
-          <div key={i} className="border border-zinc-800 border-dashed rounded-xl p-8 bg-zinc-900/20">
+          <div key={i} className="card-elevate border border-zinc-800 border-dashed rounded-xl p-8 bg-zinc-900/20">
             <div className="flex items-center space-x-3 mb-4">
               <Rocket className="text-amber-600" size={20} />
               <h3 className="text-xl font-medium text-zinc-300">Project Alpha-0{i}</h3>

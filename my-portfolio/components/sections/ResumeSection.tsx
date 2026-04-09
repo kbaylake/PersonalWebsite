@@ -1,12 +1,40 @@
-import { MapPin, Mail, Phone, Terminal, GraduationCap, Award, Github, Linkedin, Briefcase } from 'lucide-react';
-import { leadership } from '@/data/content';
-import ProjectCarousel from '@/components/sections/ProjectCarousel';
+import { MapPin, Mail, Phone, Terminal, GraduationCap, Award, Github, Linkedin, Briefcase, Code2, FileText, ArrowUpRight } from 'lucide-react';
+import { leadership, projects } from '@/data/content';
+import Link from 'next/link';
+
+const categoryColors: Record<string, string> = {
+  "Agentic AI":             "bg-purple-900/30 text-purple-300 border-purple-800/50",
+  "Automotive AI":          "bg-amber-900/30 text-amber-300 border-amber-800/50",
+  "Computer Vision":        "bg-blue-900/30 text-blue-300 border-blue-800/50",
+  "GenAI":                  "bg-orange-900/30 text-orange-300 border-orange-800/50",
+  "Reinforcement Learning": "bg-red-900/30 text-red-300 border-red-800/50",
+  "ML · FinTech":           "bg-yellow-900/30 text-yellow-300 border-yellow-800/50",
+};
+
+const AI_CATEGORIES = new Set([
+  'Agentic AI', 'GenAI', 'Computer Vision',
+  'Reinforcement Learning', 'ML · FinTech', 'Automotive AI',
+]);
+
+const AI_KEYWORDS = [
+  'llm', 'gpt', 'rag', 'mcp', 'genai', 'agentic', 'faiss', 'langchain',
+  'huggingface', 'transformer', 'yolo', 'openai', 'claude', 'gemini',
+  'pytorch', 'tensorflow', 'whisper', 'bert', 'fine-tun', 'vector',
+  'diffusion', 'embedding', 'mistral', 'ollama',
+];
+
+function isAiTag(tech: string) {
+  const lower = tech.toLowerCase();
+  return AI_KEYWORDS.some(kw => lower.includes(kw));
+}
+
+const aiProjects = projects.filter(p => AI_CATEGORIES.has(p.category));
 
 export default function ResumeSection() {
   return (
     <div className="animate-fade-in-up">
       {/* HERO */}
-      <section className="mb-20">
+      <section className="mb-16">
         <div className="inline-flex items-center space-x-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-1.5 text-sm font-medium text-amber-400 mb-6 animate-slide-in-down">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -26,9 +54,10 @@ export default function ResumeSection() {
         </p>
 
         <div className="flex flex-wrap items-center gap-6 text-sm text-zinc-400 mb-10">
-          <div className="flex items-center space-x-2 hover:text-amber-400 transition-colors cursor-pointer">
-            <Mail size={18} /> <span>kbedi03@gmail.com</span>
-          </div>
+          <a href="mailto:kbedi03@gmail.com" className="flex items-center space-x-2 hover:text-amber-400 transition-colors group">
+            <Mail size={18} className="group-hover:scale-110 transition-transform" />
+            <span>kbedi03@gmail.com</span>
+          </a>
           <div className="flex items-center space-x-2">
             <Phone size={18} /> <span>+91 7021484750</span>
           </div>
@@ -38,14 +67,82 @@ export default function ResumeSection() {
         </div>
 
         <div className="flex space-x-4">
-          <button className="bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center space-x-2">
+          <button className="btn-press bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2">
             <Linkedin size={18} />
             <span><a href='https://www.linkedin.com/in/karan-bedi-9414a9241/' target="_blank" rel="noopener noreferrer">LinkedIn Connect</a></span>
           </button>
-          <button className="bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center space-x-2">
+          <button className="btn-press bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2">
             <Github size={18} />
             <span><a href="https://github.com/kbaylake" target="_blank" rel="noopener noreferrer">GitHub</a></span>
           </button>
+        </div>
+      </section>
+
+      {/* AI PROJECTS SPOTLIGHT */}
+      <section className="mb-20">
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <p className="text-xs font-mono text-amber-500/70 uppercase tracking-widest mb-1.5">What I Build</p>
+            <div className="flex items-center gap-3">
+              <Code2 className="text-amber-500" size={22} />
+              <h2 className="text-2xl font-semibold text-zinc-100">AI / ML Projects</h2>
+            </div>
+          </div>
+          <Link
+            href="/projects"
+            className="flex items-center gap-1 text-xs text-zinc-500 hover:text-amber-400 transition-colors font-mono group"
+          >
+            All {projects.length} projects
+            <ArrowUpRight size={12} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {aiProjects.map((project, idx) => {
+            const catColor = categoryColors[project.category] ?? 'bg-zinc-800 text-zinc-400 border-zinc-700';
+            return (
+              <div
+                key={idx}
+                className="card-elevate ai-card border border-zinc-800 bg-zinc-900/40 rounded-xl p-5 hover:border-amber-700/30 transition-colors"
+              >
+                {/* Category + paper badge */}
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${catColor}`}>
+                    {project.category}
+                  </span>
+                  {project.paper && (
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full border bg-amber-900/20 text-amber-400 border-amber-700/40 flex items-center gap-1">
+                      <FileText size={10} />
+                      Published Research
+                    </span>
+                  )}
+                </div>
+
+                <h3 className="text-base font-semibold text-zinc-100 mb-0.5 leading-snug">{project.title}</h3>
+                <p className="text-xs text-amber-500/80 font-mono mb-3">{project.subtitle}</p>
+
+                {/* Impact */}
+                <p className="text-xs text-zinc-500 font-mono leading-relaxed mb-4">
+                  <span className="text-amber-600/80">▸ </span>{project.impact}
+                </p>
+
+                {/* Stack pills */}
+                <div className="flex flex-wrap gap-1.5">
+                  {project.stack.slice(0, 5).map((tech, i) => (
+                    <span
+                      key={i}
+                      className={`text-xs px-2 py-0.5 rounded border border-zinc-700/50 bg-zinc-800/80 text-zinc-400 ${isAiTag(tech) ? 'tag-ai' : ''}`}
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  {project.stack.length > 5 && (
+                    <span className="text-xs text-zinc-600 px-1 py-0.5 font-mono">+{project.stack.length - 5}</span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -72,9 +169,6 @@ export default function ResumeSection() {
           </div>
         </div>
       </section>
-
-      {/* PROJECTS CAROUSEL */}
-      <ProjectCarousel />
 
       {/* SKILLS */}
       <section className="mb-20 scroll-reveal">
@@ -138,7 +232,7 @@ export default function ResumeSection() {
           <GraduationCap className="text-amber-500" size={24} />
           <h2 className="text-2xl font-semibold text-zinc-100">Education</h2>
         </div>
-        <div className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-6">
+        <div className="card-elevate bg-zinc-900/30 border border-zinc-800 rounded-xl p-6">
           <div className="flex flex-col md:flex-row justify-between mb-2">
             <h3 className="text-lg font-medium text-zinc-200">B.Tech in Artificial Intelligence</h3>
             <span className="text-amber-400 font-medium">CGPA 3.16/4.0</span>

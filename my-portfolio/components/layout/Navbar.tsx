@@ -48,10 +48,13 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center space-x-1.5 transition-colors hover:text-amber-400 ${isActive ? 'text-amber-400' : 'text-zinc-400'}`}
+                className={`flex items-center space-x-1.5 transition-colors hover:text-amber-400 group relative ${isActive ? 'text-amber-400' : 'text-zinc-400'}`}
               >
-                {Icon && <Icon size={14} />}
-                <span>{label}</span>
+                {Icon && <Icon size={14} className="group-hover:scale-110 transition-transform duration-150" />}
+                <span className="relative">
+                  {label}
+                  {!isActive && <span className="nav-underline" />}
+                </span>
               </Link>
             );
           })}

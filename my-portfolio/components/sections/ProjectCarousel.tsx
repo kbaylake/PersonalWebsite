@@ -18,6 +18,23 @@ const categoryColors: Record<string, string> = {
   "ML · FinTech":           "bg-yellow-900/30 text-yellow-300 border-yellow-800/50",
 };
 
+const AI_CATEGORIES = new Set([
+  'Agentic AI', 'GenAI', 'Computer Vision',
+  'Reinforcement Learning', 'ML · FinTech', 'Automotive AI',
+]);
+
+const AI_KEYWORDS = [
+  'llm', 'gpt', 'rag', 'mcp', 'genai', 'agentic', 'faiss', 'langchain',
+  'huggingface', 'transformer', 'yolo', 'openai', 'claude', 'gemini',
+  'pytorch', 'tensorflow', 'whisper', 'bert', 'fine-tun', 'vector',
+  'diffusion', 'embedding', 'mistral', 'ollama',
+];
+
+function isAiTag(tech: string) {
+  const lower = tech.toLowerCase();
+  return AI_KEYWORDS.some(kw => lower.includes(kw));
+}
+
 export default function ProjectCarousel() {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState<'right' | 'left'>('right');
@@ -55,6 +72,7 @@ export default function ProjectCarousel() {
 
   const project = projects[current];
   const catColor = categoryColors[project.category] ?? 'bg-zinc-800 text-zinc-400 border-zinc-700';
+  const isAi = AI_CATEGORIES.has(project.category);
 
   return (
     <section className="mb-20 scroll-reveal">
@@ -83,7 +101,7 @@ export default function ProjectCarousel() {
         >
           <div
             key={`${current}-${direction}`}
-            className={`border border-zinc-800 bg-zinc-900/50 rounded-2xl p-6 md:p-8 hover-amber-glow ${
+            className={`border border-zinc-800 bg-zinc-900/50 rounded-2xl p-6 md:p-8 card-elevate ${isAi ? 'ai-card' : 'hover-amber-glow'} ${
               direction === 'right' ? 'carousel-slide-right' : 'carousel-slide-left'
             }`}
           >
@@ -123,7 +141,7 @@ export default function ProjectCarousel() {
               {project.stack.slice(0, 7).map((tech, i) => (
                 <span
                   key={i}
-                  className="text-xs bg-zinc-800/80 text-zinc-400 px-2.5 py-1 rounded-md border border-zinc-700/50"
+                  className={`text-xs bg-zinc-800/80 text-zinc-400 px-2.5 py-1 rounded-md border border-zinc-700/50 ${isAiTag(tech) ? 'tag-ai' : ''}`}
                 >
                   {tech}
                 </span>
@@ -140,14 +158,14 @@ export default function ProjectCarousel() {
         {/* Desktop side arrows */}
         <button
           onClick={prev}
-          className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-amber-400 hover:border-amber-700/50 hover:bg-zinc-800 transition-all shadow-md"
+          className="btn-press hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 w-9 h-9 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-amber-400 hover:border-amber-700/50 hover:bg-zinc-800 transition-colors shadow-md"
           aria-label="Previous project"
         >
           <ChevronLeft size={17} />
         </button>
         <button
           onClick={next}
-          className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 w-9 h-9 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-amber-400 hover:border-amber-700/50 hover:bg-zinc-800 transition-all shadow-md"
+          className="btn-press hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 w-9 h-9 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-amber-400 hover:border-amber-700/50 hover:bg-zinc-800 transition-colors shadow-md"
           aria-label="Next project"
         >
           <ChevronRight size={17} />
