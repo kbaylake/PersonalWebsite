@@ -84,14 +84,11 @@ function SliderField({
 }
 
 function RiskGauge({ probability }: { probability: number }) {
-  // Draw a semi-circle gauge from 0 to 180 degrees
+  // Semi-circle gauge: left=0% (low risk), right=100% (high risk)
+  // Center at (90, 82); viewBox tall enough to show text below center line.
   const radius = 70;
   const cx = 90;
-  const cy = 90;
-  const startAngle = 180; // left
-  const endAngle = 0;     // right
-  const angle = 180 - probability * 180; // needle angle in degrees
-
+  const cy = 82;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
 
   const arcPath = (startDeg: number, endDeg: number, r: number) => {
@@ -102,32 +99,38 @@ function RiskGauge({ probability }: { probability: number }) {
     return `M ${x1} ${y1} A ${r} ${r} 0 0 0 ${x2} ${y2}`;
   };
 
-  const needleX = cx + (radius - 10) * Math.cos(toRad(angle));
-  const needleY = cy - (radius - 10) * Math.sin(toRad(angle));
+  // Clamp probability so needle never overshoots the arc ends
+  const p = Math.min(Math.max(probability, 0), 1);
+  // angle: 180° (left, 0%) → 0° (right, 100%)
+  const angle = 180 - p * 180;
+  // Needle tip reaches the centerline of the arc track
+  const needleLen = radius - 4;
+  const needleX = cx + needleLen * Math.cos(toRad(angle));
+  const needleY = cy - needleLen * Math.sin(toRad(angle));
 
   return (
-    <svg viewBox="0 0 180 100" className="w-full max-w-[220px]">
-      {/* Track */}
-      <path d={arcPath(startAngle, endAngle, radius)} fill="none" stroke="rgb(63,63,70)" strokeWidth="14" strokeLinecap="round" />
+    <svg viewBox="0 0 180 115" className="w-full max-w-[220px]">
+      {/* Track (grey background) */}
+      <path d={arcPath(180, 0, radius)} fill="none" stroke="rgb(63,63,70)" strokeWidth="12" strokeLinecap="round" />
       {/* Green zone 0–35% */}
-      <path d={arcPath(180, 180 - 0.35 * 180, radius)} fill="none" stroke="rgb(34,197,94)" strokeWidth="14" strokeLinecap="round" opacity="0.7" />
+      <path d={arcPath(180, 180 - 0.35 * 180, radius)} fill="none" stroke="rgb(34,197,94)" strokeWidth="12" strokeLinecap="round" opacity="0.75" />
       {/* Amber zone 35–60% */}
-      <path d={arcPath(180 - 0.35 * 180, 180 - 0.60 * 180, radius)} fill="none" stroke="rgb(245,158,11)" strokeWidth="14" opacity="0.7" />
+      <path d={arcPath(180 - 0.35 * 180, 180 - 0.60 * 180, radius)} fill="none" stroke="rgb(245,158,11)" strokeWidth="12" opacity="0.75" />
       {/* Red zone 60–100% */}
-      <path d={arcPath(180 - 0.60 * 180, endAngle, radius)} fill="none" stroke="rgb(239,68,68)" strokeWidth="14" strokeLinecap="round" opacity="0.7" />
-      {/* Needle */}
+      <path d={arcPath(180 - 0.60 * 180, 0, radius)} fill="none" stroke="rgb(239,68,68)" strokeWidth="12" strokeLinecap="round" opacity="0.75" />
+      {/* Needle — smooth ease-out, no bounce */}
       <line
         x1={cx} y1={cy}
         x2={needleX} y2={needleY}
         stroke="white" strokeWidth="2.5" strokeLinecap="round"
-        style={{ transition: "all 0.6s cubic-bezier(0.34,1.56,0.64,1)" }}
+        style={{ transition: "x2 0.7s cubic-bezier(0.22,1,0.36,1), y2 0.7s cubic-bezier(0.22,1,0.36,1)" }}
       />
-      <circle cx={cx} cy={cy} r="4" fill="white" />
-      {/* Probability label */}
-      <text x={cx} y={cy + 18} textAnchor="middle" className="fill-white" fontSize="14" fontWeight="700" fontFamily="monospace">
+      <circle cx={cx} cy={cy} r="5" fill="white" />
+      {/* Labels — positioned below the center line, inside the extended viewBox */}
+      <text x={cx} y={cy + 20} textAnchor="middle" fill="white" fontSize="14" fontWeight="700" fontFamily="monospace">
         {(probability * 100).toFixed(1)}%
       </text>
-      <text x={cx} y={cy + 30} textAnchor="middle" className="fill-zinc-400" fontSize="8" fontFamily="monospace">
+      <text x={cx} y={cy + 32} textAnchor="middle" fill="rgb(161,161,170)" fontSize="8" fontFamily="monospace">
         default probability
       </text>
     </svg>
@@ -219,7 +222,7 @@ export default function RiskDemoSection() {
         </div>
         <h1 className="text-3xl font-bold text-zinc-100 mb-1">Financial Risk Pipeline</h1>
         <p className="text-sm text-amber-500/80 font-mono mb-4">
-          Random Forest Loan Default Predictor — FastAPI · scikit-learn · SMOTE
+          XGBoost Loan Default Predictor — UCI German Credit · CalibratedClassifierCV · SMOTE
         </p>
         <p className="text-zinc-400 leading-relaxed max-w-2xl">
           This model was built during my internship at Inditrade Capital, where I developed a
@@ -255,9 +258,9 @@ export default function RiskDemoSection() {
           <div>
             <p className="text-amber-400 font-mono text-xs mb-1">02 / Model</p>
             <p>
-              A Random Forest (300 trees) trained on 6,000 synthetic-but-realistic borrower
-              records scores the inputs. SMOTE oversampling fixes the natural class imbalance
-              (~18% default rate) so the model doesn&apos;t ignore rare defaults.
+              An XGBoost classifier trained on the real UCI German Credit dataset, with SMOTE
+              for class balancing and CalibratedClassifierCV for reliable probabilities.
+              Validated with stratified 5-fold cross-validation targeting AUC-ROC ≥ 0.72.
             </p>
           </div>
           <div>
@@ -434,16 +437,16 @@ export default function RiskDemoSection() {
                                            │
                               StandardScaler.transform()
                                            │
-                          RandomForestClassifier.predict_proba()
+                      XGBClassifier (CalibratedClassifierCV)
+                              .predict_proba()
                                            │
                      risk_label + default_probability + confidence
                                            │
                        ◀────── JSON response ──────────`}
         </pre>
         <p className="text-xs text-zinc-600 mt-3 font-mono">
-          Model baked into Docker image at build time via{" "}
-          <span className="text-amber-700">python train.py</span> —
-          zero cold-start latency on Railway.
+          Model trained on UCI German Credit data and baked into the Docker image at build
+          time via <span className="text-amber-700">python train.py</span> — zero cold-start latency on Railway.
         </p>
       </div>
 
