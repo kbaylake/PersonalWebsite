@@ -450,6 +450,54 @@ export default function RiskDemoSection() {
         </p>
       </div>
 
+      {/* ── Honest take ────────────────────────────────────────── */}
+      <div className="border border-zinc-800/60 rounded-xl bg-zinc-900/20 p-6">
+        <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-5">Honest Take</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+          <div>
+            <p className="text-xs font-mono text-amber-600 mb-2">Limitations</p>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              The UCI German Credit dataset has 1,000 records — small by production standards.
+              The 6 sliders are proxies: income maps to savings tier, credit score maps to
+              account status and repayment history. These approximations work well enough to
+              demonstrate the pipeline, but they lose signal that a real dataset would have
+              directly.
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs font-mono text-amber-600 mb-2">What I&apos;d improve</p>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              With a larger proprietary dataset, I&apos;d use proper feature columns instead of
+              proxies, add SHAP explainability so the output shows which inputs drove the score,
+              and introduce drift monitoring to catch when borrower patterns shift away from
+              what the model was trained on. A feature store would also help keep inputs
+              consistent across training and inference.
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs font-mono text-amber-600 mb-2">vs. real deployment</p>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              Production credit models are subject to fair-lending regulation — outputs need
+              to be auditable and decisions explainable to applicants. A real system would sit
+              behind an authentication layer, log every prediction for model monitoring, go
+              through bias and fairness testing across demographic groups, and have a human
+              review step for edge cases near the decision boundary.
+            </p>
+          </div>
+
+        </div>
+
+        <p className="text-xs text-zinc-600 mt-6 leading-relaxed">
+          This project is a working demonstration of the end-to-end ML engineering pipeline —
+          data ingestion, feature engineering, model training, calibration, and a live API.
+          The goal was to build something real enough to reason about, not a production credit system.
+        </p>
+      </div>
+
     </div>
   );
 }
