@@ -450,52 +450,77 @@ export default function RiskDemoSection() {
         </p>
       </div>
 
-      {/* ── Honest take ────────────────────────────────────────── */}
-      <div className="border border-zinc-800/60 rounded-xl bg-zinc-900/20 p-6">
-        <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-5">Honest Take</h2>
+      {/* ── Project vs. reality ────────────────────────────────── */}
+      <div className="border border-zinc-800/60 rounded-xl bg-zinc-900/20 p-6 space-y-7">
+        <div>
+          <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest mb-3">
+            Project vs. Real Implementation
+          </h2>
+          <p className="text-sm text-zinc-500 leading-relaxed max-w-2xl">
+            This is a working end-to-end ML pipeline — real data, a trained and calibrated model,
+            and a live API. But building a portfolio project and deploying a credit scoring system
+            in production are genuinely different problems. Here&apos;s where I know this falls short,
+            and what I&apos;d change if this were real.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          <div>
-            <p className="text-xs font-mono text-amber-600 mb-2">Limitations</p>
-            <p className="text-sm text-zinc-500 leading-relaxed">
-              The UCI German Credit dataset has 1,000 records — small by production standards.
-              The 6 sliders are proxies: income maps to savings tier, credit score maps to
-              account status and repayment history. These approximations work well enough to
-              demonstrate the pipeline, but they lose signal that a real dataset would have
-              directly.
-            </p>
+          {/* Limitations */}
+          <div className="space-y-3">
+            <p className="text-xs font-mono text-amber-600 uppercase tracking-wide">Limitations</p>
+            <ul className="space-y-2.5">
+              {[
+                { label: "Small dataset", detail: "1,000 records. Real lenders train on millions of applications — enough to capture rare edge cases and long-tail borrower profiles." },
+                { label: "Proxy features", detail: "The 6 sliders don't map directly to German Credit columns — income becomes a savings proxy, credit score splits into two categorical fields. Signal gets lost in translation." },
+                { label: "Single data source", detail: "No bureau data, no transaction history, no behavioural signals. A real credit model pulls from multiple enriched sources at inference time." },
+                { label: "Static model", detail: "Once trained, the model doesn't update. Borrower behaviour shifts over time — especially around economic events — and a static model drifts silently." },
+              ].map(({ label, detail }) => (
+                <li key={label} className="text-sm text-zinc-500 leading-relaxed">
+                  <span className="text-zinc-300 font-medium">{label} — </span>
+                  {detail}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div>
-            <p className="text-xs font-mono text-amber-600 mb-2">What I&apos;d improve</p>
-            <p className="text-sm text-zinc-500 leading-relaxed">
-              With a larger proprietary dataset, I&apos;d use proper feature columns instead of
-              proxies, add SHAP explainability so the output shows which inputs drove the score,
-              and introduce drift monitoring to catch when borrower patterns shift away from
-              what the model was trained on. A feature store would also help keep inputs
-              consistent across training and inference.
-            </p>
+          {/* What I'd add */}
+          <div className="space-y-3">
+            <p className="text-xs font-mono text-amber-600 uppercase tracking-wide">What I&apos;d add</p>
+            <ul className="space-y-2.5">
+              {[
+                { label: "SHAP explainability", detail: "So the output shows not just the score, but which inputs drove it — critical for applicant-facing decisions and internal audits." },
+                { label: "Data drift monitoring", detail: "Track feature distributions in production against training baselines. Trigger retraining when the gap crosses a threshold." },
+                { label: "Feature store", detail: "A shared registry so training features and inference features come from the same source and can't silently diverge." },
+                { label: "Retraining pipeline", detail: "Automated retraining on a schedule or triggered by drift alerts, with rollback if the new model regresses on a held-out validation set." },
+              ].map(({ label, detail }) => (
+                <li key={label} className="text-sm text-zinc-500 leading-relaxed">
+                  <span className="text-zinc-300 font-medium">{label} — </span>
+                  {detail}
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div>
-            <p className="text-xs font-mono text-amber-600 mb-2">vs. real deployment</p>
-            <p className="text-sm text-zinc-500 leading-relaxed">
-              Production credit models are subject to fair-lending regulation — outputs need
-              to be auditable and decisions explainable to applicants. A real system would sit
-              behind an authentication layer, log every prediction for model monitoring, go
-              through bias and fairness testing across demographic groups, and have a human
-              review step for edge cases near the decision boundary.
-            </p>
+          {/* Production gap */}
+          <div className="space-y-3">
+            <p className="text-xs font-mono text-amber-600 uppercase tracking-wide">Production gap</p>
+            <ul className="space-y-2.5">
+              {[
+                { label: "Regulatory compliance", detail: "Credit decisions fall under fair-lending law. Every output needs to be auditable, and declined applicants are entitled to an explanation." },
+                { label: "Fairness testing", detail: "Models trained on historical data can encode past discrimination. A real deployment requires bias evaluation across demographic groups before going live." },
+                { label: "Human-in-the-loop", detail: "Borderline predictions — those sitting near the 35% or 60% thresholds — should route to a human reviewer rather than resolve automatically." },
+                { label: "Prediction logging", detail: "Every inference needs to be stored with its inputs, outputs, and timestamp for model monitoring, compliance, and debugging production issues." },
+              ].map(({ label, detail }) => (
+                <li key={label} className="text-sm text-zinc-500 leading-relaxed">
+                  <span className="text-zinc-300 font-medium">{label} — </span>
+                  {detail}
+                </li>
+              ))}
+            </ul>
           </div>
 
         </div>
-
-        <p className="text-xs text-zinc-600 mt-6 leading-relaxed">
-          This project is a working demonstration of the end-to-end ML engineering pipeline —
-          data ingestion, feature engineering, model training, calibration, and a live API.
-          The goal was to build something real enough to reason about, not a production credit system.
-        </p>
       </div>
 
     </div>
