@@ -25,6 +25,7 @@ export interface Project {
   points: string[];
   github?: boolean;
   paper?: boolean;
+  liveDemo?: string;
 }
 
 export const projects: Project[] = [
@@ -183,7 +184,9 @@ export const projects: Project[] = [
       "Performed preprocessing, feature engineering, and EDA on structured financial data — evaluating models using AUC-ROC, precision-recall curves, F1-score, and cross-validation to improve predictive reliability.",
       "Generated analytical reports and risk insight dashboards for business stakeholders, enabling data-driven credit risk assessment and decision-making by the collections team.",
       "Collaborated with cross-functional teams to translate business requirements into scalable predictive analytics solutions within an enterprise data environment.",
-    ]
+    ],
+    github: true,
+    liveDemo: "/risk-demo",
   },
 ];
 

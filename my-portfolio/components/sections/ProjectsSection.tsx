@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
-import { ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronDown, ChevronUp, FileText, Activity } from 'lucide-react';
 import { projects } from '@/data/content';
 
 const categoryColors: Record<string, string> = {
@@ -98,6 +99,15 @@ export default function ProjectsSection() {
                         <FileText size={11} />
                         Published Research
                       </span>
+                    )}
+                    {project.liveDemo && (
+                      <Link
+                        href={project.liveDemo}
+                        className="text-xs font-medium px-2.5 py-1 rounded-full border bg-green-900/20 text-green-400 border-green-700/40 flex items-center gap-1 hover:bg-green-900/40 transition-colors"
+                      >
+                        <Activity size={11} />
+                        Live Demo
+                      </Link>
                     )}
                   </div>
                 </div>

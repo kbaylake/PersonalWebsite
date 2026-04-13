@@ -3,12 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Terminal, Car, Folder, Wrench, Rocket, Menu, X } from 'lucide-react';
+import { Terminal, Car, Folder, Wrench, Rocket, Menu, X, Activity } from 'lucide-react';
 
 const navItems = [
   { href: '/', label: 'Resume', icon: null },
   { href: '/codevault', label: 'Code Vault', icon: Terminal },
   { href: '/projects', label: 'Projects', icon: Folder },
+  { href: '/risk-demo', label: 'Risk Demo', icon: Activity },
   { href: '/creations', label: 'Creations', icon: Wrench },
   { href: '/futurebuilds', label: 'Future Builds', icon: Rocket },
   { href: '/automotive', label: 'Automotive Architecture', icon: Car },
