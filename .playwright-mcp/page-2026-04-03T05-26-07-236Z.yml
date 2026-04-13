@@ -1,0 +1,144 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Karan Bedi" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Karan Bedi" [ref=e5]
+      - button "Open menu" [ref=e6]:
+        - img [ref=e8]
+        - img [ref=e12]
+    - generic [ref=e14]:
+      - link "▸ Resume" [ref=e15] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e16]: ▸
+        - generic [ref=e17]: Resume
+      - link "Code Vault" [ref=e19] [cursor=pointer]:
+        - /url: /codevault
+        - img [ref=e20]
+        - generic [ref=e22]: Code Vault
+      - link "Projects" [ref=e23] [cursor=pointer]:
+        - /url: /projects
+        - img [ref=e24]
+        - generic [ref=e26]: Projects
+      - link "Creations" [ref=e27] [cursor=pointer]:
+        - /url: /creations
+        - img [ref=e28]
+        - generic [ref=e30]: Creations
+      - link "Future Builds" [ref=e31] [cursor=pointer]:
+        - /url: /futurebuilds
+        - img [ref=e32]
+        - generic [ref=e37]: Future Builds
+      - link "Automotive Architecture" [ref=e38] [cursor=pointer]:
+        - /url: /automotive
+        - img [ref=e39]
+        - generic [ref=e43]: Automotive Architecture
+  - main [ref=e44]:
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - generic [ref=e51]: AI Engineer × Automotive Systems
+        - heading "Engineering Intelligence. Designing Mobility." [level=1] [ref=e52]:
+          - text: Engineering Intelligence.
+          - text: Designing Mobility.
+        - paragraph [ref=e53]: AI and Data Analytics engineer building machine learning, computer vision, and agentic AI systems. Bridging scalable software with the future of automotive architecture.
+        - generic [ref=e54]:
+          - generic [ref=e55] [cursor=pointer]:
+            - img [ref=e56]
+            - generic [ref=e59]: kbedi03@gmail.com
+          - generic [ref=e60]:
+            - img [ref=e61]
+            - generic [ref=e63]: +91 7021484750
+          - generic [ref=e64]:
+            - img [ref=e65]
+            - generic [ref=e68]: Mumbai, Maharashtra
+        - generic [ref=e69]:
+          - button "LinkedIn Connect" [ref=e70]:
+            - img [ref=e71]
+            - link "LinkedIn Connect" [ref=e76] [cursor=pointer]:
+              - /url: https://www.linkedin.com/in/karan-bedi-9414a9241/
+          - button "GitHub" [ref=e77]:
+            - img [ref=e78]
+            - link "GitHub" [ref=e82] [cursor=pointer]:
+              - /url: https://github.com/kbaylake
+      - generic [ref=e83]:
+        - generic [ref=e84]:
+          - img [ref=e85]
+          - heading "Experience" [level=2] [ref=e88]
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - heading "Senior Assistant Engineer (Intern)" [level=3] [ref=e92]
+            - paragraph [ref=e93]: Samsung India, Noida
+            - paragraph [ref=e94]: Jan 2026 - Present
+          - generic [ref=e95]:
+            - paragraph [ref=e96]: • Built AI-driven computer vision pipelines for defect detection and pattern analysis.
+            - paragraph [ref=e97]: • Developed ETL workflows using Pandas, NumPy, and MySQL for large-scale data processing.
+            - paragraph [ref=e98]: • Created Power BI dashboards to visualize operational metrics and defect trends.
+            - paragraph [ref=e99]: • Collaborated with cross-functional teams to drive ML-based process optimization.
+      - generic [ref=e100]:
+        - generic [ref=e101]:
+          - img [ref=e102]
+          - heading "Technical Arsenal" [level=2] [ref=e104]
+        - generic [ref=e105]:
+          - generic [ref=e106]: Python for AI/ML
+          - generic [ref=e107]: Machine Learning (Supervised & Unsupervised)
+          - generic [ref=e108]: Computer Vision (OpenCV, Image Processing)
+          - generic [ref=e109]: Agentic AI Systems
+          - generic [ref=e110]: MCP (Model Context Protocol)
+          - generic [ref=e111]: Data Preprocessing & Feature Engineering
+          - generic [ref=e112]: Model Evaluation & Optimization
+          - generic [ref=e113]: Pandas & NumPy
+          - generic [ref=e114]: SQL (MySQL) for Data Pipelines
+          - generic [ref=e115]: ETL & Data Pipelines
+          - generic [ref=e116]: REST APIs & AI Integration
+          - generic [ref=e117]: Power BI (AI-driven Analytics)
+          - generic [ref=e118]: Data Visualization
+          - generic [ref=e119]: Git & Docker
+      - generic [ref=e120]:
+        - generic [ref=e121]:
+          - img [ref=e122]
+          - heading "My Leadership Journey" [level=2] [ref=e125]
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - heading "President" [level=3] [ref=e129]
+              - paragraph [ref=e130]: 4C Marketing Cell, NMIMS MPSTME
+              - paragraph [ref=e131]: 2025 - Present
+            - paragraph [ref=e133]: Lead a 100-member club delivering consulting-style marketing events where companies present real business challenges and student teams develop and present actionable solutions.
+          - generic [ref=e134]:
+            - generic [ref=e135]:
+              - heading "Vice President" [level=3] [ref=e136]
+              - paragraph [ref=e137]: Innovation and Entrepreneurship Cell, NMIMS MPSTME
+              - paragraph [ref=e138]: 2024 - 2025
+            - paragraph [ref=e140]: Led an 18-member cross-functional team to build and launch iecnmims.com, automate club workflows, and produce the Innovision podcast with partner brands.
+          - generic [ref=e141]:
+            - generic [ref=e142]:
+              - heading "Head of Digital Creatives" [level=3] [ref=e143]
+              - paragraph [ref=e144]: Taqneeq 17.0
+              - paragraph [ref=e145]: 2023 - 2024
+            - paragraph [ref=e147]: Directed digital branding and social media strategy, establishing a cohesive visual identity and managing Instagram content and brand collaborations for the university tech fest.
+          - generic [ref=e148]:
+            - generic [ref=e149]:
+              - heading "Head of Technical Department" [level=3] [ref=e150]
+              - paragraph [ref=e151]: Innovation and Entrepreneurship Cell
+              - paragraph [ref=e152]: 2023 - 2024
+            - paragraph [ref=e154]: Led Next.js development and GitHub-based collaboration, mentoring the technical team across two cohorts.
+      - generic [ref=e155]:
+        - generic [ref=e156]:
+          - img [ref=e157]
+          - heading "Education" [level=2] [ref=e160]
+        - generic [ref=e161]:
+          - generic [ref=e162]:
+            - heading "B.Tech in Artificial Intelligence" [level=3] [ref=e163]
+            - generic [ref=e164]: CGPA 3.16/4.0
+          - paragraph [ref=e165]: MPSTME, NMIMS University | 2021 - 2026
+          - generic [ref=e166]:
+            - generic [ref=e167]:
+              - generic [ref=e168]: Prabhavati Padamshi Soni International Junior College (A Levels)
+              - generic [ref=e169]: 81.6% | 2019-2021
+            - generic [ref=e170]:
+              - generic [ref=e171]: Vibgyor High Goregaon West (IGCSE)
+              - generic [ref=e172]: 89.875% | 2019
+  - contentinfo [ref=e173]:
+    - paragraph [ref=e174]: © 2026 Karan Bedi — AI Engineer × Automotive Architect.
+  - button "Open Next.js Dev Tools" [ref=e180] [cursor=pointer]:
+    - img [ref=e181]
+  - alert [ref=e184]

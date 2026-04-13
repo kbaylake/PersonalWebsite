@@ -1,0 +1,248 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e2]:
+    - generic [ref=e3]:
+      - link "Karan Bedi" [ref=e4] [cursor=pointer]:
+        - /url: /
+        - img "Karan Bedi" [ref=e5]
+      - generic [ref=e6]:
+        - link "Resume" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e8]: Resume
+        - link "Code Vault" [ref=e9] [cursor=pointer]:
+          - /url: /codevault
+          - img [ref=e10]
+          - generic [ref=e12]: Code Vault
+        - link "Projects" [ref=e13] [cursor=pointer]:
+          - /url: /projects
+          - img [ref=e14]
+          - generic [ref=e16]: Projects
+        - link "Creations" [ref=e17] [cursor=pointer]:
+          - /url: /creations
+          - img [ref=e18]
+          - generic [ref=e20]: Creations
+        - link "Future Builds" [ref=e21] [cursor=pointer]:
+          - /url: /futurebuilds
+          - img [ref=e22]
+          - generic [ref=e27]: Future Builds
+        - link "Automotive Architecture" [ref=e28] [cursor=pointer]:
+          - /url: /automotive
+          - img [ref=e29]
+          - generic [ref=e33]: Automotive Architecture
+  - main [ref=e34]:
+    - generic [ref=e35]:
+      - heading "Selected Projects" [level=2] [ref=e36]
+      - paragraph [ref=e37]: AI pipelines, autonomous agents, data systems, and production builds.
+      - paragraph [ref=e38]: Click Technical Details to expand the engineering breakdown for each project.
+      - generic [ref=e39]:
+        - generic [ref=e41]:
+          - generic [ref=e44]: Agentic AI
+          - heading "Agentic RAG Pipeline" [level=3] [ref=e45]
+          - paragraph [ref=e46]: LangChain Agents, ChromaDB & Llama Fine-Tuning
+          - paragraph [ref=e47]: A fully autonomous AI system that ingests documents, reasons across them in multi-step chains, and generates context-aware responses — running entirely on local hardware at zero cloud cost.
+          - paragraph [ref=e48]: ▸ 500+ post training dataset · Zero cloud cost · Full local GPU stack · MLflow experiment tracking
+          - generic [ref=e49]:
+            - generic [ref=e50]: LangChain Agents
+            - generic [ref=e51]: ChromaDB
+            - generic [ref=e52]: RAG
+            - generic [ref=e53]: Llama (Fine-Tuned)
+            - generic [ref=e54]: CUDA
+            - generic [ref=e55]: cuDNN
+            - generic [ref=e56]: WSL2
+            - generic [ref=e57]: PyTorch
+            - generic [ref=e58]: TensorFlow
+            - generic [ref=e59]: MLflow
+          - button "View Technical Details" [ref=e60]:
+            - img [ref=e61]
+            - text: View Technical Details
+        - generic [ref=e64]:
+          - generic [ref=e67]: Automotive AI
+          - heading "Geospatial Predictive Maintenance" [level=3] [ref=e68]
+          - paragraph [ref=e69]: Anomaly Detection on Commercial Fleet Telemetry
+          - paragraph [ref=e70]: An ML system that predicts mechanical failures in commercial truck fleets before they happen — using real sensor data and geospatial mapping to show where failures cluster across regions.
+          - paragraph [ref=e71]: "▸ F1-score: 0.82 · SMOTE class balancing · Interactive geospatial risk maps · Reduced manual fleet monitoring"
+          - generic [ref=e72]:
+            - generic [ref=e73]: Python
+            - generic [ref=e74]: Scikit-learn
+            - generic [ref=e75]: SMOTE
+            - generic [ref=e76]: Pandas
+            - generic [ref=e77]: NumPy
+            - generic [ref=e78]: Folium
+            - generic [ref=e79]: Google Maps API
+            - generic [ref=e80]: Feature Engineering
+            - generic [ref=e81]: Statistical Modelling
+            - generic [ref=e82]: MLflow
+          - button "View Technical Details" [ref=e83]:
+            - img [ref=e84]
+            - text: View Technical Details
+        - generic [ref=e87]:
+          - generic [ref=e90]: Computer Vision
+          - heading "Breast Cancer Detection" [level=3] [ref=e91]
+          - paragraph [ref=e92]: Medical Imaging CNN Pipeline
+          - paragraph [ref=e93]: A deep learning classifier that detects cancerous tissue from medical images — trained end-to-end with a full evaluation dashboard for model benchmarking and inference testing.
+          - paragraph [ref=e94]: ▸ 96.5% validation accuracy · CUDA-accelerated training · Streamlit inference UI
+          - generic [ref=e95]:
+            - generic [ref=e96]: Python
+            - generic [ref=e97]: TensorFlow
+            - generic [ref=e98]: Keras
+            - generic [ref=e99]: CNN
+            - generic [ref=e100]: CUDA
+            - generic [ref=e101]: cuDNN
+            - generic [ref=e102]: Scikit-learn
+            - generic [ref=e103]: Streamlit
+            - generic [ref=e104]: Data Augmentation
+          - button "View Technical Details" [ref=e105]:
+            - img [ref=e106]
+            - text: View Technical Details
+        - generic [ref=e109]:
+          - generic [ref=e112]: GenAI
+          - heading "AI Color Palette Generator" [level=3] [ref=e113]
+          - paragraph [ref=e114]: Computer Vision Pipeline + Gemini Vision API
+          - paragraph [ref=e115]: A full-stack AI web app that takes any image upload and generates a branded colour palette — from dominant colour extraction to final hex codes — in a single automated pipeline. Built and deployed in under 2 weeks.
+          - paragraph [ref=e116]: ▸ End-to-end in < 2 weeks · REST API containerised with Docker · Multi-step agentic tool pipeline
+          - generic [ref=e117]:
+            - generic [ref=e118]: Python
+            - generic [ref=e119]: FastAPI
+            - generic [ref=e120]: OpenCV
+            - generic [ref=e121]: Gemini Vision API
+            - generic [ref=e122]: Docker
+            - generic [ref=e123]: REST API
+            - generic [ref=e124]: Prompt Engineering
+          - button "View Technical Details" [ref=e125]:
+            - img [ref=e126]
+            - text: View Technical Details
+        - generic [ref=e129]:
+          - generic [ref=e131]:
+            - generic [ref=e132]: Reinforcement Learning
+            - generic [ref=e133]:
+              - img [ref=e134]
+              - text: Published Research
+          - heading "Field Trip Fighters — Adaptive RL Boss AI" [level=3] [ref=e137]
+          - paragraph [ref=e138]: Hybrid Q-Learning + PPO · Published Research Paper
+          - paragraph [ref=e139]: A fighting game AI boss that learns from every match — adapting its strategy in real-time to the human player's patterns. Built as a capstone project and published as a peer-reviewed research paper.
+          - paragraph [ref=e140]: ▸ 95% win rate vs beginner AI · 72% vs advanced AI · 2,590 training episodes · Published at NMIMS MPSTME
+          - generic [ref=e141]:
+            - generic [ref=e142]: Python
+            - generic [ref=e143]: Godot Engine
+            - generic [ref=e144]: PPO
+            - generic [ref=e145]: Q-Learning
+            - generic [ref=e146]: N-gram Pattern Recognition
+            - generic [ref=e147]: Multithreading
+            - generic [ref=e148]: MLflow
+            - generic [ref=e149]: Reward Shaping
+          - button "View Technical Details" [ref=e150]:
+            - img [ref=e151]
+            - text: View Technical Details
+        - generic [ref=e154]:
+          - generic [ref=e157]: Database Engineering
+          - heading "Car Rental Database System" [level=3] [ref=e158]
+          - paragraph [ref=e159]: Normalized MySQL Schema for Shared Mobility
+          - paragraph [ref=e160]: A fully normalized relational database for a car rental platform — handling fleet inventory, customer accounts, real-time bookings, and operational analytics. Built to support high-traffic transactional workloads.
+          - paragraph [ref=e161]: ▸ Fully normalized schema · Optimized JOIN queries · Stored procedures + triggers for data integrity
+          - generic [ref=e162]:
+            - generic [ref=e163]: MySQL
+            - generic [ref=e164]: SQL
+            - generic [ref=e165]: Database Design
+            - generic [ref=e166]: Query Optimization
+            - generic [ref=e167]: Stored Procedures
+            - generic [ref=e168]: Triggers
+            - generic [ref=e169]: Analytical Views
+            - generic [ref=e170]: Indexing
+          - button "View Technical Details" [ref=e171]:
+            - img [ref=e172]
+            - text: View Technical Details
+        - generic [ref=e175]:
+          - generic [ref=e178]: Computer Vision
+          - heading "AI-Based Timetable Detection" [level=3] [ref=e179]
+          - paragraph [ref=e180]: Computer Vision + Gemini Vision API
+          - paragraph [ref=e181]: An automation system that reads a photo of a timetable and converts it into structured, database-ready data — eliminating manual data entry through a computer vision + AI pipeline.
+          - paragraph [ref=e182]: ▸ Unstructured image → structured schema · End-to-end automation · Reliable post-processing validation
+          - generic [ref=e183]:
+            - generic [ref=e184]: Python
+            - generic [ref=e185]: Gemini Vision API
+            - generic [ref=e186]: Computer Vision
+            - generic [ref=e187]: Image Preprocessing
+            - generic [ref=e188]: Prompt Engineering
+            - generic [ref=e189]: Data Transformation
+            - generic [ref=e190]: Validation Logic
+          - button "View Technical Details" [ref=e191]:
+            - img [ref=e192]
+            - text: View Technical Details
+        - generic [ref=e195]:
+          - generic [ref=e198]: Full-Stack
+          - heading "IEC NMIMS Website" [level=3] [ref=e199]
+          - paragraph [ref=e200]: Production Full-Stack Web Application
+          - paragraph [ref=e201]: The official website for the Innovation and Entrepreneurship Cell at NMIMS — a production-grade web app built, deployed, and maintained by the technical team I led as VP and Head of Technical Department.
+          - paragraph [ref=e202]: ▸ Live at iecnmims.com · Used by 500+ students · Production deployment with CI/CD
+          - generic [ref=e203]:
+            - generic [ref=e204]: Next.js
+            - generic [ref=e205]: React
+            - generic [ref=e206]: Node.js
+            - generic [ref=e207]: Django
+            - generic [ref=e208]: MongoDB
+            - generic [ref=e209]: Firebase
+            - generic [ref=e210]: Tailwind CSS
+            - generic [ref=e211]: REST APIs
+            - generic [ref=e212]: GitHub Actions
+            - generic [ref=e213]: Docker
+          - button "View Technical Details" [ref=e214]:
+            - img [ref=e215]
+            - text: View Technical Details
+        - generic [ref=e218]:
+          - generic [ref=e221]: Mobile Development
+          - heading "Student Portal Mobile Application" [level=3] [ref=e222]
+          - paragraph [ref=e223]: Android App with Real-Time Firebase Backend
+          - paragraph [ref=e224]: A mobile app for university students featuring authentication, a notice board, task management, and faculty access — backed by real-time Firebase data synchronization.
+          - paragraph [ref=e225]: ▸ Firebase real-time sync · Full auth system · Notice board + task management
+          - generic [ref=e226]:
+            - generic [ref=e227]: Android
+            - generic [ref=e228]: Java
+            - generic [ref=e229]: Firebase
+            - generic [ref=e230]: Real-Time Database
+            - generic [ref=e231]: Authentication
+            - generic [ref=e232]: UI/UX Design
+            - generic [ref=e233]: Data Validation
+          - button "View Technical Details" [ref=e234]:
+            - img [ref=e235]
+            - text: View Technical Details
+        - generic [ref=e238]:
+          - generic [ref=e241]: Game Dev
+          - heading "VR Gun Duel Game" [level=3] [ref=e242]
+          - paragraph [ref=e243]: Unity / C# with Image Processing Backend
+          - paragraph [ref=e244]: A real-time VR gun duel game built in Unity/C# with a backend service that processes image inputs to extract and validate structured game data — bridging computer vision with game systems.
+          - paragraph [ref=e245]: ▸ Real-time C# system · Image processing backend · Runtime performance optimization
+          - generic [ref=e246]:
+            - generic [ref=e247]: Unity
+            - generic [ref=e248]: C#
+            - generic [ref=e249]: Image Processing
+            - generic [ref=e250]: API Integration
+            - generic [ref=e251]: Backend Services
+            - generic [ref=e252]: Data Parsing
+            - generic [ref=e253]: Real-Time Systems
+          - button "View Technical Details" [ref=e254]:
+            - img [ref=e255]
+            - text: View Technical Details
+        - generic [ref=e258]:
+          - generic [ref=e261]: ML · FinTech
+          - heading "Loan Default Prediction" [level=3] [ref=e262]
+          - paragraph [ref=e263]: ML Risk Scoring Model — Inditrade Capital
+          - paragraph [ref=e264]: A machine learning risk model built during an internship at a financial services firm — predicting high-risk loan defaults from historical data, with outputs directly used by the collections team.
+          - paragraph [ref=e265]: ▸ 78% precision on high-risk accounts · 30% improvement in risk identification · Deployed to collections team
+          - generic [ref=e266]:
+            - generic [ref=e267]: Python
+            - generic [ref=e268]: Random Forests
+            - generic [ref=e269]: Scikit-learn
+            - generic [ref=e270]: SMOTE
+            - generic [ref=e271]: Pandas
+            - generic [ref=e272]: NumPy
+            - generic [ref=e273]: AUC-ROC
+            - generic [ref=e274]: Cross-Validation
+            - generic [ref=e275]: Power BI
+            - generic [ref=e276]: MLflow
+          - button "View Technical Details" [ref=e277]:
+            - img [ref=e278]
+            - text: View Technical Details
+  - contentinfo [ref=e280]:
+    - paragraph [ref=e281]: © 2026 Karan Bedi — AI Engineer × Automotive Architect.
+  - button "Open Next.js Dev Tools" [ref=e287] [cursor=pointer]:
+    - img [ref=e288]
+  - alert [ref=e291]

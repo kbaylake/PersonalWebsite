@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "mcp__playwright",
       "Bash(npm run:*)",
       "Bash(taskkill /PID 7436 /F)",
       "Bash(taskkill /IM node.exe /F)",
@@ -9,7 +10,32 @@
       "Bash(powershell -Command \"Remove-Item -Force ''d:\\\\Files\\\\BediFutureWorks\\\\KaranWebsite\\\\PersonalWebsite\\\\my-portfolio\\\\.next\\\\dev\\\\lock'' -ErrorAction SilentlyContinue; Write-Host done\")",
       "Bash(cmd /c \"wmic process where \"\"name=''node.exe''\"\" get processid /format:list\")",
       "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host ''All node processes killed''\")",
-      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host done\")"
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force; Write-Host done\")",
+      "Bash(start http://localhost:3000)",
+      "Read(//c/Users/kbayl/.claude/**)",
+      "Bash(python -m json.tool)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_resize",
+      "Bash(npx tsc:*)",
+      "Read(//d/Files/BediFutureWorks/KaranWebsite/PersonalWebsite/my-portfolio/**)",
+      "Bash(node node_modules/typescript/bin/tsc --noEmit)",
+      "Bash(echo \"exit: $?\")",
+      "Read(//d/Files/BediFutureWorks/KaranWebsite//**)",
+      "Bash(gh auth:*)",
+      "Read(//d/Apps/bin//**)",
+      "Bash(git --version)",
+      "Bash(where gh:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Users/kbayl/AppData/Local/**)",
+      "Bash(git config:*)",
+      "Bash(ssh -T git@github.com)",
+      "Bash(curl --version)",
+      "Bash(python3 -c \"import urllib.request; print\\('python http ok'\\)\")",
+      "Bash(ls \"/d/Files/BediFutureWorks/KaranWebsite/PersonalWebsite/my-portfolio/.env\"*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git add:*)"
     ]
   }
 }
