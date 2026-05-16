@@ -40,7 +40,7 @@ export default function ResumeSection() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
-          <span>Open to AI · ML · SDE Roles — Mumbai</span>
+          <span>Agent Engineer @ Prodigal</span>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 tracking-tight mb-6">
@@ -49,8 +49,8 @@ export default function ResumeSection() {
         </h1>
 
         <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8 max-w-2xl">
-          Agentic AI engineer specialising in <span className="text-zinc-300 font-medium">MCP-orchestrated pipelines</span>, production RAG systems, LLM fine-tuning, and computer vision — building AI that reasons, retrieves, and acts autonomously.
-          Driven by the same precision-engineering mindset I bring to <span className="text-amber-500/80 font-medium">automotive architecture</span>.
+          Agent Engineer at <span className="text-zinc-300 font-medium">Prodigal</span>, building agentic AI for consumer finance — voice agents and orchestration for collections calls.
+          I specialise in <span className="text-zinc-300 font-medium">MCP-orchestrated pipelines</span>, production RAG, and LLM systems that reason, retrieve, and act autonomously — with the same precision-engineering mindset I bring to <span className="text-amber-500/80 font-medium">automotive architecture</span>.
         </p>
 
         <div className="flex flex-wrap items-center gap-6 text-sm text-zinc-400 mb-10">
@@ -153,12 +153,27 @@ export default function ResumeSection() {
           <h2 className="text-2xl font-semibold text-zinc-100">Experience</h2>
         </div>
 
+        <div className="border-b border-zinc-800/50 pb-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="md:w-1/3">
+              <h3 className="font-medium text-zinc-200">Agent Engineer</h3>
+              <p className="text-sm text-amber-500">Prodigal</p>
+              <p className="text-xs text-zinc-500 mt-1">May 2026 - Present</p>
+            </div>
+            <div className="md:w-2/3 space-y-2">
+              <p className="text-sm text-zinc-400">• Building agentic AI for consumer finance, focused on collections calls — voice agents, orchestration, and production LLM pipelines.</p>
+              <p className="text-sm text-zinc-400">• Designing MCP-orchestrated systems that reason, retrieve context, and act autonomously in regulated financial workflows.</p>
+              <p className="text-sm text-zinc-400">• Shipping production RAG and tool-calling architectures for real-time customer interactions at scale.</p>
+            </div>
+          </div>
+        </div>
+
         <div className="border-b border-zinc-800/50 pb-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="md:w-1/3">
               <h3 className="font-medium text-zinc-200">Senior Assistant Engineer (Intern)</h3>
               <p className="text-sm text-amber-500">Samsung India, Noida</p>
-              <p className="text-xs text-zinc-500 mt-1">Jan 2026 - Present</p>
+              <p className="text-xs text-zinc-500 mt-1">Jan 2026 - May 2026</p>
             </div>
             <div className="md:w-2/3 space-y-2">
               <p className="text-sm text-zinc-400">• Built AI-driven computer vision pipelines for defect detection and pattern analysis.</p>

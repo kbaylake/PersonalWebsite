@@ -141,13 +141,11 @@ The goal isn't to use AI. The goal is to build something that works.
 
 ## What I'm building toward
 
-I'm Karan Bedi — final-year B.Tech AI student at NMIMS Mumbai, graduating 2026. Currently at Samsung India as a Senior Assistant Engineer, building computer vision pipelines for defect detection on manufacturing lines. Outside of Samsung, I've shipped an Agentic RAG pipeline, fine-tuned Llama on domain data, and built a geospatial fleet anomaly detection system.
+I'm Karan Bedi — Agent Engineer at Prodigal, building agentic AI for consumer finance, specifically collections calls. I've also shipped an Agentic RAG pipeline, fine-tuned Llama on domain data, and built a geospatial fleet anomaly detection system.
 
 The K24 in the driveway and the models running on my RTX 4060 Ti are, to me, the same problem: complex systems that reward deep understanding, careful architecture, and the discipline to get the fundamentals right before chasing the headline numbers.
 
-I'm actively looking for Mumbai-based roles in AI/ML Engineering, Data Science, and Software Engineering — L1/L2 positions where the engineering is taken seriously and there's real work to be done.
-
-If the way I think about systems resonates with how your team builds — I'd like to talk.
+If the way I think about systems resonates — I'd like to connect.
 
 [Connect on LinkedIn](https://www.linkedin.com/in/karan-bedi-9414a9241/) · [kbedi03@gmail.com](mailto:kbedi03@gmail.com)
 
