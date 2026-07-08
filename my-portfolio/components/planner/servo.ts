@@ -171,6 +171,31 @@ function ticketsFor(
   return TICKET_BASE + Math.round(TICKET_GOAL_SCALE * goalShare) + resonance + emphasis;
 }
 
+/** Ticket-expanded line pool (weighted). Shared by live rotation + .ics export. */
+export function expandTickets(
+  state: PlannerState,
+  emphasisCategory: ReminderCategory | null
+): string[] {
+  const expanded: string[] = [];
+  for (const l of state.reminderLines) {
+    const n = ticketsFor(l, state.goalWeights, state.lineWeights, emphasisCategory);
+    for (let i = 0; i < n; i++) expanded.push(l.id);
+  }
+  return expanded;
+}
+
+/** Deterministic line for a slot index over a pre-expanded pool. */
+export function lineForSlot(
+  state: PlannerState,
+  expanded: string[],
+  slot: number
+): ReminderLine | undefined {
+  if (expanded.length === 0) return undefined;
+  // Spread consecutive slots across the pool instead of walking neighbors.
+  const idx = (slot * 7919) % expanded.length; // 7919 prime → good dispersion
+  return state.reminderLines.find((l) => l.id === expanded[idx]);
+}
+
 /**
  * The line for the current time slot. Deterministic: expansion order is fixed
  * by the lines array; weights only change at the tick / check-in / one daily
@@ -181,23 +206,15 @@ export function weightedReminderLine(
   today: string,
   dayStartMin: number
 ): ReminderLine | undefined {
-  const lines = state.reminderLines;
-  if (lines.length === 0) return undefined;
+  if (state.reminderLines.length === 0) return undefined;
   const emphasis =
     state.claudeEmphasis && state.claudeEmphasis.date === today
       ? state.claudeEmphasis.category
       : null;
-  const expanded: string[] = [];
-  for (const l of lines) {
-    const n = ticketsFor(l, state.goalWeights, state.lineWeights, emphasis);
-    for (let i = 0; i < n; i++) expanded.push(l.id);
-  }
+  const expanded = expandTickets(state, emphasis);
   const cadence = Math.max(30, state.settings.reminderCadenceMin);
   const slot = Math.floor(Math.max(0, istNowMinutes() - dayStartMin) / cadence);
-  // Spread consecutive slots across the pool instead of walking neighbors.
-  const idx = (slot * 7919) % expanded.length; // 7919 prime → good dispersion
-  const id = expanded[idx];
-  return lines.find((l) => l.id === id);
+  return lineForSlot(state, expanded, slot);
 }
 
 // ── Where the servo aims the rituals ─────────────────────────────

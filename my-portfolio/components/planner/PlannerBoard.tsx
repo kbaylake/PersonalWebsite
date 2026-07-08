@@ -35,6 +35,8 @@ import {
   weakestGoal,
   checkinDue,
 } from "./servo";
+import { buildReminderIcs } from "./icsExport";
+import { syncDayToGoogle } from "./googleSync";
 import IdentityBar from "./IdentityBar";
 import NowCard from "./NowCard";
 import ProgressHud from "./ProgressHud";
@@ -425,6 +427,27 @@ export default function PlannerBoard() {
         <SettingsPanel
           settings={state.settings}
           onSave={(partial) => dispatch({ type: "UPDATE_SETTINGS", partial })}
+          onDownloadReminders={() => {
+            const blob = new Blob([buildReminderIcs(state, todayKey)], {
+              type: "text/calendar",
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "becoming-reminders.ics";
+            a.click();
+            URL.revokeObjectURL(url);
+          }}
+          onSyncCalendar={
+            process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+              ? () =>
+                  syncDayToGoogle(
+                    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+                    todayKey,
+                    scheduled
+                  )
+              : null
+          }
           onExport={() => {
             const blob = new Blob([exportStateJson(state)], {
               type: "application/json",

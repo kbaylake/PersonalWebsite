@@ -10,6 +10,10 @@ export interface SettingsPanelProps {
   onSave: (partial: Partial<PlannerSettings>) => void;
   onExport: () => void;
   onImport: (raw: string) => boolean;
+  /** Download the recurring-reminders .ics file. */
+  onDownloadReminders: () => void;
+  /** Push today's blocks to Google Calendar; null = client ID not configured. */
+  onSyncCalendar: (() => Promise<number>) | null;
   onClose: () => void;
 }
 
@@ -22,6 +26,8 @@ export default function SettingsPanel(props: SettingsPanelProps) {
   const [carNumbers, setCarNumbers] = useState(s.car.numbers);
   const [cadence, setCadence] = useState(s.reminderCadenceMin);
   const [importMsg, setImportMsg] = useState<string | null>(null);
+  const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const overlayRef = useOverlay(props.onClose);
 
@@ -132,6 +138,52 @@ export default function SettingsPanel(props: SettingsPanelProps) {
         >
           Save
         </button>
+
+        {/* Integrations — phone reminders + Google Calendar */}
+        <div className="mt-5 pt-4 border-t border-zinc-800">
+          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">
+            Phone reminders & calendar
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={props.onDownloadReminders}
+              className="btn-press flex-1 flex items-center justify-center gap-2 rounded-xl border border-zinc-700 py-2.5 text-sm text-zinc-300 hover:border-violet-600/60"
+            >
+              <Download size={14} /> Reminders (.ics)
+            </button>
+            <button
+              disabled={syncing}
+              onClick={async () => {
+                if (!props.onSyncCalendar) {
+                  setSyncMsg(
+                    "Setup needed: create a Google OAuth Client ID and add NEXT_PUBLIC_GOOGLE_CLIENT_ID in Vercel — steps are in the guide."
+                  );
+                  return;
+                }
+                setSyncing(true);
+                setSyncMsg("Syncing…");
+                try {
+                  const n = await props.onSyncCalendar();
+                  setSyncMsg(`Synced — ${n} blocks are on your Google Calendar with popup reminders.`);
+                } catch (err) {
+                  setSyncMsg(err instanceof Error ? err.message : "Sync failed — try again.");
+                } finally {
+                  setSyncing(false);
+                }
+              }}
+              className="btn-press flex-1 flex items-center justify-center gap-2 rounded-xl border border-zinc-700 py-2.5 text-sm text-zinc-300 hover:border-violet-600/60 disabled:opacity-50"
+            >
+              {syncing ? "Syncing…" : "Sync today → Google"}
+            </button>
+          </div>
+          {syncMsg && <p className="mt-2 text-xs text-zinc-400">{syncMsg}</p>}
+          <p className="mt-2 text-[11px] text-zinc-600">
+            The .ics file adds your identity lines to any calendar as recurring
+            daily notifications — import it once, no account linking. “Sync
+            today” pushes today’s blocks to Google Calendar as real events
+            (re-sync any time; it never duplicates).
+          </p>
+        </div>
 
         {/* Data — the backup moves between this site and the standalone file */}
         <div className="mt-5 pt-4 border-t border-zinc-800">
