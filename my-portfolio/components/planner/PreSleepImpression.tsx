@@ -1,23 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { MoonStar, ArrowRight, X, Copy, Check, Sparkles } from "lucide-react";
-import type { TomorrowPatch } from "./types";
+import { MoonStar, ArrowRight, X, Copy, Check, Sparkles, Heart } from "lucide-react";
+import type { TomorrowPatch, ReminderLine } from "./types";
 import type { ScheduledBlock } from "./util";
 import { PRESLEEP_STEPS } from "./anchorContent";
-import { buildTodayCard, parseTomorrow } from "./claudeBridge";
+import { buildTodayCard, type TodayCardInput } from "./claudeBridge";
+import { parseTomorrow } from "./claudeBridge";
+import { useOverlay } from "./useOverlay";
 
 export interface PreSleepProps {
-  date: string;
-  identityStatement: string;
-  carLine: string;
-  goal: string;
+  cardInput: Omit<TodayCardInput, "reflectionNote">;
   scheduled: ScheduledBlock[];
-  xp: number;
-  level: number;
-  streak: number;
-  graceRemaining: number;
-  sosCount: number;
+  presleepLine: ReminderLine | undefined; // tonight's servo-chosen affirmation
+  resonanceCandidates: ReminderLine[]; // lines actually shown today
+  resonanceDone: boolean;
+  onResonance: (lineId: string) => void;
   onApplyTomorrow: (patch: TomorrowPatch) => void;
   onComplete: (reflectionNote: string) => void;
   onClose: () => void;
@@ -30,27 +28,19 @@ export default function PreSleepImpression(props: PreSleepProps) {
   const [note, setNote] = useState("");
   const [copied, setCopied] = useState(false);
   const [paste, setPaste] = useState("");
+  const [resonated, setResonated] = useState<string | null>(null);
   const [applyMsg, setApplyMsg] = useState<
     { kind: "ok" | "err"; text: string } | null
   >(null);
+  const overlayRef = useOverlay(props.onClose);
 
-  const reflectStep = GUIDED;
-  const bridgeStep = GUIDED + 1;
+  const reflectStep = GUIDED; // 3
+  const resonanceStep = GUIDED + 1; // 4
+  const bridgeStep = GUIDED + 2; // 5
+  const totalSteps = GUIDED + 3;
 
   function card(): string {
-    return buildTodayCard({
-      date: props.date,
-      identityStatement: props.identityStatement,
-      carLine: props.carLine,
-      goal: props.goal,
-      scheduled: props.scheduled,
-      xp: props.xp,
-      level: props.level,
-      streak: props.streak,
-      graceRemaining: props.graceRemaining,
-      sosCount: props.sosCount,
-      reflectionNote: note,
-    });
+    return buildTodayCard({ ...props.cardInput, reflectionNote: note });
   }
 
   async function copyCard() {
@@ -68,7 +58,7 @@ export default function PreSleepImpression(props: PreSleepProps) {
     if (!patch) {
       setApplyMsg({
         kind: "err",
-        text: "Couldn't read a valid plan block. Paste the ```planner``` block Claude gives you.",
+        text: "Couldn't read a valid plan block. Paste Claude's final ```planner``` block.",
       });
       return;
     }
@@ -84,6 +74,18 @@ export default function PreSleepImpression(props: PreSleepProps) {
     });
   }
 
+  const skipResonance = props.resonanceDone || props.resonanceCandidates.length === 0;
+
+  function advance() {
+    let next = step + 1;
+    if (next === resonanceStep && skipResonance) next += 1;
+    if (next > bridgeStep) {
+      props.onComplete(note.trim());
+      return;
+    }
+    setStep(next);
+  }
+
   return (
     <div
       className="fixed inset-0 z-[70] flex items-center justify-center p-4"
@@ -92,7 +94,10 @@ export default function PreSleepImpression(props: PreSleepProps) {
       aria-label="Pre-sleep impression"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-zinc-950/97 to-black backdrop-blur-md" />
-      <div className="relative w-full max-w-md rounded-3xl border border-slate-700/40 bg-zinc-900/90 p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto no-scrollbar">
+      <div
+        ref={overlayRef}
+        className="relative w-full max-w-md rounded-3xl border border-slate-700/40 bg-zinc-900/90 p-6 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto no-scrollbar"
+      >
         <button
           onClick={props.onClose}
           aria-label="Close"
@@ -114,13 +119,19 @@ export default function PreSleepImpression(props: PreSleepProps) {
             <div className="flex justify-center mb-6">
               <div className="planner-breathe planner-breathe-slow w-24 h-24 rounded-full bg-gradient-to-br from-slate-500/20 to-violet-500/20 border border-slate-400/20" />
             </div>
-            <div className="text-center min-h-[6rem]">
+            <div className="text-center min-h-[7rem]">
               <h2 className="text-lg font-bold text-zinc-100 mb-2">
                 {PRESLEEP_STEPS[step].title}
               </h2>
               <p className="text-sm text-zinc-300 leading-relaxed">
                 {PRESLEEP_STEPS[step].body}
               </p>
+              {/* Final guided step: tonight's servo-chosen line to sleep on */}
+              {step === GUIDED - 1 && props.presleepLine && (
+                <p className="mt-4 rounded-xl border border-violet-800/40 bg-violet-950/20 px-4 py-3 text-sm italic text-violet-200">
+                  &ldquo;{props.presleepLine.text}&rdquo;
+                </p>
+              )}
             </div>
           </>
         )}
@@ -132,8 +143,8 @@ export default function PreSleepImpression(props: PreSleepProps) {
               A line for the day
             </h2>
             <p className="text-sm text-zinc-500 mb-3 text-center">
-              What happened, how you felt, what ran long — for you and for
-              Claude tonight.
+              What happened, how you felt, what ran long. It&rsquo;s quoted back
+              to you tomorrow morning.
             </p>
             <textarea
               value={note}
@@ -142,6 +153,42 @@ export default function PreSleepImpression(props: PreSleepProps) {
               placeholder="Tonight I…"
               className="w-full resize-none bg-zinc-950/60 border border-slate-700/50 rounded-xl px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-600 outline-none focus:ring-2 focus:ring-violet-500/40"
             />
+          </div>
+        )}
+
+        {/* Resonance — one tap trains the rotation */}
+        {step === resonanceStep && !skipResonance && (
+          <div className="min-h-[6rem]">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Heart size={15} className="text-violet-400" />
+              <h2 className="text-lg font-bold text-zinc-100">
+                Which line carried you today?
+              </h2>
+            </div>
+            <p className="text-xs text-zinc-500 mb-3 text-center">
+              One tap — it&rsquo;ll show up a bit more often. Skip if none did.
+            </p>
+            <div className="space-y-2">
+              {props.resonanceCandidates.map((l) => (
+                <button
+                  key={l.id}
+                  onClick={() => {
+                    setResonated(l.id);
+                    props.onResonance(l.id);
+                  }}
+                  disabled={resonated !== null}
+                  className={`btn-press w-full text-left rounded-xl border px-3 py-2.5 text-sm transition ${
+                    resonated === l.id
+                      ? "border-violet-500 bg-violet-500/20 text-violet-100"
+                      : resonated !== null
+                        ? "border-zinc-800 text-zinc-600"
+                        : "border-zinc-700 text-zinc-300 hover:border-violet-700"
+                  }`}
+                >
+                  {l.text}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
@@ -156,8 +203,9 @@ export default function PreSleepImpression(props: PreSleepProps) {
             </div>
             <p className="text-xs text-zinc-500 mb-3 leading-relaxed">
               Copy this into your Claude.ai app, have the conversation, then
-              paste the <span className="text-violet-300">```planner```</span>{" "}
-              block it gives you back here.
+              paste its final{" "}
+              <span className="text-violet-300">```planner```</span> block back
+              here.
             </p>
 
             <div className="relative">
@@ -204,8 +252,8 @@ export default function PreSleepImpression(props: PreSleepProps) {
                 </p>
               )}
               <p className="mt-2 text-[11px] text-zinc-600">
-                No Claude tonight? That&rsquo;s fine — just skip. Tomorrow still
-                adapts on its own.
+                No Claude tonight? That&rsquo;s fine — just finish. Tomorrow
+                still adapts on its own.
               </p>
             </div>
           </div>
@@ -213,7 +261,7 @@ export default function PreSleepImpression(props: PreSleepProps) {
 
         {/* Progress + advance */}
         <div className="flex gap-1.5 my-6">
-          {Array.from({ length: GUIDED + 2 }).map((_, s) => (
+          {Array.from({ length: totalSteps }).map((_, s) => (
             <span
               key={s}
               className={`h-1 flex-1 rounded-full transition-colors ${
@@ -224,13 +272,10 @@ export default function PreSleepImpression(props: PreSleepProps) {
         </div>
 
         <button
-          onClick={() => {
-            if (step < bridgeStep) setStep(step + 1);
-            else props.onComplete(note.trim());
-          }}
+          onClick={advance}
           className="btn-press w-full flex items-center justify-center gap-2 bg-slate-600 hover:bg-slate-500 text-white font-semibold rounded-xl py-3"
         >
-          {step < bridgeStep ? "Next" : "Rest now"}
+          {step >= bridgeStep ? "Rest now" : "Next"}
           <ArrowRight size={16} />
         </button>
       </div>

@@ -2,6 +2,7 @@
 
 import type { BlockType } from "./types";
 import { BLOCK_TYPES, BLOCK_TYPE_META } from "./blockConfig";
+import { useOverlay } from "./useOverlay";
 
 export default function BlockTypePicker({
   onPick,
@@ -10,6 +11,7 @@ export default function BlockTypePicker({
   onPick: (type: BlockType) => void;
   onClose: () => void;
 }) {
+  const overlayRef = useOverlay(onClose);
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
@@ -21,7 +23,10 @@ export default function BlockTypePicker({
         className="absolute inset-0 bg-zinc-950/70 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative w-full sm:max-w-sm bg-zinc-900 border border-violet-800/40 rounded-t-2xl sm:rounded-2xl p-4 pb-6 animate-scale-in shadow-2xl">
+      <div
+        ref={overlayRef}
+        className="relative w-full sm:max-w-sm bg-zinc-900 border border-violet-800/40 rounded-t-2xl sm:rounded-2xl p-4 pb-6 animate-scale-in shadow-2xl"
+      >
         <p className="text-xs uppercase tracking-widest text-violet-300/80 mb-3 px-1">
           Block type
         </p>

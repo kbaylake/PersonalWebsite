@@ -7,7 +7,7 @@ import {
   Moon,
   type LucideIcon,
 } from "lucide-react";
-import type { BlockType } from "./types";
+import type { BlockType, GoalId } from "./types";
 
 export interface BlockMeta {
   label: string;
@@ -98,6 +98,60 @@ export const XP_PER_COMPLETE = 10;
 export const XP_PER_LEVEL = 100;
 export const SOS_XP = 5;
 
+// Shared duration bounds — used by steppers, the Claude parser, and servo nudges.
+export const MIN_DURATION = 15;
+export const MAX_DURATION = 480;
+
+// ── Goal areas (the servo target) ───────────────────────────────
+
+export interface GoalMeta {
+  label: string;
+  short: string;
+  dot: string; // tiny chip dot color
+  text: string; // chip text color
+  bar: string; // trend bar color
+}
+
+export const GOAL_META: Record<GoalId, GoalMeta> = {
+  car: {
+    label: "The Car",
+    short: "Car",
+    dot: "bg-violet-400",
+    text: "text-violet-300",
+    bar: "bg-violet-500",
+  },
+  engineer: {
+    label: "Top Agent Engineer",
+    short: "Engineer",
+    dot: "bg-blue-400",
+    text: "text-blue-300",
+    bar: "bg-blue-500",
+  },
+  redirect: {
+    label: "Redirecting the Pull",
+    short: "Redirect",
+    dot: "bg-rose-400",
+    text: "text-rose-300",
+    bar: "bg-rose-500",
+  },
+  presence: {
+    label: "Presence",
+    short: "Presence",
+    dot: "bg-emerald-400",
+    text: "text-emerald-300",
+    bar: "bg-emerald-500",
+  },
+};
+
+// Tap-to-cycle order for the block goal chip (null = untagged).
+export const GOAL_CYCLE: (GoalId | null)[] = [
+  null,
+  "car",
+  "engineer",
+  "redirect",
+  "presence",
+];
+
 export function levelFromXp(xp: number): number {
   return 1 + Math.floor(Math.max(0, xp) / XP_PER_LEVEL);
 }
@@ -110,25 +164,46 @@ export interface TemplateBlock {
   type: BlockType;
   title: string;
   durationMin: number;
+  goal?: GoalId | null;
 }
 
 // The default day, wake → sleep. Editable per-day; user can add/remove/reorder.
 export const DEFAULT_DAY: TemplateBlock[] = [
   { type: "break", title: "Wake + morning prime", durationMin: 30 },
-  { type: "exercise", title: "Move my body", durationMin: 45 },
-  { type: "work", title: "Deep work — today's ONE focus", durationMin: 120 },
+  { type: "exercise", title: "Move my body", durationMin: 45, goal: "presence" },
+  { type: "work", title: "Deep work — today's ONE focus", durationMin: 120, goal: "engineer" },
   { type: "break", title: "Reset", durationMin: 15 },
-  { type: "work", title: "Deep work II", durationMin: 90 },
-  { type: "break", title: "Lunch + presence", durationMin: 45 },
-  { type: "learn", title: "Learn — sharpen the craft", durationMin: 60 },
-  { type: "work", title: "Deep work III", durationMin: 90 },
+  { type: "work", title: "Deep work II", durationMin: 90, goal: "engineer" },
+  { type: "break", title: "Lunch + presence", durationMin: 45, goal: "presence" },
+  { type: "learn", title: "Learn — sharpen the craft", durationMin: 60, goal: "engineer" },
+  { type: "work", title: "Deep work III", durationMin: 90, goal: "engineer" },
   { type: "break", title: "Reset", durationMin: 15 },
   { type: "work", title: "Admin + tasks", durationMin: 45 },
-  { type: "exercise", title: "Walk / air", durationMin: 30 },
-  { type: "break", title: "Dinner + people", durationMin: 60 },
-  { type: "leisure", title: "The thing I actually love", durationMin: 60 },
-  { type: "learn", title: "Read", durationMin: 30 },
+  { type: "exercise", title: "Walk / air", durationMin: 30, goal: "presence" },
+  { type: "break", title: "Dinner + people", durationMin: 60, goal: "presence" },
+  { type: "leisure", title: "The thing I actually love", durationMin: 60, goal: "redirect" },
+  { type: "learn", title: "Read", durationMin: 30, goal: "engineer" },
   { type: "sleep", title: "Pre-sleep impression", durationMin: 20 },
 ];
 
 export const DEFAULT_DAY_START_MIN = 6 * 60; // 06:00
+
+/**
+ * Single source for a template title's baseline duration — used by both the
+ * ran-long grow and the chronic-miss trim so the two can never drift apart.
+ */
+export function resolveBaselineDuration(
+  title: string,
+  overrides: Record<string, number>
+): number {
+  return (
+    overrides[title] ??
+    DEFAULT_DAY.find((t) => t.title === title)?.durationMin ??
+    30
+  );
+}
+
+/** Whether a title is part of the seeded template (nudges only apply to these). */
+export function isTemplateTitle(title: string): boolean {
+  return DEFAULT_DAY.some((t) => t.title === title);
+}

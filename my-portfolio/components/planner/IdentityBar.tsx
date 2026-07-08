@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
-import type { ReminderLine } from "./types";
-import { currentReminderIndex } from "./util";
+import type { PlannerState } from "./types";
+import { weightedReminderLine } from "./servo";
 
 export interface IdentityBarProps {
-  identityStatement: string;
-  reminders: ReminderLine[];
+  state: PlannerState;
+  today: string;
   dayStartMin: number;
-  cadenceMin: number;
+  onShown: (lineId: string) => void;
 }
 
 const CATEGORY_LABEL: Record<string, string> = {
@@ -22,31 +22,46 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 export default function IdentityBar(props: IdentityBarProps) {
-  const [idx, setIdx] = useState(0);
+  const [lineId, setLineId] = useState<string | null>(null);
   const [fadeKey, setFadeKey] = useState(0);
+  const { state, today, dayStartMin, onShown } = props;
+  const lastIdRef = useRef<string | null>(null);
+  const onShownRef = useRef(onShown);
+  onShownRef.current = onShown;
 
   useEffect(() => {
     function refresh() {
-      const next = currentReminderIndex(
-        props.dayStartMin,
-        props.cadenceMin,
-        props.reminders.length
-      );
-      setIdx(next);
+      const line = weightedReminderLine(state, today, dayStartMin);
+      if (!line || lastIdRef.current === line.id) return;
+      lastIdRef.current = line.id;
+      setLineId(line.id);
       setFadeKey((k) => k + 1);
+      onShownRef.current(line.id);
     }
-    refresh();
-    // Re-evaluate every minute so the ~2h rotation lands without a reload.
+    // First paint + re-evaluate every minute so the rotation lands live.
+    const t = setTimeout(refresh, 0);
     const iv = setInterval(refresh, 60_000);
-    return () => clearInterval(iv);
-  }, [props.dayStartMin, props.cadenceMin, props.reminders.length]);
+    return () => {
+      clearTimeout(t);
+      clearInterval(iv);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    state.reminderLines,
+    state.goalWeights,
+    state.lineWeights,
+    state.claudeEmphasis,
+    state.settings.reminderCadenceMin,
+    today,
+    dayStartMin,
+  ]);
 
-  const line = props.reminders[idx];
+  const line = state.reminderLines.find((l) => l.id === lineId);
 
   return (
     <div className="sticky top-0 z-30 -mx-4 px-4 pt-3 pb-3 bg-gradient-to-b from-zinc-950 via-zinc-950/95 to-zinc-950/80 backdrop-blur border-b border-violet-900/30">
       <p className="text-sm font-semibold text-zinc-100 leading-snug">
-        {props.identityStatement}
+        {state.settings.identityStatement}
       </p>
       {line && (
         <div

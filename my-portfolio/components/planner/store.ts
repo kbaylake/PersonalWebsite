@@ -1,4 +1,4 @@
-import type { DayPlan, PlannerState, Block } from "./types";
+import type { DayPlan, PlannerState, Block, GoalId } from "./types";
 import {
   DEFAULT_DAY,
   DEFAULT_DAY_START_MIN,
@@ -6,13 +6,14 @@ import {
 } from "./blockConfig";
 import {
   DEFAULT_SETTINGS,
+  DEFAULT_GOAL_AREAS,
   REMINDER_LINES,
   PLEASURE_JOY_PAIRS,
 } from "./anchorContent";
 import { istDateString, makeId } from "./util";
 
-const STORAGE_KEY = "planner_state_v1";
-const STATE_VERSION = 1;
+const STORAGE_KEY = "planner_state_v1"; // key kept stable across versions
+const STATE_VERSION = 2;
 
 // Grace-token tuning.
 export const MAX_GRACE = 1;
@@ -31,6 +32,23 @@ function blockFromTemplate(
     durationMin: overrides[t.title] ?? t.durationMin,
     completed: false,
     completedAt: null,
+    goal: t.goal ?? null,
+  };
+}
+
+export function emptyDay(date: string, dayStartMin: number): DayPlan {
+  return {
+    date,
+    dayStartMin,
+    goal: "",
+    blocks: [],
+    captures: [],
+    reflected: false,
+    morningPrimeDone: false,
+    preSleepDone: false,
+    note: "",
+    shownLineIds: [],
+    resonanceLineId: null,
   };
 }
 
@@ -40,16 +58,17 @@ export function seedDay(
   overrides: Record<string, number> = {}
 ): DayPlan {
   return {
-    date,
-    dayStartMin,
-    goal: "",
+    ...emptyDay(date, dayStartMin),
     blocks: DEFAULT_DAY.map((t) => blockFromTemplate(t, overrides)),
-    captures: [],
-    reflected: false,
-    morningPrimeDone: false,
-    preSleepDone: false,
   };
 }
+
+const EVEN_WEIGHTS: Record<GoalId, number> = {
+  car: 0.25,
+  engineer: 0.25,
+  redirect: 0.25,
+  presence: 0.25,
+};
 
 export function createDefaultState(): PlannerState {
   const today = istDateString();
@@ -70,7 +89,128 @@ export function createDefaultState(): PlannerState {
     reminderLines: REMINDER_LINES.map((l) => ({ ...l })),
     pleasureJoyPairs: PLEASURE_JOY_PAIRS.map((p) => ({ ...p })),
     sosEvents: [],
+    goalAreas: DEFAULT_GOAL_AREAS.map((g) => ({ ...g })),
+    goalWeights: { ...EVEN_WEIGHTS },
+    lastWeakestGoal: null,
+    lastCheckinDate: null,
+    alignment: {},
+    nudges: [],
+    lineWeights: {},
+    titleStats: {},
+    titleNudgeDates: {},
+    claudeEmphasis: null,
   };
+}
+
+// ── Migration & hydration ────────────────────────────────────────
+
+/** Fill any missing v2 fields on a day (covers v1 days and partial blobs). */
+function hydrateDay(d: Partial<DayPlan> & { date: string }): DayPlan {
+  return {
+    ...emptyDay(d.date, d.dayStartMin ?? DEFAULT_DAY_START_MIN),
+    ...d,
+    note: d.note ?? "",
+    shownLineIds: Array.isArray(d.shownLineIds) ? d.shownLineIds : [],
+    resonanceLineId: d.resonanceLineId ?? null,
+    blocks: Array.isArray(d.blocks)
+      ? d.blocks.map((b) => ({ ...b, goal: b.goal ?? null }))
+      : [],
+    captures: Array.isArray(d.captures) ? d.captures : [],
+  };
+}
+
+/**
+ * v1 → v2: preserve everything the user has lived (xp, streak, days,
+ * settings, overrides, SOS log); default-fill only the new servo fields.
+ */
+function migrateV1toV2(old: Partial<PlannerState>): PlannerState {
+  const base = createDefaultState();
+  const days: Record<string, DayPlan> = {};
+  for (const [date, day] of Object.entries(old.days ?? {})) {
+    days[date] = hydrateDay({ ...(day as DayPlan), date });
+  }
+  return {
+    ...base,
+    ...old,
+    version: STATE_VERSION,
+    hydrated: false,
+    notice: null,
+    settings: {
+      ...base.settings,
+      ...(old.settings ?? {}),
+      weightGoal: null, // v1's permanent override becomes the transient claudeEmphasis
+      car: { ...base.settings.car, ...(old.settings?.car ?? {}) },
+    },
+    days: Object.keys(days).length ? days : base.days,
+    reminderLines: old.reminderLines?.length ? old.reminderLines : base.reminderLines,
+    pleasureJoyPairs: old.pleasureJoyPairs?.length
+      ? old.pleasureJoyPairs
+      : base.pleasureJoyPairs,
+    sosEvents: old.sosEvents ?? [],
+    templateOverrides: old.templateOverrides ?? {},
+    // fresh servo fields
+    goalAreas: base.goalAreas,
+    goalWeights: base.goalWeights,
+    lastWeakestGoal: null,
+    lastCheckinDate: null,
+    alignment: {},
+    nudges: [],
+    lineWeights: {},
+    titleStats: {},
+    titleNudgeDates: {},
+    claudeEmphasis: null,
+  };
+}
+
+/** Defensive fill for a current-version blob (forward-compat safety). */
+function hydrateMissing(s: PlannerState): PlannerState {
+  const base = createDefaultState();
+  const days: Record<string, DayPlan> = {};
+  for (const [date, day] of Object.entries(s.days ?? base.days)) {
+    days[date] = hydrateDay({ ...(day as DayPlan), date });
+  }
+  return {
+    ...base,
+    ...s,
+    hydrated: false,
+    notice: null,
+    settings: {
+      ...base.settings,
+      ...s.settings,
+      car: { ...base.settings.car, ...(s.settings?.car ?? {}) },
+    },
+    days,
+    reminderLines: s.reminderLines?.length ? s.reminderLines : base.reminderLines,
+    pleasureJoyPairs: s.pleasureJoyPairs?.length
+      ? s.pleasureJoyPairs
+      : base.pleasureJoyPairs,
+    sosEvents: s.sosEvents ?? [],
+    templateOverrides: s.templateOverrides ?? {},
+    goalAreas: s.goalAreas?.length === 4 ? s.goalAreas : base.goalAreas,
+    goalWeights:
+      s.goalWeights && Object.keys(s.goalWeights).length === 4
+        ? s.goalWeights
+        : base.goalWeights,
+    lastWeakestGoal: s.lastWeakestGoal ?? null,
+    lastCheckinDate: s.lastCheckinDate ?? null,
+    alignment: s.alignment ?? {},
+    nudges: Array.isArray(s.nudges) ? s.nudges : [],
+    lineWeights: s.lineWeights ?? {},
+    titleStats: s.titleStats ?? {},
+    titleNudgeDates: s.titleNudgeDates ?? {},
+    claudeEmphasis: s.claudeEmphasis ?? null,
+  };
+}
+
+export function normalizeLoaded(parsed: Partial<PlannerState>): PlannerState {
+  if (!parsed || typeof parsed !== "object") return createDefaultState();
+  if (parsed.version === STATE_VERSION) {
+    return hydrateMissing(parsed as PlannerState);
+  }
+  if (parsed.version === 1) {
+    return migrateV1toV2(parsed);
+  }
+  return createDefaultState();
 }
 
 // ── Persistence ──────────────────────────────────────────────────
@@ -80,11 +220,7 @@ export function loadState(): PlannerState {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return createDefaultState();
-    const parsed = JSON.parse(raw) as Partial<PlannerState>;
-    if (!parsed || parsed.version !== STATE_VERSION) {
-      return migrate();
-    }
-    return hydrateMissing(parsed as PlannerState);
+    return normalizeLoaded(JSON.parse(raw) as Partial<PlannerState>);
   } catch {
     return createDefaultState();
   }
@@ -93,32 +229,33 @@ export function loadState(): PlannerState {
 export function saveState(state: PlannerState): void {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    // Reset transient fields — they're session-only.
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...state, hydrated: false, notice: null })
+    );
   } catch {
-    // Storage full or unavailable — fail silently; the in-memory state still works.
+    // Storage full or unavailable — fail silently; in-memory state still works.
   }
 }
 
-// Fill in any fields a stored blob might be missing (forward-compat safety).
-function hydrateMissing(s: PlannerState): PlannerState {
-  const base = createDefaultState();
-  return {
-    ...base,
-    ...s,
-    settings: { ...base.settings, ...s.settings },
-    reminderLines: s.reminderLines?.length ? s.reminderLines : base.reminderLines,
-    pleasureJoyPairs: s.pleasureJoyPairs?.length
-      ? s.pleasureJoyPairs
-      : base.pleasureJoyPairs,
-    days: s.days ?? base.days,
-    sosEvents: s.sosEvents ?? [],
-    templateOverrides: s.templateOverrides ?? {},
-  };
+// ── Backup / restore (shared schema with the standalone file) ────
+
+export function exportStateJson(state: PlannerState): string {
+  return JSON.stringify({ ...state, hydrated: false, notice: null }, null, 2);
 }
 
-function migrate(): PlannerState {
-  // No prior versions yet — start fresh but keep the door open.
-  return createDefaultState();
+/** Parse an imported backup; returns null if it isn't a planner backup. */
+export function importStateJson(raw: string): PlannerState | null {
+  try {
+    const parsed = JSON.parse(raw) as Partial<PlannerState>;
+    if (!parsed || typeof parsed !== "object") return null;
+    if (parsed.version !== 1 && parsed.version !== STATE_VERSION) return null;
+    if (!parsed.days || typeof parsed.days !== "object") return null;
+    return normalizeLoaded(parsed);
+  } catch {
+    return null;
+  }
 }
 
 // ── Day access ───────────────────────────────────────────────────
@@ -144,77 +281,4 @@ export function isDayClean(day: DayPlan | undefined): boolean {
   return day.blocks.every((b) => b.completed);
 }
 
-// ── Streak rollover (misses only; clean days are counted at completion) ──
-
-function dateAfter(dateStr: string): string {
-  const d = new Date(dateStr + "T12:00:00Z");
-  d.setUTCDate(d.getUTCDate() + 1);
-  return d.toISOString().slice(0, 10);
-}
-
-export interface ReconcileResult {
-  state: PlannerState;
-  notice: { kind: "protected" | "reset"; days: number } | null;
-}
-
-/**
- * Evaluate any past days that ended while unevaluated. Clean days were already
- * credited optimistically at completion; here we only handle misses, applying
- * grace-token forgiveness before resetting the streak.
- */
-export function reconcileStreak(state: PlannerState): ReconcileResult {
-  const today = istDateString();
-  let cursor = state.lastEvalDate ? dateAfter(state.lastEvalDate) : null;
-
-  // If we've never evaluated, only look back at days that actually exist.
-  if (!cursor) {
-    const past = Object.keys(state.days)
-      .filter((d) => d < today)
-      .sort();
-    if (past.length === 0) {
-      return { state: { ...state, lastEvalDate: yesterdayOf(today) }, notice: null };
-    }
-    cursor = past[0];
-  }
-
-  let next = { ...state };
-  let protectedDays = 0;
-  let resetHappened = false;
-
-  while (cursor < today) {
-    const day = next.days[cursor];
-    if (day && day.blocks.length > 0 && !isDayClean(day)) {
-      // A real miss.
-      if (next.graceRemaining >= 1) {
-        next = {
-          ...next,
-          graceRemaining: next.graceRemaining - 1,
-          cleanRunTowardToken: 0,
-        };
-        protectedDays += 1;
-      } else if (next.streak > 0) {
-        next = { ...next, streak: 0, cleanRunTowardToken: 0 };
-        resetHappened = true;
-      }
-    }
-    cursor = dateAfter(cursor);
-  }
-
-  next = { ...next, lastEvalDate: yesterdayOf(today) };
-
-  const notice = resetHappened
-    ? { kind: "reset" as const, days: 0 }
-    : protectedDays > 0
-      ? { kind: "protected" as const, days: protectedDays }
-      : null;
-
-  return { state: next, notice };
-}
-
-function yesterdayOf(dateStr: string): string {
-  const d = new Date(dateStr + "T12:00:00Z");
-  d.setUTCDate(d.getUTCDate() - 1);
-  return d.toISOString().slice(0, 10);
-}
-
-export { STORAGE_KEY };
+export { STORAGE_KEY, STATE_VERSION };

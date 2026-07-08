@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus, Undo2 } from "lucide-react";
 import type { Block, BlockType } from "./types";
-import type { ScheduledBlock } from "./util";
+import { makeId, type ScheduledBlock } from "./util";
 import BlockCard from "./BlockCard";
 
 export interface BlockListProps {
@@ -12,6 +12,7 @@ export interface BlockListProps {
   onStep: (id: string, delta: number) => void;
   onEditTitle: (id: string, title: string) => void;
   onSetType: (id: string, type: BlockType) => void;
+  onCycleGoal: (id: string) => void;
   onDelete: (id: string) => void;
   onRestore: (block: Block, index: number) => void;
   onReorder: (from: number, to: number) => void;
@@ -22,14 +23,21 @@ export interface BlockListProps {
 export default function BlockList(props: BlockListProps) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [overIndex, setOverIndex] = useState<number | null>(null);
-  const [undo, setUndo] = useState<{ block: Block; index: number } | null>(null);
+  // token uniquely identifies each undo instance so a stale timer from an
+  // earlier delete of the SAME block can't clear a newer toast.
+  const [undo, setUndo] = useState<{
+    block: Block;
+    index: number;
+    token: string;
+  } | null>(null);
   const [announce, setAnnounce] = useState("");
 
   function handleDelete(index: number, block: Block) {
     props.onDelete(block.id);
-    setUndo({ block, index });
+    const token = makeId("undo");
+    setUndo({ block, index, token });
     window.setTimeout(() => {
-      setUndo((u) => (u && u.block.id === block.id ? null : u));
+      setUndo((u) => (u && u.token === token ? null : u));
     }, 6000);
   }
 
@@ -61,6 +69,7 @@ export default function BlockList(props: BlockListProps) {
             onStep={(delta) => props.onStep(s.block.id, delta)}
             onEditTitle={(t) => props.onEditTitle(s.block.id, t)}
             onSetType={(t) => props.onSetType(s.block.id, t)}
+            onCycleGoal={() => props.onCycleGoal(s.block.id)}
             onDelete={() => handleDelete(i, s.block)}
             onMove={(dir) => handleMove(i, dir)}
             isDragging={dragIndex === i}
@@ -83,6 +92,28 @@ export default function BlockList(props: BlockListProps) {
             }}
           />
         ))}
+        {/* Trailing drop zone so a drag can land in the LAST position. */}
+        {dragIndex !== null && (
+          <li
+            aria-hidden
+            onDragOver={(e) => {
+              e.preventDefault();
+              setOverIndex(props.scheduled.length);
+            }}
+            onDrop={() => {
+              if (dragIndex !== null && dragIndex !== props.scheduled.length - 1) {
+                props.onReorder(dragIndex, props.scheduled.length);
+              }
+              setDragIndex(null);
+              setOverIndex(null);
+            }}
+            className={`h-8 rounded-lg border border-dashed transition-colors ${
+              overIndex === props.scheduled.length
+                ? "border-violet-500 bg-violet-500/10"
+                : "border-transparent"
+            }`}
+          />
+        )}
       </ul>
 
       <button

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Wind, PhoneCall, Sparkles, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Wind, PhoneCall, Sparkles, X, Check } from "lucide-react";
 import type { PleasureJoyPair, SosEvent } from "./types";
 import { SOS_LINE } from "./anchorContent";
 import { makeId } from "./util";
+import { useOverlay } from "./useOverlay";
 
 export interface SosOverlayProps {
   identityStatement: string;
@@ -16,18 +17,17 @@ export interface SosOverlayProps {
   onClose: () => void;
 }
 
-type Step = 0 | 1 | 2 | 3;
+type Step = 0 | 1 | 2 | 3 | 4; // 4 = neutral close after the one allowed loop
 
 export default function SosOverlay(props: SosOverlayProps) {
   const [step, setStep] = useState<Step>(0);
+  const [loops, setLoops] = useState(0);
   const [reachedPerson, setReachedPerson] = useState(false);
-  const closeRef = useRef<HTMLButtonElement>(null);
   const pair = props.pairs.length
     ? props.pairs[props.seedIndex % props.pairs.length]
     : undefined;
 
   useEffect(() => {
-    closeRef.current?.focus();
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
   }, []);
 
@@ -36,12 +36,14 @@ export default function SosOverlay(props: SosOverlayProps) {
       id: makeId("sos"),
       ts: new Date().toISOString(),
       triggerTag: null,
-      maxStepReached: step,
+      maxStepReached: Math.min(step, 3),
       reachedPerson,
       outcome,
     });
     props.onClose();
   }
+
+  const overlayRef = useOverlay(() => finish("abandoned"));
 
   return (
     <div
@@ -49,14 +51,13 @@ export default function SosOverlay(props: SosOverlayProps) {
       role="dialog"
       aria-modal="true"
       aria-label="Redirect"
-      onKeyDown={(e) => {
-        if (e.key === "Escape") finish("abandoned");
-      }}
     >
       <div className="absolute inset-0 bg-zinc-950/90 backdrop-blur-md" />
-      <div className="relative w-full max-w-md rounded-3xl border border-violet-700/40 bg-zinc-900 p-6 shadow-2xl animate-scale-in">
+      <div
+        ref={overlayRef}
+        className="relative w-full max-w-md rounded-3xl border border-violet-700/40 bg-zinc-900 p-6 shadow-2xl animate-scale-in"
+      >
         <button
-          ref={closeRef}
           onClick={() => finish("abandoned")}
           aria-label="Close"
           className="btn-press absolute top-4 right-4 text-zinc-500 hover:text-zinc-200"
@@ -181,12 +182,41 @@ export default function SosOverlay(props: SosOverlayProps) {
                 It passed
               </button>
               <button
-                onClick={() => setStep(0)}
+                onClick={() => {
+                  if (loops === 0) {
+                    setLoops(1);
+                    setStep(0);
+                  } else {
+                    setStep(4);
+                  }
+                }}
                 className="btn-press flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold rounded-xl py-3"
               >
                 Still here — again
               </button>
             </div>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="text-center">
+            <div className="mx-auto w-14 h-14 rounded-2xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center mb-4">
+              <Check size={26} className="text-violet-300" />
+            </div>
+            <h2 className="text-lg font-bold text-zinc-100 mb-2">
+              Logged. That&rsquo;s not nothing.
+            </h2>
+            <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+              You stood in it and reached for the tool twice — that&rsquo;s the
+              rep that rewires. Step away from the screen now; the feeling
+              finishes passing on its own.
+            </p>
+            <button
+              onClick={() => finish("escalated")}
+              className="btn-press w-full bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl py-3"
+            >
+              Close
+            </button>
           </div>
         )}
       </div>

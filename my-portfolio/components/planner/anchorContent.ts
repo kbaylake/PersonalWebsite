@@ -2,6 +2,7 @@ import type {
   ReminderLine,
   PleasureJoyPair,
   PlannerSettings,
+  GoalArea,
 } from "./types";
 
 // The spine — the self-image everything ladders up to (Maltz).
@@ -57,6 +58,14 @@ export const PLEASURE_JOY_PAIRS: PleasureJoyPair[] = [
     pleasure: "Performing for attention I don't even want.",
     joy: "Being present in my own life — solid, chosen, mine.",
   },
+];
+
+// The servo target — seeded at rating 5; the weekly check-in makes it his.
+export const DEFAULT_GOAL_AREAS: GoalArea[] = [
+  { id: "car", label: "The Car", rating: 5 },
+  { id: "engineer", label: "Top Agent Engineer", rating: 5 },
+  { id: "redirect", label: "Redirecting the Pull", rating: 5 },
+  { id: "presence", label: "Presence", rating: 5 },
 ];
 
 export const DEFAULT_SETTINGS: PlannerSettings = {

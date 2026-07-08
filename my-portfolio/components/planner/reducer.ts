@@ -3,22 +3,47 @@ import type {
   Block,
   BlockType,
   DayPlan,
+  GoalId,
   SosEvent,
   TomorrowPatch,
   PlannerSettings,
 } from "./types";
 import { istDateString, addDays, makeId } from "./util";
-import { seedDay, MAX_GRACE, TOKEN_REGEN_CLEAN_DAYS } from "./store";
-import { XP_PER_COMPLETE, SOS_XP, DEFAULT_DAY } from "./blockConfig";
+import {
+  seedDay,
+  ensureToday,
+  isDayClean,
+  MAX_GRACE,
+  TOKEN_REGEN_CLEAN_DAYS,
+} from "./store";
+import {
+  XP_PER_COMPLETE,
+  SOS_XP,
+  MIN_DURATION,
+  MAX_DURATION,
+  GOAL_CYCLE,
+  GOAL_META,
+  resolveBaselineDuration,
+} from "./blockConfig";
+import {
+  runDailyTick,
+  computeGoalWeights,
+  weakestGoal,
+  NUDGE_LOG_MAX,
+  LINE_WEIGHT_CAP,
+} from "./servo";
 
 export type Action =
   | { type: "HYDRATE"; state: PlannerState }
+  | { type: "ENSURE_TODAY" }
+  | { type: "IMPORT_STATE"; state: PlannerState }
   | { type: "SET_GOAL"; goal: string }
   | { type: "SET_DAY_START"; min: number }
   | { type: "TOGGLE_COMPLETE"; id: string }
   | { type: "STEP_DURATION"; id: string; delta: number }
   | { type: "EDIT_TITLE"; id: string; title: string }
   | { type: "SET_TYPE"; id: string; blockType: BlockType }
+  | { type: "SET_BLOCK_GOAL"; id: string }
   | { type: "ADD_BLOCK" }
   | { type: "DELETE_BLOCK"; id: string }
   | { type: "RESTORE_BLOCK"; block: Block; index: number }
@@ -27,15 +52,17 @@ export type Action =
   | { type: "ADD_CAPTURE"; text: string }
   | { type: "DELETE_CAPTURE"; id: string }
   | { type: "MARK_MORNING_DONE"; focus: string }
-  | { type: "MARK_PRESLEEP_DONE" }
+  | { type: "MARK_PRESLEEP_DONE"; note: string }
   | { type: "LOG_SOS"; event: SosEvent }
   | { type: "APPLY_TOMORROW"; patch: TomorrowPatch }
   | { type: "REFLECT_YESTERDAY"; date: string; ranLongTitles: string[] }
   | { type: "DISMISS_DAY"; date: string }
   | { type: "DISMISS_NOTICE" }
+  | { type: "RATE_GOALS"; ratings: Record<GoalId, number> }
+  | { type: "DISMISS_CHECKIN" }
+  | { type: "MARK_RESONANCE"; lineId: string }
+  | { type: "RECORD_SHOWN_LINE"; lineId: string }
   | { type: "UPDATE_SETTINGS"; partial: Partial<PlannerSettings> };
-
-const MAX_DURATION = 480;
 
 function today(): string {
   return istDateString();
@@ -56,10 +83,75 @@ function mapBlocks(day: DayPlan, fn: (b: Block) => Block): DayPlan {
   return { ...day, blocks: day.blocks.map(fn) };
 }
 
+/**
+ * Keep the optimistic streak credit symmetric with the day's ACTUAL
+ * cleanliness after ANY block mutation (toggle, add, delete, restore).
+ * Fixes the confirmed v1 desyncs: adding a block after full completion
+ * left phantom credit; deleting the last incomplete block granted none.
+ */
+function syncCleanCredit(state: PlannerState, key: string): PlannerState {
+  const day = state.days[key];
+  const cleanNow = isDayClean(day);
+  const wasCounted = state.lastAllCompleteDate === key;
+
+  if (cleanNow === wasCounted) return state;
+
+  let {
+    streak,
+    lifetimeCleanDays,
+    cleanRunTowardToken,
+    graceRemaining,
+    lastAllCompleteDate,
+  } = state;
+
+  if (cleanNow && !wasCounted) {
+    streak += 1;
+    lifetimeCleanDays += 1;
+    cleanRunTowardToken += 1;
+    if (
+      cleanRunTowardToken >= TOKEN_REGEN_CLEAN_DAYS &&
+      graceRemaining < MAX_GRACE
+    ) {
+      graceRemaining += 1;
+      cleanRunTowardToken -= TOKEN_REGEN_CLEAN_DAYS;
+    }
+    lastAllCompleteDate = key;
+  } else {
+    streak = Math.max(0, streak - 1);
+    lifetimeCleanDays = Math.max(0, lifetimeCleanDays - 1);
+    cleanRunTowardToken = Math.max(0, cleanRunTowardToken - 1);
+    lastAllCompleteDate = null;
+  }
+
+  return {
+    ...state,
+    streak,
+    lifetimeCleanDays,
+    cleanRunTowardToken,
+    graceRemaining,
+    lastAllCompleteDate,
+  };
+}
+
+/** Seed today if missing, then run the daily servo tick (idempotent). */
+function ensureAndTick(state: PlannerState): PlannerState {
+  const ensured = ensureToday(state).state;
+  const { state: ticked, notice } = runDailyTick(ensured, today());
+  return notice ? { ...ticked, notice } : ticked;
+}
+
 export function reducer(state: PlannerState, action: Action): PlannerState {
   switch (action.type) {
     case "HYDRATE":
-      return action.state;
+    case "IMPORT_STATE":
+      return { ...ensureAndTick(action.state), hydrated: true };
+
+    case "ENSURE_TODAY": {
+      // No-op fast path so the minute interval doesn't churn renders.
+      const key = today();
+      if (state.days[key] && state.lastEvalDate === addDays(key, -1)) return state;
+      return ensureAndTick(state);
+    }
 
     case "DISMISS_NOTICE":
       return { ...state, notice: null };
@@ -78,7 +170,7 @@ export function reducer(state: PlannerState, action: Action): PlannerState {
                 ...b,
                 durationMin: Math.min(
                   MAX_DURATION,
-                  Math.max(15, b.durationMin + action.delta)
+                  Math.max(MIN_DURATION, b.durationMin + action.delta)
                 ),
               }
             : b
@@ -99,35 +191,51 @@ export function reducer(state: PlannerState, action: Action): PlannerState {
         )
       );
 
-    case "ADD_BLOCK":
-      return withToday(state, (d) => ({
+    case "SET_BLOCK_GOAL":
+      return withToday(state, (d) =>
+        mapBlocks(d, (b) => {
+          if (b.id !== action.id) return b;
+          const i = GOAL_CYCLE.indexOf(b.goal);
+          return { ...b, goal: GOAL_CYCLE[(i + 1) % GOAL_CYCLE.length] };
+        })
+      );
+
+    case "ADD_BLOCK": {
+      const next = withToday(state, (d) => ({
         ...d,
         blocks: [
           ...d.blocks,
           {
             id: makeId(),
-            type: "work",
+            type: "work" as BlockType,
             title: "New block",
             durationMin: 30,
             completed: false,
             completedAt: null,
+            goal: null,
           },
         ],
       }));
+      return syncCleanCredit(next, today());
+    }
 
-    case "DELETE_BLOCK":
-      return withToday(state, (d) => ({
+    case "DELETE_BLOCK": {
+      const next = withToday(state, (d) => ({
         ...d,
         blocks: d.blocks.filter((b) => b.id !== action.id),
       }));
+      return syncCleanCredit(next, today());
+    }
 
-    case "RESTORE_BLOCK":
-      return withToday(state, (d) => {
+    case "RESTORE_BLOCK": {
+      const next = withToday(state, (d) => {
         const blocks = [...d.blocks];
         const idx = Math.min(Math.max(0, action.index), blocks.length);
         blocks.splice(idx, 0, action.block);
         return { ...d, blocks };
       });
+      return syncCleanCredit(next, today());
+    }
 
     case "REORDER":
       return withToday(state, (d) => {
@@ -174,7 +282,51 @@ export function reducer(state: PlannerState, action: Action): PlannerState {
       }));
 
     case "MARK_PRESLEEP_DONE":
-      return withToday(state, (d) => ({ ...d, preSleepDone: true }));
+      return withToday(state, (d) => ({
+        ...d,
+        preSleepDone: true,
+        note: action.note || d.note,
+      }));
+
+    case "RECORD_SHOWN_LINE":
+      return withToday(state, (d) => {
+        if (d.shownLineIds.includes(action.lineId)) return d;
+        return {
+          ...d,
+          shownLineIds: [...d.shownLineIds, action.lineId].slice(-4),
+        };
+      });
+
+    case "MARK_RESONANCE": {
+      const key = today();
+      const day = state.days[key];
+      if (!day || day.resonanceLineId) return state; // write-once per day
+      const line = state.reminderLines.find((l) => l.id === action.lineId);
+      if (!line) return state;
+      return {
+        ...state,
+        days: {
+          ...state.days,
+          [key]: { ...day, resonanceLineId: action.lineId },
+        },
+        lineWeights: {
+          ...state.lineWeights,
+          [action.lineId]: Math.min(
+            LINE_WEIGHT_CAP,
+            (state.lineWeights[action.lineId] ?? 1) + 1
+          ),
+        },
+        nudges: [
+          ...state.nudges,
+          {
+            id: makeId("nudge"),
+            date: key,
+            kind: "line_resonance" as const,
+            text: `"${line.text}" carried you today — it'll show up a bit more often.`,
+          },
+        ].slice(-NUDGE_LOG_MAX),
+      };
+    }
 
     case "LOG_SOS": {
       const bonus = action.event.outcome === "passed" ? SOS_XP : 0;
@@ -191,6 +343,50 @@ export function reducer(state: PlannerState, action: Action): PlannerState {
     case "APPLY_TOMORROW":
       return applyTomorrow(state, action.patch);
 
+    case "REFLECT_YESTERDAY":
+      return reflectYesterday(state, action.date, action.ranLongTitles);
+
+    case "DISMISS_DAY": {
+      const day = state.days[action.date];
+      if (!day) return state;
+      return {
+        ...state,
+        days: { ...state.days, [action.date]: { ...day, reflected: true } },
+      };
+    }
+
+    case "RATE_GOALS": {
+      const key = today();
+      const goalAreas = state.goalAreas.map((g) => ({
+        ...g,
+        rating: Math.min(10, Math.max(1, action.ratings[g.id] ?? g.rating)),
+      }));
+      const interim = { ...state, goalAreas, lastCheckinDate: key };
+      const goalWeights = computeGoalWeights(interim, key);
+      const weakest = weakestGoal(goalWeights);
+      const nudges =
+        state.lastWeakestGoal && weakest !== state.lastWeakestGoal
+          ? [
+              ...state.nudges,
+              {
+                id: makeId("nudge"),
+                date: key,
+                kind: "weight_shift" as const,
+                text: `Growth edge moved from ${GOAL_META[state.lastWeakestGoal].label} to ${GOAL_META[weakest].label} — reminders and rituals now lean that way.`,
+              },
+            ].slice(-NUDGE_LOG_MAX)
+          : state.nudges;
+      return {
+        ...interim,
+        goalWeights,
+        lastWeakestGoal: weakest,
+        nudges,
+      };
+    }
+
+    case "DISMISS_CHECKIN":
+      return { ...state, lastCheckinDate: today() };
+
     case "UPDATE_SETTINGS":
       return {
         ...state,
@@ -201,26 +397,12 @@ export function reducer(state: PlannerState, action: Action): PlannerState {
         },
       };
 
-    case "REFLECT_YESTERDAY":
-      return reflectYesterday(state, action.date, action.ranLongTitles);
-
-    case "DISMISS_DAY":
-      return {
-        ...state,
-        days: state.days[action.date]
-          ? {
-              ...state.days,
-              [action.date]: { ...state.days[action.date], reflected: true },
-            }
-          : state.days,
-      } as PlannerState;
-
     default:
       return state;
   }
 }
 
-// ── Completion with XP + optimistic streak ───────────────────────
+// ── Completion with XP + symmetric streak credit ─────────────────
 
 function toggleComplete(state: PlannerState, id: string): PlannerState {
   const key = today();
@@ -240,61 +422,31 @@ function toggleComplete(state: PlannerState, id: string): PlannerState {
         }
       : b
   );
-  const newDay: DayPlan = { ...day, blocks };
 
-  const xp = Math.max(
-    0,
-    state.xp + (nowCompleted ? XP_PER_COMPLETE : -XP_PER_COMPLETE)
-  );
-
-  const wasCounted = state.lastAllCompleteDate === key;
-  const cleanNow = blocks.length > 0 && blocks.every((b) => b.completed);
-
-  let {
-    streak,
-    lifetimeCleanDays,
-    cleanRunTowardToken,
-    graceRemaining,
-    lastAllCompleteDate,
-  } = state;
-
-  if (cleanNow && !wasCounted) {
-    streak += 1;
-    lifetimeCleanDays += 1;
-    cleanRunTowardToken += 1;
-    if (cleanRunTowardToken >= TOKEN_REGEN_CLEAN_DAYS && graceRemaining < MAX_GRACE) {
-      graceRemaining += 1;
-      cleanRunTowardToken -= TOKEN_REGEN_CLEAN_DAYS;
-    }
-    lastAllCompleteDate = key;
-  } else if (!cleanNow && wasCounted) {
-    streak = Math.max(0, streak - 1);
-    lifetimeCleanDays = Math.max(0, lifetimeCleanDays - 1);
-    cleanRunTowardToken = Math.max(0, cleanRunTowardToken - 1);
-    lastAllCompleteDate = null;
-  }
-
-  return {
+  const next: PlannerState = {
     ...state,
-    xp,
-    streak,
-    lifetimeCleanDays,
-    cleanRunTowardToken,
-    graceRemaining,
-    lastAllCompleteDate,
-    days: { ...state.days, [key]: newDay },
+    xp: Math.max(
+      0,
+      state.xp + (nowCompleted ? XP_PER_COMPLETE : -XP_PER_COMPLETE)
+    ),
+    days: { ...state.days, [key]: { ...day, blocks } },
   };
+
+  return syncCleanCredit(next, key);
 }
 
-// ── Apply Claude's tomorrow patch ────────────────────────────────
+// ── Apply Claude's tomorrow patch (one-day emphasis, always logged) ──
 
 function applyTomorrow(state: PlannerState, patch: TomorrowPatch): PlannerState {
-  const tomorrow = addDays(today(), 1);
+  const key = today();
+  const tomorrow = addDays(key, 1);
   const base =
     state.days[tomorrow] ??
     seedDay(tomorrow, state.settings.dayStartMin, state.templateOverrides);
 
   let day: DayPlan = { ...base };
+  const next: PlannerState = state;
+  const applied: string[] = [];
 
   if (patch.blocks && patch.blocks.length > 0) {
     day = {
@@ -306,37 +458,64 @@ function applyTomorrow(state: PlannerState, patch: TomorrowPatch): PlannerState 
         durationMin: b.durationMin,
         completed: false,
         completedAt: null,
+        goal: null,
       })),
     };
+    applied.push(`${patch.blocks.length} blocks`);
   }
-  if (patch.focus) day = { ...day, goal: patch.focus };
+  if (patch.focus) {
+    day = { ...day, goal: patch.focus };
+    applied.push("focus");
+  }
 
-  let reminderLines = state.reminderLines;
+  let reminderLines = next.reminderLines;
+  let lineWeights = next.lineWeights;
   if (patch.presleepAffirmation) {
-    const exists = reminderLines.some(
-      (l) => l.text === patch.presleepAffirmation
-    );
+    const exists = reminderLines.some((l) => l.text === patch.presleepAffirmation);
     if (!exists) {
+      const newId = makeId("line");
       reminderLines = [
-        { id: makeId("line"), text: patch.presleepAffirmation, category: "identity" },
+        {
+          id: newId,
+          text: patch.presleepAffirmation,
+          category: patch.weightGoal ?? "identity",
+        },
         ...reminderLines,
       ];
+      lineWeights = { ...lineWeights, [newId]: 3 }; // surfaces quickly, still capped
+      applied.push("a fresh affirmation");
     }
   }
 
-  const settings = patch.weightGoal
-    ? { ...state.settings, weightGoal: patch.weightGoal }
-    : state.settings;
+  let claudeEmphasis = next.claudeEmphasis;
+  let nudges = next.nudges;
+  if (patch.weightGoal) {
+    claudeEmphasis = { category: patch.weightGoal, date: tomorrow };
+    applied.push(`emphasis on ${patch.weightGoal}`);
+  }
+  if (applied.length) {
+    nudges = [
+      ...nudges,
+      {
+        id: makeId("nudge"),
+        date: key,
+        kind: "claude_emphasis" as const,
+        text: `From tonight's Claude session: applied ${applied.join(", ")} for tomorrow.`,
+      },
+    ].slice(-NUDGE_LOG_MAX);
+  }
 
   return {
-    ...state,
-    settings,
+    ...next,
     reminderLines,
-    days: { ...state.days, [tomorrow]: day },
+    lineWeights,
+    claudeEmphasis,
+    nudges,
+    days: { ...next.days, [tomorrow]: day },
   };
 }
 
-// ── Reflection → duration learning ───────────────────────────────
+// ── Reflection → duration growth (user-initiated, logged) ────────
 
 function reflectYesterday(
   state: PlannerState,
@@ -345,19 +524,32 @@ function reflectYesterday(
 ): PlannerState {
   const day = state.days[date];
   const overrides = { ...state.templateOverrides };
+  const titleNudgeDates = { ...state.titleNudgeDates };
+  const nudges = [...state.nudges];
+  const key = today();
 
   for (const title of ranLongTitles) {
     const current =
       overrides[title] ??
       day?.blocks.find((b) => b.title === title)?.durationMin ??
-      DEFAULT_DAY.find((t) => t.title === title)?.durationMin ??
-      30;
-    overrides[title] = Math.min(MAX_DURATION, current + 15);
+      resolveBaselineDuration(title, overrides);
+    const grown = Math.min(MAX_DURATION, current + 15);
+    if (grown === current) continue;
+    overrides[title] = grown;
+    titleNudgeDates[title] = key; // auto-trim won't fight a fresh grow
+    nudges.push({
+      id: makeId("nudge"),
+      date: key,
+      kind: "duration_grow",
+      text: `"${title}" ran long — grew ${current}m → ${grown}m to match how it actually goes.`,
+    });
   }
 
   return {
     ...state,
     templateOverrides: overrides,
+    titleNudgeDates,
+    nudges: nudges.slice(-NUDGE_LOG_MAX),
     days: day
       ? { ...state.days, [date]: { ...day, reflected: true } }
       : state.days,

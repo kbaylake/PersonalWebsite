@@ -8,6 +8,30 @@ export type BlockType =
   | "leisure"
   | "sleep";
 
+// ── The servo target: the four goal areas ────────────────────────
+
+export type GoalId = "car" | "engineer" | "redirect" | "presence";
+
+export interface GoalArea {
+  id: GoalId;
+  label: string;
+  rating: number; // 1-10 weekly self-rating — the explicit Maltz gap
+}
+
+export type NudgeKind =
+  | "duration_trim"
+  | "duration_grow"
+  | "weight_shift"
+  | "line_resonance"
+  | "claude_emphasis";
+
+export interface NudgeLogEntry {
+  id: string;
+  date: string; // IST date the nudge was applied
+  kind: NudgeKind;
+  text: string; // human-readable reason — this IS the training log
+}
+
 export interface Block {
   id: string;
   type: BlockType;
@@ -15,6 +39,7 @@ export interface Block {
   durationMin: number;
   completed: boolean;
   completedAt: string | null;
+  goal: GoalId | null; // tap-to-cycle chip; null = untagged
 }
 
 export interface CaptureEntry {
@@ -32,6 +57,9 @@ export interface DayPlan {
   reflected: boolean;
   morningPrimeDone: boolean;
   preSleepDone: boolean;
+  note: string; // pre-sleep reflection — persisted, quoted back next morning
+  shownLineIds: string[]; // lines the IdentityBar actually rendered today (cap 4)
+  resonanceLineId: string | null; // "which line carried you" — write-once per day
 }
 
 export type ReminderCategory =
@@ -70,7 +98,7 @@ export interface PlannerSettings {
   contactName: string;
   contactPhone: string;
   georgiaName: string;
-  weightGoal: ReminderCategory | null;
+  weightGoal: ReminderCategory | null; // transient one-day Claude override; cleared at next tick
   car: {
     label: string;
     line: string; // present-tense ownership line
@@ -80,21 +108,32 @@ export interface PlannerSettings {
 
 export interface PlannerState {
   version: number;
-  hydrated: boolean; // true once loaded from storage + reconciled (not persisted-critical)
-  notice: { kind: "protected" | "reset"; days: number } | null;
+  hydrated: boolean; // transient — stripped before persisting
+  notice: { kind: "protected" | "reset"; days: number } | null; // transient
   xp: number;
   streak: number;
   graceRemaining: number;
   cleanRunTowardToken: number;
   lifetimeCleanDays: number;
   lastAllCompleteDate: string | null;
-  lastEvalDate: string | null; // last date streak-rollover was run for
+  lastEvalDate: string | null; // last date the daily servo tick evaluated
   templateOverrides: Record<string, number>; // block title → learned duration
   days: Record<string, DayPlan>;
   settings: PlannerSettings;
   reminderLines: ReminderLine[];
   pleasureJoyPairs: PleasureJoyPair[];
   sosEvents: SosEvent[];
+  // ── v2 servo state ──
+  goalAreas: GoalArea[];
+  goalWeights: Record<GoalId, number>; // normalized, sums to 1; recomputed at tick + check-in
+  lastWeakestGoal: GoalId | null;
+  lastCheckinDate: string | null; // null = check-in due (first-run baseline)
+  alignment: Record<string, number>; // date → finalized 0-100 (today never stored)
+  nudges: NudgeLogEntry[]; // ring buffer, most recent last, cap 30
+  lineWeights: Record<string, number>; // lineId → 1..6 resonance weight
+  titleStats: Record<string, ("done" | "miss")[]>; // rolling last-7 outcomes per template title
+  titleNudgeDates: Record<string, string>; // title → date of last auto duration nudge
+  claudeEmphasis: { category: ReminderCategory; date: string } | null; // one-day override from the bridge
 }
 
 // The strictly-validated shape a pasted `planner` block from Claude may contain.

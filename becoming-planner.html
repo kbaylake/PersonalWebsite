@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  BECOMING — daily planner + identity anchor (standalone edition)
+  ═══════════════════════════════════════════════════════════════════
+
+  HOW TO USE THIS FILE
+  1. Save it anywhere on your computer or phone.
+  2. Open it in any modern browser (double-click, or "Open with…").
+  3. That's it. No internet, no account, no install. Everything you do
+     is saved in this browser, on this device, and never leaves it.
+
+  TIPS
+  • Bookmark the open tab (or "Add to Home Screen" on a phone) so it's
+    one tap away.
+  • Your data lives in this browser's storage. Use Settings → Export
+    backup regularly. The backup file also imports into the hosted
+    planner on your website, and vice-versa.
+  • Press the ? button in the app for the full plain-language manual.
+
+  Built on the methods of Joseph Murphy (The Power of Your Subconscious
+  Mind), Maxwell Maltz (Psycho-Cybernetics) and Joe Dispenza (Becoming
+  Supernatural): a target self-image, daily impression, and a servo
+  that measures the gap and makes small automatic corrections — every
+  one of them visible in the training log. Nothing changes silently.
+  ═══════════════════════════════════════════════════════════════════
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Becoming — Daily Planner</title>
+<style>
+  :root {
+    --bg: #09090b; --card: #131316; --card2: #18181b;
+    --border: #27272a; --border-soft: #1f1f23;
+    --text: #f4f4f5; --text2: #a1a1aa; --text3: #71717a; --text4: #52525b;
+    --violet: #8b5cf6; --violet-soft: #a78bfa; --violet-dim: rgba(139,92,246,.14);
+    --fuchsia: #d946ef;
+    --blue: #60a5fa; --amber: #fbbf24; --cyan: #22d3ee;
+    --emerald: #34d399; --rose: #fb7185; --slate: #94a3b8;
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { color-scheme: dark; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.5;
+    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom));
+  }
+  #app { max-width: 42rem; margin: 0 auto; padding: 0 1rem; }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  button:active { transform: scale(.97); }
+  input, textarea, select { font: inherit; color: var(--text); background: rgba(9,9,11,.6);
+    border: 1px solid var(--border); border-radius: 12px; padding: .5rem .75rem; outline: none; width: 100%; }
+  input:focus, textarea:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(139,92,246,.18); }
+  input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--violet); cursor: pointer; flex: none; }
+  input[type=range] { accent-color: var(--violet); padding: 0; border: none; background: transparent; box-shadow: none; }
+  input[type=time] { width: auto; }
+
+  .card { background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius); padding: 1rem; }
+  .row { display: flex; align-items: center; gap: .5rem; }
+  .muted { color: var(--text2); } .dim { color: var(--text3); } .tiny { font-size: 12px; } .micro { font-size: 11px; }
+  .bold { font-weight: 700; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--text3); margin-bottom: .35rem; }
+  .btn { border-radius: 12px; padding: .6rem 1rem; font-weight: 600; font-size: 14px; }
+  .btn-primary { background: var(--violet); color: #fff; }
+  .btn-primary:hover { background: #7c3aed; }
+  .btn-ghost { border: 1px solid var(--border); color: var(--text2); }
+  .btn-ghost:hover { border-color: var(--violet); color: var(--text); }
+  .chip { display: inline-flex; align-items: center; gap: .3rem; border-radius: 999px; padding: .15rem .6rem; font-size: 11px; font-weight: 600; border: 1px solid var(--border); }
+  .dot { width: 7px; height: 7px; border-radius: 999px; flex: none; }
+
+  /* identity bar */
+  #identity {
+    position: sticky; top: 0; z-index: 30;
+    margin: 0 -1rem; padding: .8rem 1rem .7rem;
+    background: linear-gradient(to bottom, var(--bg) 55%, rgba(9,9,11,.86));
+    backdrop-filter: blur(8px); border-bottom: 1px solid rgba(76,29,149,.35);
+  }
+  #identity .statement { font-size: 14px; font-weight: 600; line-height: 1.4; }
+  #identity .line { margin-top: .35rem; font-size: 14px; font-style: italic; color: var(--violet-soft); animation: fadeup .5s ease; }
+  #identity .cat { font-style: normal; font-size: 10px; text-transform: uppercase; letter-spacing: .1em; color: rgba(167,139,250,.55); margin-left: .5rem; }
+
+  .now-card { border-radius: var(--radius); padding: 1.1rem; border: 1px solid; }
+  .now-morning { border-color: rgba(180,83,9,.5); background: rgba(69,26,3,.28); }
+  .now-evening { border-color: rgba(71,85,105,.55); background: rgba(15,23,42,.45); }
+  .now-block   { border-color: rgba(91,33,182,.5); background: rgba(46,16,101,.22); }
+
+  .ritual-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  .ritual { display: flex; align-items: center; justify-content: center; gap: .45rem;
+    border-radius: 14px; border: 1px solid var(--border); padding: .7rem; font-size: 12.5px; font-weight: 600; color: var(--text2); background: rgba(24,24,27,.4); }
+  .ritual.hot-am { border-color: rgba(180,83,9,.5); background: rgba(69,26,3,.3); color: #fcd34d; }
+  .ritual.hot-pm { border-color: rgba(71,85,105,.6); background: rgba(15,23,42,.5); color: #cbd5e1; }
+  .ritual.done { color: var(--text3); }
+
+  /* blocks */
+  .block { display: flex; gap: .7rem; align-items: flex-start; border-radius: 14px; border: 1px solid var(--border-soft);
+    padding: .7rem .8rem; background: var(--card); border-left: 4px solid var(--border); transition: opacity .2s; }
+  .block.done { opacity: .55; }
+  .block.done .btitle { text-decoration: line-through; }
+  .bctl { display: flex; gap: .25rem; align-items: center; flex-wrap: wrap; margin-top: .4rem; }
+  .bctl button { border: 1px solid var(--border); border-radius: 8px; padding: .15rem .5rem; font-size: 11.5px; color: var(--text2); }
+  .bctl button:hover { border-color: var(--violet); color: var(--text); }
+  .btitle { font-weight: 600; font-size: 14.5px; cursor: text; }
+  .btime { font-size: 12px; color: var(--text3); }
+
+  .bar-track { height: 8px; border-radius: 999px; background: #26262b; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(to right, var(--violet), var(--fuchsia)); transition: width .4s; }
+
+  /* overlays */
+  #overlays:empty { display: none; }
+  .ovl { position: fixed; inset: 0; z-index: 70; display: flex; align-items: flex-end; justify-content: center; padding: 1rem; }
+  @media (min-width: 640px) { .ovl { align-items: center; } }
+  .ovl-bg { position: absolute; inset: 0; background: rgba(9,9,11,.82); backdrop-filter: blur(4px); }
+  .ovl-panel { position: relative; width: 100%; max-width: 28rem; max-height: 88vh; overflow-y: auto;
+    background: #101013; border: 1px solid rgba(91,33,182,.45); border-radius: 20px; padding: 1.25rem; animation: pop .18s ease; }
+  .ovl-title { font-size: 16px; font-weight: 700; }
+  .xbtn { color: var(--text3); font-size: 20px; line-height: 1; padding: .25rem .5rem; }
+  .xbtn:hover { color: var(--text); }
+
+  .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(5.2rem + env(safe-area-inset-bottom));
+    z-index: 60; background: rgba(24,24,27,.97); border: 1px solid var(--border); border-radius: 999px;
+    padding: .55rem 1rem; font-size: 12.5px; display: flex; gap: .6rem; align-items: center;
+    max-width: 92vw; box-shadow: 0 8px 30px rgba(0,0,0,.5); animation: pop .18s ease; }
+  .toast .undo { color: var(--violet-soft); font-weight: 700; }
+
+  #sosbtn { position: fixed; right: 1rem; bottom: calc(1rem + env(safe-area-inset-bottom)); z-index: 40;
+    background: var(--violet); color: #fff; font-weight: 700; font-size: 14px; border-radius: 999px;
+    padding: .8rem 1.25rem; box-shadow: 0 10px 30px rgba(91,33,182,.45); }
+  #sosbtn:hover { background: #7c3aed; }
+
+  .notice { border-radius: 12px; padding: .6rem .8rem; font-size: 12.5px; display: flex; gap: .5rem; align-items: flex-start; }
+  .notice.protected { background: rgba(6,78,59,.3); border: 1px solid rgba(6,95,70,.6); color: #a7f3d0; }
+  .notice.reset { background: rgba(69,26,3,.3); border: 1px solid rgba(120,53,15,.6); color: #fcd34d; }
+
+  .celebrate { position: fixed; inset: 0; z-index: 65; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .celebrate .inner { pointer-events: auto; text-align: center; max-width: 20rem;
+    background: linear-gradient(135deg, rgba(76,29,149,.95), rgba(112,26,117,.9));
+    border: 1px solid rgba(139,92,246,.5); border-radius: 24px; padding: 1.6rem 1.8rem; animation: pop .25s ease; cursor: pointer; }
+
+  .goalbar { height: 8px; border-radius: 999px; background: #26262b; position: relative; overflow: visible; }
+  .goalbar .fill { height: 100%; border-radius: 999px; }
+  .goalbar .mark { position: absolute; top: -2px; width: 2.5px; height: 12px; background: #fff; border-radius: 2px; opacity: .85; }
+
+  .steps { display: flex; gap: .3rem; margin-bottom: .9rem; }
+  .steps span { flex: 1; height: 4px; border-radius: 999px; background: #2a2a30; }
+  .steps span.on { background: var(--violet); }
+
+  .helpsec h3 { font-size: 13.5px; font-weight: 700; color: var(--violet-soft); margin: 1rem 0 .3rem; }
+  .helpsec p, .helpsec li { font-size: 13px; color: var(--text2); }
+  .helpsec ul { padding-left: 1.1rem; margin: .25rem 0; }
+  .helpsec b { color: var(--text); }
+
+  @keyframes pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: scale(1); } }
+  @keyframes fadeup { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<noscript><p style="padding:2rem;text-align:center">This planner needs JavaScript. Enable it (or open the file in a normal browser) and reload.</p></noscript>
+<div id="app"></div>
+<div id="overlays"></div>
+<div id="toasts"></div>
+<script>
+"use strict";
+/* ════════════════════════════════════════════════════════════════
+   1 · CONSTANTS + ANCHOR CONTENT  (mirrors the hosted planner v2)
+   ════════════════════════════════════════════════════════════════ */
+const STORAGE_KEY = "planner_state_v1";      // same key + schema as the website
+const STATE_VERSION = 2;
+const ONBOARD_KEY = "becoming_onboarded_v1";
+const NOTIFY_KEY  = "becoming_notify";
+
+const MAX_GRACE = 1, TOKEN_REGEN_CLEAN_DAYS = 7;
+const XP_PER_COMPLETE = 10, XP_PER_LEVEL = 100, SOS_XP = 5;
+const MIN_DURATION = 15, MAX_DURATION = 480;
+
+// servo gains — small, capped, rate-limited (Psycho-Cybernetics, mechanized)
+const ALIGN_COMPLETION_WEIGHT = 80, ALIGN_MORNING_WEIGHT = 10, ALIGN_PRESLEEP_WEIGHT = 10;
+const ALIGN_SOS_BONUS_PER_EVENT = 5, ALIGN_SOS_BONUS_CAP = 10;
+const MISS_RATE_WINDOW_DAYS = 7, GOAL_SOS_SIGNAL_PER_EVENT = 2, GOAL_SOS_SIGNAL_CAP = 10, WEIGHT_SMOOTHING = 1;
+const CHRONIC_MISS_MIN_SAMPLES = 5, CHRONIC_MISS_RATE_THRESHOLD = 0.6;
+const DURATION_NUDGE_STEP = 15, DURATION_NUDGE_COOLDOWN_DAYS = 5;
+const TICKET_BASE = 2, TICKET_GOAL_SCALE = 10, TICKET_EMPHASIS_BONUS = 5;
+const LINE_WEIGHT_CAP = 6, IDENTITY_GOAL_WEIGHT_EQUIV = 0.25;
+const NUDGE_LOG_MAX = 30, CHECKIN_INTERVAL_DAYS = 7, TITLE_STATS_WINDOW = 7;
+
+const IDENTITY_STATEMENT = "I am the man who keeps his word to himself — focused at his work, present with his people, devoted in his heart, and already the owner of the life he's building.";
+
+const REMINDER_LINES = [
+  { id: "id-1", text: "I act now the way I will when the work and the person I'm waiting for are already here.", category: "identity" },
+  { id: "id-2", text: "I keep my word to myself first — that's the whole game.", category: "identity" },
+  { id: "id-3", text: "I finish what I start. I'm someone worth betting on.", category: "identity" },
+  { id: "car-1", text: "I own my MK3 Octavia — I can feel the wheel in my hands.", category: "car" },
+  { id: "car-2", text: "The deal closes at 6.50; I stay open and the downpayment finds its way to me.", category: "car" },
+  { id: "car-3", text: "The car is already mine. The last 5% is just permission I give myself.", category: "car" },
+  { id: "foc-1", text: "I do deep, undistracted work like the top agent engineer I'm becoming.", category: "focus" },
+  { id: "foc-2", text: "I close the tab and go one level deeper — my future is built in this hour.", category: "focus" },
+  { id: "foc-3", text: "Hard work isn't the rat race; purposeless work is. Mine has a purpose.", category: "focus" },
+  { id: "dev-1", text: "I build a life worth being devoted to, so when she's here I'm already ready.", category: "devotion" },
+  { id: "dev-2", text: "I become the man she'll know on sight — I feel it in my skin.", category: "devotion" },
+  { id: "dev-3", text: "I don't chase the feeling from a screen; I earn the real thing by living well now.", category: "devotion" },
+  { id: "pre-1", text: "I put the phone down and look up — the people in front of me are the point.", category: "presence" },
+  { id: "pre-2", text: "Grounded connection over a glowing screen. Every time.", category: "presence" },
+  { id: "dis-1", text: "I spend on purpose and I save on purpose — every rupee has a job.", category: "discipline" },
+  { id: "dis-2", text: "I do the boring rep because it's mine to do.", category: "discipline" },
+];
+
+const PLEASURE_JOY_PAIRS = [
+  { id: "pj-1", pleasure: "Porn — a spike that has to double next time and leaves me emptier.", joy: "Devotion — presence with someone real, a feeling that compounds and stays in my skin." },
+  { id: "pj-2", pleasure: "Endless reels — a numb scroll I won't remember tomorrow.", joy: "The game / work I love — a flow I'm proud of that builds on itself." },
+  { id: "pj-3", pleasure: "Aimless noise and chit-chat — busy, forgettable, going nowhere.", joy: "Purposeful work — the effort that becomes the car and the career." },
+  { id: "pj-4", pleasure: "Performing for attention I don't even want.", joy: "Being present in my own life — solid, chosen, mine." },
+];
+
+const DEFAULT_GOAL_AREAS = [
+  { id: "car", label: "The Car", rating: 5 },
+  { id: "engineer", label: "Top Agent Engineer", rating: 5 },
+  { id: "redirect", label: "Redirecting the Pull", rating: 5 },
+  { id: "presence", label: "Presence", rating: 5 },
+];
+
+const DEFAULT_SETTINGS = {
+  identityStatement: IDENTITY_STATEMENT,
+  dayStartMin: 6 * 60,
+  reminderCadenceMin: 120,
+  contactName: "", contactPhone: "", georgiaName: "Georgia",
+  weightGoal: null,
+  car: { label: "MK3 Skoda Octavia", line: "I own my MK3 Skoda Octavia.", numbers: "6.50L · ₹2L down · collect the week after Pune" },
+};
+
+const MORNING_STEPS = [
+  { title: "Read who I am", body: null, seconds: 15 }, // body = identity statement at runtime
+  { title: "Rehearse the day", body: "See it done: the deep-work session landing, the drive in the Octavia, the evening present with people. Watch the man you're becoming run today.", seconds: 45 },
+  { title: "Feel it now", body: "Hold the gratitude and quiet pride of it being already true. Let it land in your chest, not your head.", seconds: 45 },
+  { title: "Breathe it in", body: "Four slow breaths. In through the nose, out slow. Seal the state.", seconds: 30 },
+];
+
+const PRESLEEP_STEPS = [
+  { title: "The day was feedback, not a verdict", body: "Whatever missed is course-correction, not failure. Note it, then let it go.", seconds: 20 },
+  { title: "Name what went right", body: "Three things. Feel the gratitude for each — real, specific, yours.", seconds: 40 },
+  { title: "Hold the wish fulfilled", body: "Present tense: already the man, already the owner, already devoted and present. Fall asleep on this feeling.", seconds: 45 },
+];
+
+const SOS_LINE = "Stand up. Breathe. This is the empty-bored-lost feeling — not a need. I redirect it: body first, then a real person, then back to who I'm becoming.";
+
+const BLOCK_TYPES = ["work", "break", "learn", "exercise", "leisure", "sleep"];
+const TYPE_META = {
+  work:     { label: "Deep Work",  color: "var(--blue)" },
+  break:    { label: "Break",      color: "var(--amber)" },
+  learn:    { label: "Learn",      color: "var(--cyan)" },
+  exercise: { label: "Exercise",   color: "var(--emerald)" },
+  leisure:  { label: "Leisure",    color: "var(--rose)" },
+  sleep:    { label: "Wind-down",  color: "var(--slate)" },
+};
+const GOAL_META = {
+  car:      { label: "The Car",             short: "Car",      color: "var(--violet-soft)" },
+  engineer: { label: "Top Agent Engineer",  short: "Engineer", color: "var(--blue)" },
+  redirect: { label: "Redirecting the Pull",short: "Redirect", color: "var(--rose)" },
+  presence: { label: "Presence",            short: "Presence", color: "var(--emerald)" },
+};
+const GOAL_CYCLE = [null, "car", "engineer", "redirect", "presence"];
+const CATEGORIES = ["identity", "car", "focus", "devotion", "presence", "discipline"];
+const CATEGORY_TO_GOAL = { car: "car", focus: "engineer", discipline: "engineer", devotion: "redirect", presence: "presence", identity: null };
+const GOAL_TO_CATEGORIES = { car: ["car"], engineer: ["focus", "discipline"], redirect: ["devotion"], presence: ["presence"] };
+const CATEGORY_LABEL = { identity: "who I am", car: "the car", focus: "the work", devotion: "devotion", presence: "presence", discipline: "discipline" };
+const TYPE_TO_CHEER = { work: "focus", learn: "focus", exercise: "discipline", break: "presence", leisure: "devotion", sleep: "identity" };
+
+const DEFAULT_DAY = [
+  { type: "break", title: "Wake + morning prime", durationMin: 30 },
+  { type: "exercise", title: "Move my body", durationMin: 45, goal: "presence" },
+  { type: "work", title: "Deep work — today's ONE focus", durationMin: 120, goal: "engineer" },
+  { type: "break", title: "Reset", durationMin: 15 },
+  { type: "work", title: "Deep work II", durationMin: 90, goal: "engineer" },
+  { type: "break", title: "Lunch + presence", durationMin: 45, goal: "presence" },
+  { type: "learn", title: "Learn — sharpen the craft", durationMin: 60, goal: "engineer" },
+  { type: "work", title: "Deep work III", durationMin: 90, goal: "engineer" },
+  { type: "break", title: "Reset", durationMin: 15 },
+  { type: "work", title: "Admin + tasks", durationMin: 45 },
+  { type: "exercise", title: "Walk / air", durationMin: 30, goal: "presence" },
+  { type: "break", title: "Dinner + people", durationMin: 60, goal: "presence" },
+  { type: "leisure", title: "The thing I actually love", durationMin: 60, goal: "redirect" },
+  { type: "learn", title: "Read", durationMin: 30, goal: "engineer" },
+  { type: "sleep", title: "Pre-sleep impression", durationMin: 20 },
+];
+const DEFAULT_DAY_START_MIN = 6 * 60;
+
+const REASON_INTRO = {
+  claude: "Tonight's Claude session pointed here — rehearse it:",
+  sos: "Yesterday the pull showed up. Today, rehearse the redirect:",
+  missed: "Yesterday this block slipped — watch yourself win it today:",
+  weakest: "Your current growth edge — rehearse it strongest:",
+};
+const REHEARSAL_LINE = {
+  car: "See the Octavia in the driveway — negotiated to 6.50, keys in hand. Feel the wheel.",
+  engineer: "See the deep-work session landing — one level deeper, the top agent engineer at work.",
+  redirect: "See the pull arrive… and watch yourself stand up, breathe, and walk toward something real.",
+  presence: "See yourself put the phone face-down, look up, and actually be with your people.",
+};
+
+/* ════════════════════════════════════════════════════════════════
+   2 · UTILITIES (IST time, ids, schedule)
+   ════════════════════════════════════════════════════════════════ */
+function istDateString(d) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(d || new Date());
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + "T12:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function daysBetween(a, b) {
+  return Math.round((new Date(b + "T12:00:00Z") - new Date(a + "T12:00:00Z")) / 86400000);
+}
+function istDateOfIso(iso) {
+  try { return istDateString(new Date(iso)); } catch (e) { return String(iso).slice(0, 10); }
+}
+function istNowMinutes() {
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date());
+  const get = (t) => Number((parts.find((p) => p.type === t) || {}).value || 0);
+  return get("hour") * 60 + get("minute");
+}
+function friendlyDate(dateStr) {
+  try {
+    return new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short" }).format(new Date(dateStr + "T12:00:00Z"));
+  } catch (e) { return dateStr; }
+}
+function formatClock(totalMin) {
+  const w = ((totalMin % 1440) + 1440) % 1440;
+  const h24 = Math.floor(w / 60), m = w % 60;
+  const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+  return h12 + ":" + String(m).padStart(2, "0") + " " + (h24 < 12 ? "AM" : "PM");
+}
+function formatDuration(min) {
+  if (min < 60) return min + "m";
+  const h = Math.floor(min / 60), m = min % 60;
+  return m === 0 ? h + "h" : h + "h " + m + "m";
+}
+function computeSchedule(dayStartMin, blocks) {
+  let cursor = dayStartMin;
+  return blocks.map((block) => {
+    const startMin = cursor, endMin = cursor + block.durationMin;
+    cursor = endMin;
+    return { block, startMin, endMin };
+  });
+}
+let _idCounter = 0;
+function makeId(prefix) {
+  _idCounter += 1;
+  return (prefix || "b") + "_" + Date.now().toString(36) + "_" + _idCounter + "_" + Math.random().toString(36).slice(2, 8);
+}
+function levelFromXp(xp) { return 1 + Math.floor(Math.max(0, xp) / XP_PER_LEVEL); }
+
+/* ════════════════════════════════════════════════════════════════
+   3 · STORE — default state, migration, load/save, export/import
+   (identical schema to the hosted planner, so backups move freely)
+   ════════════════════════════════════════════════════════════════ */
+function blockFromTemplate(t, overrides) {
+  return { id: makeId(), type: t.type, title: t.title,
+    durationMin: overrides[t.title] != null ? overrides[t.title] : t.durationMin,
+    completed: false, completedAt: null, goal: t.goal || null };
+}
+function emptyDay(date, dayStartMin) {
+  return { date, dayStartMin, goal: "", blocks: [], captures: [], reflected: false,
+    morningPrimeDone: false, preSleepDone: false, note: "", shownLineIds: [], resonanceLineId: null };
+}
+function seedDay(date, dayStartMin, overrides) {
+  const d = emptyDay(date, dayStartMin);
+  d.blocks = DEFAULT_DAY.map((t) => blockFromTemplate(t, overrides || {}));
+  return d;
+}
+const EVEN_WEIGHTS = { car: 0.25, engineer: 0.25, redirect: 0.25, presence: 0.25 };
+
+function createDefaultState() {
+  const today = istDateString();
+  const days = {};
+  days[today] = seedDay(today, DEFAULT_DAY_START_MIN, {});
+  return {
+    version: STATE_VERSION, hydrated: false, notice: null,
+    xp: 0, streak: 0, graceRemaining: MAX_GRACE, cleanRunTowardToken: 0,
+    lifetimeCleanDays: 0, lastAllCompleteDate: null, lastEvalDate: null,
+    templateOverrides: {}, days, settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
+    reminderLines: REMINDER_LINES.map((l) => ({ ...l })),
+    pleasureJoyPairs: PLEASURE_JOY_PAIRS.map((p) => ({ ...p })),
+    sosEvents: [],
+    goalAreas: DEFAULT_GOAL_AREAS.map((g) => ({ ...g })),
+    goalWeights: { ...EVEN_WEIGHTS }, lastWeakestGoal: null, lastCheckinDate: null,
+    alignment: {}, nudges: [], lineWeights: {}, titleStats: {}, titleNudgeDates: {},
+    claudeEmphasis: null,
+  };
+}
+function hydrateDay(d) {
+  const base = emptyDay(d.date, d.dayStartMin != null ? d.dayStartMin : DEFAULT_DAY_START_MIN);
+  const out = { ...base, ...d };
+  out.note = d.note || "";
+  out.shownLineIds = Array.isArray(d.shownLineIds) ? d.shownLineIds : [];
+  out.resonanceLineId = d.resonanceLineId || null;
+  out.blocks = Array.isArray(d.blocks) ? d.blocks.map((b) => ({ ...b, goal: b.goal || null })) : [];
+  out.captures = Array.isArray(d.captures) ? d.captures : [];
+  return out;
+}
+function migrateV1toV2(old) {
+  const base = createDefaultState();
+  const days = {};
+  for (const date of Object.keys(old.days || {})) days[date] = hydrateDay({ ...old.days[date], date });
+  const s = { ...base, ...old, version: STATE_VERSION, hydrated: false, notice: null };
+  s.settings = { ...base.settings, ...(old.settings || {}), weightGoal: null,
+    car: { ...base.settings.car, ...((old.settings || {}).car || {}) } };
+  s.days = Object.keys(days).length ? days : base.days;
+  s.reminderLines = (old.reminderLines && old.reminderLines.length) ? old.reminderLines : base.reminderLines;
+  s.pleasureJoyPairs = (old.pleasureJoyPairs && old.pleasureJoyPairs.length) ? old.pleasureJoyPairs : base.pleasureJoyPairs;
+  s.sosEvents = old.sosEvents || [];
+  s.templateOverrides = old.templateOverrides || {};
+  s.goalAreas = base.goalAreas; s.goalWeights = base.goalWeights;
+  s.lastWeakestGoal = null; s.lastCheckinDate = null;
+  s.alignment = {}; s.nudges = []; s.lineWeights = {}; s.titleStats = {}; s.titleNudgeDates = {};
+  s.claudeEmphasis = null;
+  return s;
+}
+function hydrateMissing(sIn) {
+  const base = createDefaultState();
+  const days = {};
+  const src = sIn.days || base.days;
+  for (const date of Object.keys(src)) days[date] = hydrateDay({ ...src[date], date });
+  const s = { ...base, ...sIn, hydrated: false, notice: null };
+  s.settings = { ...base.settings, ...(sIn.settings || {}), car: { ...base.settings.car, ...((sIn.settings || {}).car || {}) } };
+  s.days = days;
+  s.reminderLines = (sIn.reminderLines && sIn.reminderLines.length) ? sIn.reminderLines : base.reminderLines;
+  s.pleasureJoyPairs = (sIn.pleasureJoyPairs && sIn.pleasureJoyPairs.length) ? sIn.pleasureJoyPairs : base.pleasureJoyPairs;
+  s.sosEvents = sIn.sosEvents || [];
+  s.templateOverrides = sIn.templateOverrides || {};
+  s.goalAreas = (sIn.goalAreas && sIn.goalAreas.length === 4) ? sIn.goalAreas : base.goalAreas;
+  s.goalWeights = (sIn.goalWeights && Object.keys(sIn.goalWeights).length === 4) ? sIn.goalWeights : base.goalWeights;
+  s.lastWeakestGoal = sIn.lastWeakestGoal || null;
+  s.lastCheckinDate = sIn.lastCheckinDate || null;
+  s.alignment = sIn.alignment || {};
+  s.nudges = Array.isArray(sIn.nudges) ? sIn.nudges : [];
+  s.lineWeights = sIn.lineWeights || {};
+  s.titleStats = sIn.titleStats || {};
+  s.titleNudgeDates = sIn.titleNudgeDates || {};
+  s.claudeEmphasis = sIn.claudeEmphasis || null;
+  return s;
+}
+function normalizeLoaded(parsed) {
+  if (!parsed || typeof parsed !== "object") return createDefaultState();
+  if (parsed.version === STATE_VERSION) return hydrateMissing(parsed);
+  if (parsed.version === 1) return migrateV1toV2(parsed);
+  return createDefaultState();
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return createDefaultState();
+    return normalizeLoaded(JSON.parse(raw));
+  } catch (e) { return createDefaultState(); }
+}
+function saveState(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...s, hydrated: false, notice: null })); }
+  catch (e) { /* storage unavailable — in-memory still works */ }
+}
+function exportStateJson(s) {
+  return JSON.stringify({ ...s, hydrated: false, notice: null }, null, 2);
+}
+function importStateJson(raw) {
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return null;
+    if (parsed.version !== 1 && parsed.version !== STATE_VERSION) return null;
+    if (!parsed.days || typeof parsed.days !== "object") return null;
+    return normalizeLoaded(parsed);
+  } catch (e) { return null; }
+}
+function isDayClean(day) {
+  if (!day || day.blocks.length === 0) return false;
+  return day.blocks.every((b) => b.completed);
+}
+function isTemplateTitle(title) { return DEFAULT_DAY.some((t) => t.title === title); }
+function resolveBaselineDuration(title, overrides) {
+  if (overrides[title] != null) return overrides[title];
+  const t = DEFAULT_DAY.find((x) => x.title === title);
+  return t ? t.durationMin : 30;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   4 · SERVO — target → error → small corrections → training log
+   ════════════════════════════════════════════════════════════════ */
+function computeAlignment(day, sosCountThatDay) {
+  if (!day) return 0;
+  const total = day.blocks.length;
+  const completedFrac = total > 0 ? day.blocks.filter((b) => b.completed).length / total : 0;
+  const raw = ALIGN_COMPLETION_WEIGHT * completedFrac +
+    ALIGN_MORNING_WEIGHT * (day.morningPrimeDone ? 1 : 0) +
+    ALIGN_PRESLEEP_WEIGHT * (day.preSleepDone ? 1 : 0);
+  const sosBonus = Math.min(ALIGN_SOS_BONUS_CAP, ALIGN_SOS_BONUS_PER_EVENT * sosCountThatDay);
+  return Math.min(100, Math.round(raw + sosBonus));
+}
+function sosCountOnDate(s, date) {
+  return s.sosEvents.filter((e) => istDateOfIso(e.ts) === date).length;
+}
+function sosCountLastWindow(s, today) {
+  return s.sosEvents.filter((e) => daysBetween(istDateOfIso(e.ts), today) < MISS_RATE_WINDOW_DAYS).length;
+}
+function missRateFor(s, goal, today) {
+  let seen = 0, missed = 0;
+  for (let i = 1; i <= MISS_RATE_WINDOW_DAYS; i++) {
+    const day = s.days[addDays(today, -i)];
+    if (!day) continue;
+    for (const b of day.blocks) {
+      if (b.goal !== goal) continue;
+      seen += 1;
+      if (!b.completed) missed += 1;
+    }
+  }
+  return seen > 0 ? missed / seen : 0;
+}
+function computeGoalWeights(s, today) {
+  const sos7 = sosCountLastWindow(s, today);
+  const errors = s.goalAreas.map((g) => {
+    const gap = 10 - g.rating;
+    const missSignal = 10 * missRateFor(s, g.id, today);
+    const sosSignal = g.id === "redirect" ? Math.min(GOAL_SOS_SIGNAL_CAP, GOAL_SOS_SIGNAL_PER_EVENT * sos7) : 0;
+    return { id: g.id, err: gap + missSignal + sosSignal };
+  });
+  const total = errors.reduce((acc, e) => acc + e.err + WEIGHT_SMOOTHING, 0);
+  const weights = {};
+  for (const e of errors) weights[e.id] = (e.err + WEIGHT_SMOOTHING) / total;
+  return weights;
+}
+function weakestGoal(weights) {
+  let best = "car", max = -1;
+  for (const id of Object.keys(weights)) {
+    if (weights[id] > max) { max = weights[id]; best = id; }
+  }
+  return best;
+}
+function ticketsFor(line, weights, lineWeights, emphasisCategory) {
+  const goal = CATEGORY_TO_GOAL[line.category];
+  const goalShare = goal ? (weights[goal] != null ? weights[goal] : 0.25) : IDENTITY_GOAL_WEIGHT_EQUIV;
+  const resonance = Math.min(lineWeights[line.id] != null ? lineWeights[line.id] : 1, LINE_WEIGHT_CAP) - 1;
+  const emphasis = line.category === emphasisCategory ? TICKET_EMPHASIS_BONUS : 0;
+  return TICKET_BASE + Math.round(TICKET_GOAL_SCALE * goalShare) + resonance + emphasis;
+}
+function weightedReminderLine(s, today, dayStartMin) {
+  const lines = s.reminderLines;
+  if (!lines.length) return undefined;
+  const emphasis = s.claudeEmphasis && s.claudeEmphasis.date === today ? s.claudeEmphasis.category : null;
+  const expanded = [];
+  for (const l of lines) {
+    const n = ticketsFor(l, s.goalWeights, s.lineWeights, emphasis);
+    for (let i = 0; i < n; i++) expanded.push(l.id);
+  }
+  const cadence = Math.max(30, s.settings.reminderCadenceMin);
+  const slot = Math.floor(Math.max(0, istNowMinutes() - dayStartMin) / cadence);
+  const idx = (slot * 7919) % expanded.length; // prime dispersion — deterministic
+  const id = expanded[idx];
+  return lines.find((l) => l.id === id);
+}
+function pickRehearsalGoal(s, today) {
+  const emphasis = s.claudeEmphasis && s.claudeEmphasis.date === today ? CATEGORY_TO_GOAL[s.claudeEmphasis.category] : null;
+  if (emphasis) return { goal: emphasis, reason: "claude" };
+  const yesterday = s.days[addDays(today, -1)];
+  if (yesterday && sosCountOnDate(s, yesterday.date) > 0) return { goal: "redirect", reason: "sos" };
+  const topMissed = yesterday ? yesterday.blocks.find((b) => !b.completed && b.goal) : null;
+  if (topMissed && topMissed.goal) return { goal: topMissed.goal, reason: "missed", missedTitle: topMissed.title };
+  return { goal: weakestGoal(s.goalWeights), reason: "weakest" };
+}
+function pickPresleepLine(s, today) {
+  const emphasisCat = s.claudeEmphasis && s.claudeEmphasis.date === today ? s.claudeEmphasis.category : null;
+  const targetCats = emphasisCat ? [emphasisCat] : GOAL_TO_CATEGORIES[weakestGoal(s.goalWeights)];
+  const pool = s.reminderLines.filter((l) => targetCats.includes(l.category));
+  const candidates = pool.length ? pool : s.reminderLines.filter((l) => l.category === "identity");
+  if (!candidates.length) return s.reminderLines[0];
+  return candidates.reduce((best, l) =>
+    (s.lineWeights[l.id] || 1) > (s.lineWeights[best.id] || 1) ? l : best);
+}
+
+/** The daily servo tick — idempotent via lastEvalDate. Mutates and returns notice. */
+function runDailyTick(s, today) {
+  let cursor;
+  if (s.lastEvalDate) {
+    cursor = addDays(s.lastEvalDate, 1);
+  } else {
+    const past = Object.keys(s.days).filter((d) => d < today).sort();
+    if (!past.length) {
+      seedWeights(s, today);
+      s.lastEvalDate = addDays(today, -1);
+      return null;
+    }
+    cursor = past[0];
+  }
+  if (cursor >= today) { seedWeights(s, today); return null; }
+
+  let protectedDays = 0, resetHappened = false;
+
+  while (cursor < today) {
+    const day = s.days[cursor];
+    // 1. Finalize alignment (missing day → honest 0).
+    s.alignment[cursor] = computeAlignment(day, sosCountOnDate(s, cursor));
+    // 2. Per-title outcomes (template titles only, rolling window).
+    if (day) {
+      for (const b of day.blocks) {
+        if (!isTemplateTitle(b.title)) continue;
+        const arr = (s.titleStats[b.title] || []).concat(b.completed ? "done" : "miss");
+        s.titleStats[b.title] = arr.slice(-TITLE_STATS_WINDOW);
+      }
+    }
+    // 3. Streak: unfinished plan OR no plan = a miss. Grace absorbs it.
+    const wasClean = !!day && day.blocks.length > 0 && day.blocks.every((b) => b.completed);
+    if (!wasClean) {
+      if (s.graceRemaining >= 1) {
+        s.graceRemaining -= 1; s.cleanRunTowardToken = 0; protectedDays += 1;
+      } else if (s.streak > 0) {
+        s.streak = 0; s.cleanRunTowardToken = 0; resetHappened = true;
+      }
+    }
+    cursor = addDays(cursor, 1);
+  }
+  s.lastEvalDate = addDays(today, -1);
+
+  // 4. Chronic-miss trims (small, cooled-down, floored, logged).
+  for (const title of Object.keys(s.titleStats)) {
+    const outcomes = s.titleStats[title];
+    if (outcomes.length < CHRONIC_MISS_MIN_SAMPLES) continue;
+    const missRate = outcomes.filter((o) => o === "miss").length / outcomes.length;
+    if (missRate < CHRONIC_MISS_RATE_THRESHOLD) continue;
+    const last = s.titleNudgeDates[title];
+    if (last && daysBetween(last, today) < DURATION_NUDGE_COOLDOWN_DAYS) continue;
+    const current = resolveBaselineDuration(title, s.templateOverrides);
+    const trimmed = Math.max(MIN_DURATION, current - DURATION_NUDGE_STEP);
+    if (trimmed === current) continue;
+    s.templateOverrides[title] = trimmed;
+    s.titleNudgeDates[title] = today;
+    s.nudges.push({ id: makeId("nudge"), date: today, kind: "duration_trim",
+      text: '"' + title + '" was missed ' + Math.round(missRate * 100) + "% of the last " + outcomes.length + " days — trimmed " + current + "m → " + trimmed + "m so it's easier to actually finish." });
+  }
+
+  // 5. Clear a stale Claude emphasis.
+  if (s.claudeEmphasis && s.claudeEmphasis.date < today) s.claudeEmphasis = null;
+
+  // 6. Recompute target weights; log a shift of the growth edge.
+  const goalWeights = computeGoalWeights(s, today);
+  const weakest = weakestGoal(goalWeights);
+  if (s.lastWeakestGoal && weakest !== s.lastWeakestGoal) {
+    s.nudges.push({ id: makeId("nudge"), date: today, kind: "weight_shift",
+      text: "Growth edge moved from " + GOAL_META[s.lastWeakestGoal].label + " to " + GOAL_META[weakest].label + " — reminders, the morning rehearsal, and tonight's line now lean that way." });
+  }
+  s.goalWeights = goalWeights;
+  s.lastWeakestGoal = weakest;
+  s.nudges = s.nudges.slice(-NUDGE_LOG_MAX);
+
+  if (resetHappened) return { kind: "reset", days: 0 };
+  if (protectedDays > 0) return { kind: "protected", days: protectedDays };
+  return null;
+}
+function seedWeights(s, today) {
+  s.goalWeights = computeGoalWeights(s, today);
+  if (!s.lastWeakestGoal) s.lastWeakestGoal = weakestGoal(s.goalWeights);
+}
+function checkinDue(s, today) {
+  if (!s.lastCheckinDate) return true;
+  return daysBetween(s.lastCheckinDate, today) >= CHECKIN_INTERVAL_DAYS;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   5 · CLAUDE BRIDGE — the copy-paste loop with your Claude.ai app
+   ════════════════════════════════════════════════════════════════ */
+const MAX_PASTE_CHARS = 200000;
+const FORBIDDEN_KEYS = ["__proto__", "constructor", "prototype"];
+
+function buildTodayCard(i) {
+  const done = i.scheduled.filter((x) => x.block.completed);
+  const missed = i.scheduled.filter((x) => !x.block.completed);
+  const blockLine = (x) => "- [" + (x.block.completed ? "x" : " ") + "] " + formatClock(x.startMin) + " " + x.block.title +
+    " (" + x.block.type + (x.block.goal ? ", goal: " + GOAL_META[x.block.goal].short : "") + ", " + x.block.durationMin + "m)";
+  const goalLines = i.goalAreas.map((g) => "- " + g.label + ": rated " + g.rating + "/10").join("\n");
+  const nudgeLines = i.recentNudges.length ? i.recentNudges.map((n) => "- (" + n.date + ") " + n.text).join("\n") : "- (none yet)";
+
+  return "You are my end-of-day coach. Ground your reply in the methods of Joseph Murphy (*The Power of Your Subconscious Mind*), Maxwell Maltz (*Psycho-Cybernetics*), and Joe Dispenza (*Becoming Supernatural*).\n\n" +
+"WHO I AM (my self-image — reinforce it, don't rebuild it):\n" + i.identityStatement + "\n" + i.carLine + "\n\n" +
+"MY FOUR GOAL AREAS (weekly self-ratings):\n" + goalLines + "\n" +
+"Current growth edge (where my system is leaning support): " + i.weakestGoalLabel + "\n\n" +
+"TODAY (" + i.date + ")\n" +
+"One thing: " + (i.goal || "(none set)") + "\n" +
+"Alignment: " + i.alignmentToday + "/100" + (i.alignmentAvg14 !== null ? " (14-day avg " + i.alignmentAvg14 + ")" : "") +
+" · Done " + done.length + "/" + i.scheduled.length + " blocks · XP " + i.xp + " (level " + i.level + ") · streak " + i.streak +
+" · grace " + i.graceRemaining + " · redirects used " + i.sosCount + "\n\n" +
+"Blocks:\n" + i.scheduled.map(blockLine).join("\n") + "\n\n" +
+(missed.length ? "What I didn't get to:\n" + missed.map((x) => "- " + x.block.title).join("\n") : "I completed everything.") + "\n\n" +
+"Recent automatic adjustments my planner made (its training log):\n" + nudgeLines + "\n\n" +
+"My reflection: " + (i.reflectionNote || "(none written)") + "\n\n" +
+"HOW TO COACH ME:\n" +
+"1. Treat misses as feedback and course-correction, never failure (Maltz). Don't scold.\n" +
+"2. Help me feel the elevated emotion of the future as already real — gratitude, pride, devotion (Dispenza).\n" +
+"3. End by helping me hold, in present tense, that I'm already this man and already own the car — an impression to fall asleep on (Murphy).\n" +
+"Talk with me for a few turns. When we're done, and ONLY then, output tomorrow's plan as ONE fenced code block whose fence tag is exactly `planner` (three backticks + the word planner). It must be the LAST fenced block in your reply. Omit any field you don't want to change. The format (shown indented here so it can't be mistaken for the real block):\n\n" +
+"    ```planner\n" +
+"    {\n" +
+'      "focus": "the one thing for tomorrow",\n' +
+'      "weightGoal": "focus",\n' +
+'      "presleepAffirmation": "a first-person present-tense line to end tomorrow on",\n' +
+'      "blocks": [\n' +
+'        { "title": "Deep work — the one thing", "type": "work", "durationMin": 120 }\n' +
+"      ]\n" +
+"    }\n" +
+"    ```\n\n" +
+'Rules: "type" must be one of ' + BLOCK_TYPES.join(", ") + '; "weightGoal" one of ' + CATEGORIES.join(", ") +
+'; "durationMin" a multiple of 15 between ' + MIN_DURATION + " and " + MAX_DURATION + ". Keep it realistic for a real human day.";
+}
+
+function extractJson(text) {
+  // LAST line-start fenced block tagged exactly `planner` (≤3 spaces indent,
+  // per CommonMark — the card's 4-space indented example can never match).
+  const re = /(?:^|\n) {0,3}```planner\s+([\s\S]*?)```/gi;
+  let last = null, m;
+  while ((m = re.exec(text)) !== null) last = m[1];
+  if (last) return last.trim();
+  // Fenced content but no valid planner block — don't guess with bare JSON.
+  if (/```/.test(text)) return null;
+  const bare = text.match(/\{[\s\S]*\}/);
+  return bare ? bare[0].trim() : null;
+}
+function safeParse(jsonStr) {
+  try {
+    return JSON.parse(jsonStr, (key, value) => (FORBIDDEN_KEYS.indexOf(key) !== -1 ? undefined : value));
+  } catch (e) { return null; }
+}
+function parseTomorrow(text) {
+  if (typeof text !== "string" || !text.trim()) return null;
+  const jsonStr = extractJson(text.slice(0, MAX_PASTE_CHARS));
+  if (!jsonStr) return null;
+  const raw = safeParse(jsonStr);
+  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return null;
+  const patch = {};
+  if (typeof raw.focus === "string" && raw.focus.trim()) patch.focus = raw.focus.trim().slice(0, 200);
+  if (typeof raw.weightGoal === "string" && CATEGORIES.indexOf(raw.weightGoal) !== -1) patch.weightGoal = raw.weightGoal;
+  if (typeof raw.presleepAffirmation === "string" && raw.presleepAffirmation.trim())
+    patch.presleepAffirmation = raw.presleepAffirmation.trim().slice(0, 300);
+  if (Array.isArray(raw.blocks)) {
+    const blocks = [];
+    for (const b of raw.blocks.slice(0, 40)) {
+      if (typeof b !== "object" || b === null) continue;
+      const title = typeof b.title === "string" ? b.title.trim() : "";
+      const type = b.type;
+      const durRaw = typeof b.durationMin === "number" ? b.durationMin : NaN;
+      if (!title || BLOCK_TYPES.indexOf(type) === -1 || isNaN(durRaw)) continue;
+      const dur = Math.min(MAX_DURATION, Math.max(MIN_DURATION, Math.round(durRaw / 15) * 15));
+      blocks.push({ title: title.slice(0, 120), type, durationMin: dur });
+    }
+    if (blocks.length) patch.blocks = blocks.slice(0, 20);
+  }
+  return Object.keys(patch).length ? patch : null;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   6 · MUTATIONS — same semantics as the hosted reducer
+   ════════════════════════════════════════════════════════════════ */
+let S = createDefaultState();
+
+function todayKey() { return istDateString(); }
+function todayPlan() { return S.days[todayKey()]; }
+
+function ensureToday() {
+  const key = todayKey();
+  if (!S.days[key]) S.days[key] = seedDay(key, S.settings.dayStartMin, S.templateOverrides);
+  return key;
+}
+function ensureAndTick() {
+  const key = ensureToday();
+  const notice = runDailyTick(S, key);
+  if (notice) S.notice = notice;
+}
+/** Keep optimistic streak credit symmetric after ANY block mutation. */
+function syncCleanCredit(key) {
+  const day = S.days[key];
+  const cleanNow = isDayClean(day);
+  const wasCounted = S.lastAllCompleteDate === key;
+  if (cleanNow === wasCounted) return;
+  if (cleanNow && !wasCounted) {
+    S.streak += 1; S.lifetimeCleanDays += 1; S.cleanRunTowardToken += 1;
+    if (S.cleanRunTowardToken >= TOKEN_REGEN_CLEAN_DAYS && S.graceRemaining < MAX_GRACE) {
+      S.graceRemaining += 1;
+      S.cleanRunTowardToken -= TOKEN_REGEN_CLEAN_DAYS;
+    }
+    S.lastAllCompleteDate = key;
+  } else {
+    S.streak = Math.max(0, S.streak - 1);
+    S.lifetimeCleanDays = Math.max(0, S.lifetimeCleanDays - 1);
+    S.cleanRunTowardToken = Math.max(0, S.cleanRunTowardToken - 1);
+    S.lastAllCompleteDate = null;
+  }
+}
+function pushNudge(kind, text) {
+  S.nudges.push({ id: makeId("nudge"), date: todayKey(), kind, text });
+  S.nudges = S.nudges.slice(-NUDGE_LOG_MAX);
+}
+function commit() { saveState(S); render(); }
+
+function toggleComplete(id) {
+  const key = todayKey(), day = S.days[key];
+  if (!day) return;
+  const target = day.blocks.find((b) => b.id === id);
+  if (!target) return;
+  const nowCompleted = !target.completed;
+  target.completed = nowCompleted;
+  target.completedAt = nowCompleted ? new Date().toISOString() : null;
+  S.xp = Math.max(0, S.xp + (nowCompleted ? XP_PER_COMPLETE : -XP_PER_COMPLETE));
+  syncCleanCredit(key);
+  if (nowCompleted) {
+    if (day.blocks.every((b) => b.completed)) {
+      UI.celebrate = true;
+    } else {
+      const cat = TYPE_TO_CHEER[target.type] || "identity";
+      const pool = S.reminderLines.filter((l) => l.category === cat);
+      const line = pool[(day.blocks.filter((b) => b.completed).length + target.title.length) % Math.max(1, pool.length)];
+      if (line) showToast(line.text, 3500);
+    }
+  }
+  commit();
+}
+function applyTomorrow(patch) {
+  const key = todayKey(), tomorrow = addDays(key, 1);
+  const day = S.days[tomorrow] || seedDay(tomorrow, S.settings.dayStartMin, S.templateOverrides);
+  const applied = [];
+  if (patch.blocks && patch.blocks.length) {
+    day.blocks = patch.blocks.map((b) => ({ id: makeId(), type: b.type, title: b.title,
+      durationMin: b.durationMin, completed: false, completedAt: null, goal: null }));
+    applied.push(patch.blocks.length + " blocks");
+  }
+  if (patch.focus) { day.goal = patch.focus; applied.push("focus"); }
+  if (patch.presleepAffirmation) {
+    const exists = S.reminderLines.some((l) => l.text === patch.presleepAffirmation);
+    if (!exists) {
+      const newId = makeId("line");
+      S.reminderLines.unshift({ id: newId, text: patch.presleepAffirmation, category: patch.weightGoal || "identity" });
+      S.lineWeights[newId] = 3; // surfaces quickly, still capped
+      applied.push("a fresh affirmation");
+    }
+  }
+  if (patch.weightGoal) {
+    S.claudeEmphasis = { category: patch.weightGoal, date: tomorrow };
+    applied.push("emphasis on " + patch.weightGoal);
+  }
+  if (applied.length) pushNudge("claude_emphasis", "From tonight's Claude session: applied " + applied.join(", ") + " for tomorrow.");
+  S.days[tomorrow] = day;
+  return applied;
+}
+function reflectYesterday(date, ranLongTitles) {
+  const day = S.days[date], key = todayKey();
+  for (const title of ranLongTitles) {
+    let current = S.templateOverrides[title];
+    if (current == null && day) {
+      const b = day.blocks.find((x) => x.title === title);
+      current = b ? b.durationMin : null;
+    }
+    if (current == null) current = resolveBaselineDuration(title, S.templateOverrides);
+    const grown = Math.min(MAX_DURATION, current + 15);
+    if (grown === current) continue;
+    S.templateOverrides[title] = grown;
+    S.titleNudgeDates[title] = key; // auto-trim won't fight a fresh grow
+    pushNudge("duration_grow", '"' + title + '" ran long — grew ' + current + "m → " + grown + "m to match how it actually goes.");
+  }
+  if (day) day.reflected = true;
+}
+function rateGoals(ratings) {
+  const key = todayKey();
+  for (const g of S.goalAreas) {
+    const r = ratings[g.id];
+    g.rating = Math.min(10, Math.max(1, r != null ? r : g.rating));
+  }
+  S.lastCheckinDate = key;
+  const goalWeights = computeGoalWeights(S, key);
+  const weakest = weakestGoal(goalWeights);
+  if (S.lastWeakestGoal && weakest !== S.lastWeakestGoal)
+    pushNudge("weight_shift", "Growth edge moved from " + GOAL_META[S.lastWeakestGoal].label + " to " + GOAL_META[weakest].label + " — reminders and rituals now lean that way.");
+  S.goalWeights = goalWeights;
+  S.lastWeakestGoal = weakest;
+}
+function markResonance(lineId) {
+  const key = todayKey(), day = S.days[key];
+  if (!day || day.resonanceLineId) return; // write-once per day
+  const line = S.reminderLines.find((l) => l.id === lineId);
+  if (!line) return;
+  day.resonanceLineId = lineId;
+  S.lineWeights[lineId] = Math.min(LINE_WEIGHT_CAP, (S.lineWeights[lineId] || 1) + 1);
+  pushNudge("line_resonance", '"' + line.text + '" carried you today — it\'ll show up a bit more often.');
+}
+function recordShownLine(lineId) {
+  const day = todayPlan();
+  if (!day || day.shownLineIds.includes(lineId)) return;
+  day.shownLineIds = day.shownLineIds.concat(lineId).slice(-4);
+  saveState(S); // no re-render needed
+}
+function logSos(event) {
+  if (event.outcome === "passed") S.xp = Math.max(0, S.xp + SOS_XP);
+  S.sosEvents.push(event);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   7 · DOM HELPERS — all user text goes through textContent (XSS-safe)
+   ════════════════════════════════════════════════════════════════ */
+function el(tag, attrs) {
+  const node = document.createElement(tag);
+  if (attrs) {
+    for (const k of Object.keys(attrs)) {
+      const v = attrs[k];
+      if (v == null || v === false) continue;
+      if (k === "class") node.className = v;
+      else if (k === "style") node.style.cssText = v;
+      else if (k.slice(0, 2) === "on" && typeof v === "function") node.addEventListener(k.slice(2), v);
+      else if (v === true) node.setAttribute(k, "");
+      else node.setAttribute(k, String(v));
+    }
+  }
+  for (let i = 2; i < arguments.length; i++) {
+    const c = arguments[i];
+    appendChild(node, c);
+  }
+  return node;
+}
+function appendChild(node, c) {
+  if (c == null || c === false) return;
+  if (Array.isArray(c)) { for (const x of c) appendChild(node, x); return; }
+  node.appendChild(c instanceof Node ? c : document.createTextNode(String(c)));
+}
+function svgEl(tag, attrs) {
+  const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  if (attrs) for (const k of Object.keys(attrs)) node.setAttribute(k, String(attrs[k]));
+  for (let i = 2; i < arguments.length; i++) appendChild(node, arguments[i]);
+  return node;
+}
+
+// UI-only (never persisted) runtime state.
+const UI = {
+  celebrate: false,
+  editTitleId: null,
+  undo: null,           // { block, index, timer }
+  lastLineId: null,
+  lastNotifySlot: null,
+  logOpen: false,
+};
+
+let toastTimer = null;
+function showToast(text, ms, undoFn) {
+  const host = document.getElementById("toasts");
+  host.textContent = "";
+  const t = el("div", { class: "toast", role: "status" },
+    el("span", { class: "muted", style: "font-style:italic" }, text),
+    undoFn ? el("button", { class: "undo", onclick: () => { undoFn(); host.textContent = ""; } }, "Undo") : null
+  );
+  host.appendChild(t);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { host.textContent = ""; }, ms || 3500);
+}
+
+/* overlay plumbing: one at a time, Escape closes, scroll locked */
+let overlayCleanup = null;
+function openOverlay(buildPanel, onclose) {
+  closeOverlay();
+  const host = document.getElementById("overlays");
+  const close = () => { closeOverlay(); if (onclose) onclose(); };
+  const wrap = el("div", { class: "ovl", role: "dialog", "aria-modal": "true" },
+    el("div", { class: "ovl-bg", onclick: close }));
+  const panel = el("div", { class: "ovl-panel" });
+  buildPanel(panel, close);
+  wrap.appendChild(panel);
+  host.appendChild(wrap);
+  const onKey = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+  document.addEventListener("keydown", onKey, true);
+  const prevOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+  const first = panel.querySelector("button, input, textarea, select");
+  if (first) first.focus();
+  overlayCleanup = () => {
+    document.removeEventListener("keydown", onKey, true);
+    document.body.style.overflow = prevOverflow;
+    host.textContent = "";
+  };
+}
+function closeOverlay() {
+  if (overlayCleanup) { overlayCleanup(); overlayCleanup = null; }
+}
+function overlayHeader(panel, title, close) {
+  panel.appendChild(el("div", { class: "row", style: "justify-content:space-between;margin-bottom:.9rem" },
+    el("h2", { class: "ovl-title" }, title),
+    el("button", { class: "xbtn", "aria-label": "Close", onclick: close }, "×")));
+}
+function stepDots(total, current) {
+  const s = el("div", { class: "steps" });
+  for (let i = 0; i < total; i++) s.appendChild(el("span", { class: i <= current ? "on" : "" }));
+  return s;
+}
+function copyText(text, okMsg) {
+  const done = () => showToast(okMsg || "Copied.", 2500);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, () => fallbackCopy(text, done));
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); done(); } catch (e) { showToast("Copy failed — select and copy manually.", 4000); }
+  document.body.removeChild(ta);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   8 · RENDER — the board
+   ════════════════════════════════════════════════════════════════ */
+function greeting() {
+  const m = istNowMinutes();
+  if (m < 5 * 60) return "Still up";
+  if (m < 12 * 60) return "Good morning";
+  if (m < 17 * 60) return "Good afternoon";
+  if (m < 21 * 60) return "Good evening";
+  return "Winding down";
+}
+
+function render() {
+  const app = document.getElementById("app");
+  app.textContent = "";
+  const key = todayKey();
+  const day = S.days[key];
+  if (!day) { ensureAndTick(); return render(); }
+
+  app.appendChild(renderIdentityBar(key, day));
+
+  // greeting + help + settings
+  app.appendChild(el("div", { class: "row", style: "justify-content:space-between;margin:1rem 0 .8rem" },
+    el("div", null,
+      el("p", { class: "tiny dim" }, friendlyDate(key)),
+      el("h1", { style: "font-size:18px;font-weight:800" }, greeting() + ".")),
+    el("div", { class: "row" },
+      el("button", { class: "btn-ghost btn", style: "padding:.35rem .7rem;font-size:13px", "aria-label": "Help", onclick: openHelp }, "?"),
+      el("button", { class: "btn-ghost btn", style: "padding:.35rem .7rem;font-size:13px", "aria-label": "Settings", onclick: openSettings }, "⚙"))));
+
+  const stack = el("div", { style: "display:flex;flex-direction:column;gap:1rem" });
+  app.appendChild(stack);
+
+  const scheduled = computeSchedule(day.dayStartMin, day.blocks);
+  const sosToday = sosCountOnDate(S, key);
+  const alignToday = computeAlignment(day, sosToday);
+
+  stack.appendChild(renderNowCard(day, scheduled, alignToday));
+  stack.appendChild(renderRitualRow(day));
+
+  if (checkinDue(S, key)) stack.appendChild(renderCheckin());
+  const yKey = addDays(key, -1), yday = S.days[yKey];
+  if (yday && !yday.reflected && yday.blocks.length > 0) stack.appendChild(renderReflection(yKey, yday));
+
+  stack.appendChild(renderHud(day));
+  stack.appendChild(renderTrend(key, alignToday));
+  stack.appendChild(renderNudgeFeed());
+  stack.appendChild(renderPlanHeader(day, scheduled));
+  stack.appendChild(renderBlocks(day, scheduled));
+  stack.appendChild(renderCaptures(day));
+
+  stack.appendChild(el("button", {
+    class: "card row", style: "width:100%;text-align:left;cursor:pointer", onclick: openSos },
+    el("span", { style: "color:var(--violet-soft)" }, "⛨"),
+    el("span", { class: "tiny muted", style: "flex:1" }, "Feeling the pull? The redirect is one tap away."),
+    el("span", { class: "dim" }, "›")));
+
+  // floating SOS
+  let sos = document.getElementById("sosbtn");
+  if (!sos) {
+    sos = el("button", { id: "sosbtn", onclick: openSos }, "I feel the pull");
+    document.body.appendChild(sos);
+  }
+
+  if (UI.celebrate) renderCelebration();
+}
+
+function renderIdentityBar(key, day) {
+  const line = weightedReminderLine(S, key, day.dayStartMin);
+  if (line && UI.lastLineId !== line.id) {
+    UI.lastLineId = line.id;
+    recordShownLine(line.id);
+  }
+  return el("div", { id: "identity" },
+    el("p", { class: "statement" }, S.settings.identityStatement),
+    line ? el("p", { class: "line" }, line.text,
+      el("span", { class: "cat" }, CATEGORY_LABEL[line.category] || "")) : null);
+}
+
+function renderNowCard(day, scheduled, alignToday) {
+  const now = istNowMinutes();
+  const doneCount = day.blocks.filter((b) => b.completed).length;
+  const allDone = day.blocks.length > 0 && doneCount === day.blocks.length;
+
+  if (!day.morningPrimeDone && now < 15 * 60) {
+    return el("div", { class: "now-card now-morning" },
+      el("p", { class: "micro", style: "text-transform:uppercase;letter-spacing:.12em;color:#d97706" }, "Start here"),
+      el("p", { style: "font-weight:700;margin:.2rem 0 .6rem" }, "Two minutes to set the day's frequency."),
+      el("button", { class: "btn", style: "background:#d97706;color:#fff", onclick: openMorning }, "Morning prime →"));
+  }
+  if ((now >= 21 * 60 || allDone) && !day.preSleepDone) {
+    return el("div", { class: "now-card now-evening" },
+      el("p", { class: "micro", style: "text-transform:uppercase;letter-spacing:.12em;color:var(--slate)" }, "Close the day"),
+      el("p", { style: "font-weight:700;margin:.2rem 0 .3rem" }, doneCount + "/" + day.blocks.length + " blocks · alignment " + alignToday + "/100"),
+      el("p", { class: "tiny muted", style: "margin-bottom:.6rem" }, "Review as feedback, impress the wish fulfilled, and hand tomorrow to the coach."),
+      el("button", { class: "btn", style: "background:#475569;color:#fff", onclick: openPresleep }, "Pre-sleep impression →"));
+  }
+  // current / next block
+  const current = scheduled.find((x) => !x.block.completed && now >= x.startMin && now < x.endMin);
+  const nextUp = current || scheduled.find((x) => !x.block.completed);
+  if (!nextUp) {
+    return el("div", { class: "now-card now-block" },
+      el("p", { style: "font-weight:700" }, allDone ? "Every block done. That's evidence." : "No blocks yet — add your day below."));
+  }
+  const meta = TYPE_META[nextUp.block.type];
+  const remaining = current ? nextUp.endMin - now : null;
+  return el("div", { class: "now-card now-block" },
+    el("p", { class: "micro", style: "text-transform:uppercase;letter-spacing:.12em;color:var(--violet-soft)" },
+      current ? "Now" : "Up next"),
+    el("div", { class: "row", style: "justify-content:space-between;margin-top:.25rem;gap:1rem" },
+      el("div", null,
+        el("p", { style: "font-weight:700;font-size:16px" }, nextUp.block.title),
+        el("p", { class: "tiny dim" },
+          formatClock(nextUp.startMin) + " – " + formatClock(nextUp.endMin) + " · " + meta.label +
+          (remaining !== null ? " · " + formatDuration(remaining) + " left" : ""))),
+      el("button", { class: "btn btn-primary", style: "flex:none", onclick: () => toggleComplete(nextUp.block.id) }, "Done ✓")));
+}
+
+function renderRitualRow(day) {
+  const now = istNowMinutes(), morningWindow = now < 15 * 60;
+  return el("div", { class: "ritual-row" },
+    el("button", {
+      class: "ritual " + (day.morningPrimeDone ? "done" : morningWindow ? "hot-am" : ""),
+      onclick: openMorning }, (day.morningPrimeDone ? "✓ " : "☀ ") + "Morning prime"),
+    el("button", {
+      class: "ritual " + (day.preSleepDone ? "done" : !morningWindow ? "hot-pm" : ""),
+      onclick: openPresleep }, (day.preSleepDone ? "✓ " : "☾ ") + "Pre-sleep"));
+}
+
+function renderCheckin() {
+  const firstTime = !S.lastCheckinDate;
+  const key = todayKey();
+  const ratings = {};
+  for (const g of S.goalAreas) ratings[g.id] = g.rating;
+  const card = el("div", { class: "card", style: "border-color:rgba(91,33,182,.5)" });
+  card.appendChild(el("p", { class: "label" }, firstTime ? "Set your target" : "Weekly check-in"));
+  card.appendChild(el("p", { class: "tiny muted", style: "margin-bottom:.7rem" },
+    firstTime
+      ? "Rate where each goal area feels right now, 1–10. This is the target picture the whole system steers by — honest beats optimistic."
+      : "A week has passed. Where does each area honestly stand? The gap you report is what the servo corrects toward."));
+  for (const g of S.goalAreas) {
+    const mr = Math.round(missRateFor(S, g.id, key) * 100);
+    const val = el("span", { class: "bold", style: "color:" + GOAL_META[g.id].color }, String(ratings[g.id]));
+    card.appendChild(el("div", { style: "margin-bottom:.6rem" },
+      el("div", { class: "row", style: "justify-content:space-between" },
+        el("span", { class: "tiny", style: "font-weight:600" }, g.label), val),
+      el("input", { type: "range", min: 1, max: 10, step: 1, value: ratings[g.id],
+        oninput: (e) => { ratings[g.id] = Number(e.target.value); val.textContent = e.target.value; } }),
+      mr > 0 ? el("p", { class: "micro dim" }, "tagged blocks missed " + mr + "% this week") : null));
+  }
+  card.appendChild(el("div", { class: "row", style: "margin-top:.4rem" },
+    el("button", { class: "btn btn-primary", style: "flex:1", onclick: () => { rateGoals(ratings); commit(); } },
+      firstTime ? "Lock in my target" : "Save check-in"),
+    firstTime ? null : el("button", { class: "btn btn-ghost", onclick: () => { S.lastCheckinDate = todayKey(); commit(); } }, "Later")));
+  return card;
+}
+
+function renderReflection(yKey, yday) {
+  const selected = new Set();
+  const card = el("div", { class: "card" });
+  card.appendChild(el("p", { class: "label" }, "Yesterday — feedback, not a verdict"));
+  card.appendChild(el("p", { class: "tiny muted", style: "margin-bottom:.6rem" },
+    "Did any block run longer than planned? Tap it — the planner grows it 15m so the plan matches reality."));
+  const wrap = el("div", { style: "display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.7rem" });
+  for (const b of yday.blocks) {
+    const chip = el("button", { class: "chip", onclick: () => {
+      if (selected.has(b.title)) { selected.delete(b.title); chip.style.borderColor = ""; chip.style.color = ""; }
+      else { selected.add(b.title); chip.style.borderColor = "var(--violet)"; chip.style.color = "var(--violet-soft)"; }
+    } }, b.title);
+    wrap.appendChild(chip);
+  }
+  card.appendChild(wrap);
+  card.appendChild(el("div", { class: "row" },
+    el("button", { class: "btn btn-primary", style: "flex:1", onclick: () => { reflectYesterday(yKey, Array.from(selected)); commit(); } }, "Save"),
+    el("button", { class: "btn btn-ghost", onclick: () => { const d = S.days[yKey]; if (d) d.reflected = true; commit(); } }, "All fit")));
+  return card;
+}
+
+function renderHud(day) {
+  const doneCount = day.blocks.filter((b) => b.completed).length;
+  const total = day.blocks.length;
+  const level = levelFromXp(S.xp);
+  const card = el("div", { class: "card" });
+  if (S.notice) {
+    const n = S.notice;
+    card.appendChild(el("div", { class: "notice " + (n.kind === "protected" ? "protected" : "reset"), style: "margin-bottom:.8rem" },
+      el("span", { style: "flex:1" }, n.kind === "protected"
+        ? "Streak protected — a grace shield absorbed " + n.days + (n.days === 1 ? " day" : " days") + ". It refills as you stack clean days."
+        : "Back to 0 — a data point, not a verdict. Your level, XP, and " + S.lifetimeCleanDays + " lifetime clean days are still yours."),
+      el("button", { class: "xbtn", style: "font-size:14px", onclick: () => { S.notice = null; commit(); } }, "×")));
+  }
+  card.appendChild(el("div", { class: "row", style: "justify-content:space-between;align-items:flex-end;margin-bottom:.7rem" },
+    el("div", null,
+      el("p", { style: "font-size:26px;font-weight:800;line-height:1.1" }, String(S.lifetimeCleanDays)),
+      el("p", { class: "micro dim" }, "lifetime clean days")),
+    el("div", { style: "text-align:right" },
+      el("p", { class: "tiny", style: "font-weight:700;color:var(--amber)" }, "🔥 " + S.streak + "-day run"),
+      el("p", { class: "micro dim" }, S.graceRemaining > 0
+        ? "🛡 shield ready"
+        : "🛡 " + Math.max(1, TOKEN_REGEN_CLEAN_DAYS - S.cleanRunTowardToken) + "d to refill"))));
+  card.appendChild(el("div", { class: "row", style: "justify-content:space-between;margin-bottom:.25rem" },
+    el("span", { class: "micro dim" }, "Level " + level),
+    el("span", { class: "micro dim" }, (S.xp % XP_PER_LEVEL) + " / " + XP_PER_LEVEL + " xp")));
+  card.appendChild(el("div", { class: "bar-track", style: "margin-bottom:.7rem" },
+    el("div", { class: "bar-fill", style: "width:" + (S.xp % XP_PER_LEVEL) + "%" })));
+  card.appendChild(el("div", { class: "row", style: "justify-content:space-between;margin-bottom:.25rem" },
+    el("span", { class: "micro dim" }, "Today"),
+    el("span", { class: "micro dim" }, doneCount + " / " + total + " blocks")));
+  card.appendChild(el("div", { class: "bar-track" },
+    el("div", { class: "bar-fill", style: "width:" + (total ? Math.round((doneCount / total) * 100) : 0) + "%" })));
+  card.appendChild(el("p", { class: "micro", style: "margin-top:.8rem;color:var(--violet-soft);font-style:italic" },
+    S.settings.car.line, " ", el("span", { class: "dim", style: "font-style:normal" }, "· " + S.settings.car.numbers)));
+  return card;
+}
+
+function renderTrend(key, alignToday) {
+  const card = el("div", { class: "card" });
+  card.appendChild(el("p", { class: "label" }, "Alignment — 14 days"));
+
+  const dates = Object.keys(S.alignment).sort().slice(-13);
+  const values = dates.map((d) => S.alignment[d]).concat(alignToday);
+  const W = 280, H = 56, PAD = 4;
+  const n = values.length;
+  const x = (i) => (n === 1 ? W / 2 : PAD + (i * (W - 2 * PAD)) / (n - 1));
+  const y = (v) => H - PAD - (v / 100) * (H - 2 * PAD);
+  const svg = svgEl("svg", { viewBox: "0 0 " + W + " " + H, width: "100%", height: "56", preserveAspectRatio: "none" });
+  svg.appendChild(svgEl("line", { x1: 0, x2: W, y1: y(80), y2: y(80), stroke: "#3f3f46", "stroke-dasharray": "3 4", "stroke-width": 1 }));
+  if (n > 1) {
+    const solid = values.slice(0, -1).map((v, i) => x(i) + "," + y(v)).join(" ");
+    if (values.length > 2)
+      svg.appendChild(svgEl("polyline", { points: solid, fill: "none", stroke: "var(--violet)", "stroke-width": 2, "stroke-linejoin": "round" }));
+    svg.appendChild(svgEl("line", { x1: x(n - 2), y1: y(values[n - 2]), x2: x(n - 1), y2: y(values[n - 1]),
+      stroke: "var(--fuchsia)", "stroke-width": 2, "stroke-dasharray": "3 3" }));
+  }
+  values.forEach((v, i) => {
+    const last = i === n - 1;
+    svg.appendChild(svgEl("circle", { cx: x(i), cy: y(v), r: last ? 3.5 : 2.5,
+      fill: last ? "var(--bg)" : "var(--violet)", stroke: last ? "var(--fuchsia)" : "none", "stroke-width": last ? 2 : 0 }));
+  });
+  card.appendChild(svg);
+  card.appendChild(el("p", { class: "micro dim", style: "margin:.15rem 0 .9rem" },
+    "today " + alignToday + "/100 · the dotted rail at 80 is “aligned” · today stays dashed until it's finalized overnight"));
+
+  for (const g of S.goalAreas) {
+    const behavior = 1 - missRateFor(S, g.id, key);
+    card.appendChild(el("div", { style: "margin-bottom:.5rem" },
+      el("div", { class: "row", style: "justify-content:space-between" },
+        el("span", { class: "micro", style: "font-weight:600" }, g.label),
+        el("span", { class: "micro dim" }, g.rating + "/10")),
+      el("div", { class: "goalbar" },
+        el("div", { class: "fill", style: "width:" + g.rating * 10 + "%;background:" + GOAL_META[g.id].color }),
+        el("div", { class: "mark", style: "left:" + Math.round(behavior * 100) + "%", title: "behavior this week" }))));
+  }
+  const weakest = weakestGoal(S.goalWeights);
+  card.appendChild(el("p", { class: "chip", style: "margin-top:.4rem;border-color:rgba(139,92,246,.4)" },
+    el("span", { class: "dot", style: "background:" + GOAL_META[weakest].color }),
+    "Growth edge: " + GOAL_META[weakest].label + " (" + Math.round((S.goalWeights[weakest] || 0) * 100) + "% of the lean)"));
+  return card;
+}
+
+function renderNudgeFeed() {
+  const card = el("div", { class: "card" });
+  const latest = S.nudges[S.nudges.length - 1];
+  const head = el("button", { class: "row", style: "width:100%;text-align:left", onclick: () => { UI.logOpen = !UI.logOpen; render(); } },
+    el("span", { class: "label", style: "margin:0" }, "Training log"),
+    el("span", { class: "micro dim", style: "flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" },
+      latest ? latest.text : "no adjustments yet — live a few days and it starts learning you"),
+    el("span", { class: "dim" }, UI.logOpen ? "▴" : "▾"));
+  card.appendChild(head);
+  if (UI.logOpen) {
+    const KIND_ICON = { duration_trim: "✂", duration_grow: "⤢", weight_shift: "🧭", line_resonance: "♥", claude_emphasis: "✦" };
+    const list = el("div", { style: "margin-top:.6rem;display:flex;flex-direction:column;gap:.45rem" });
+    const recent = S.nudges.slice(-8).reverse();
+    if (!recent.length) list.appendChild(el("p", { class: "tiny dim" }, "Nothing yet."));
+    for (const nd of recent) {
+      list.appendChild(el("div", { class: "row", style: "align-items:flex-start" },
+        el("span", { style: "flex:none" }, KIND_ICON[nd.kind] || "•"),
+        el("p", { class: "tiny muted", style: "flex:1" }, nd.text, " ", el("span", { class: "micro dim" }, "(" + nd.date + ")"))));
+    }
+    list.appendChild(el("p", { class: "micro dim", style: "margin-top:.2rem" }, "Every automatic adjustment lands here. Nothing changes silently."));
+    card.appendChild(list);
+  }
+  return card;
+}
+
+function renderPlanHeader(day, scheduled) {
+  const totalMin = day.blocks.reduce((acc, b) => acc + b.durationMin, 0);
+  const card = el("div", { class: "card" });
+  card.appendChild(el("p", { class: "label" }, "Today's one thing"));
+  card.appendChild(el("input", { value: day.goal, placeholder: "The single thing that makes today a win…",
+    onchange: (e) => { day.goal = e.target.value; commit(); } }));
+  const h = Math.floor(day.dayStartMin / 60), m = day.dayStartMin % 60;
+  card.appendChild(el("div", { class: "row", style: "margin-top:.6rem;justify-content:space-between" },
+    el("div", { class: "row" },
+      el("span", { class: "micro dim" }, "Day starts"),
+      el("input", { type: "time", value: String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0"),
+        onchange: (e) => {
+          const parts = String(e.target.value || "06:00").split(":");
+          day.dayStartMin = (Number(parts[0]) || 0) * 60 + (Number(parts[1]) || 0);
+          commit();
+        } })),
+    el("span", { class: "micro dim" },
+      formatDuration(totalMin) + " planned · ends " + (scheduled.length ? formatClock(scheduled[scheduled.length - 1].endMin) : "—"))));
+  return card;
+}
+
+function renderBlocks(day, scheduled) {
+  const wrap = el("div", { style: "display:flex;flex-direction:column;gap:.5rem" });
+  scheduled.forEach((sch, i) => {
+    const b = sch.block;
+    const tmeta = TYPE_META[b.type];
+    const row = el("div", { class: "block" + (b.completed ? " done" : ""), style: "border-left-color:" + tmeta.color });
+    row.appendChild(el("input", { type: "checkbox", checked: b.completed, "aria-label": "Complete " + b.title,
+      onchange: () => toggleComplete(b.id) }));
+    const body = el("div", { style: "flex:1;min-width:0" });
+    // title (inline edit)
+    if (UI.editTitleId === b.id) {
+      const inp = el("input", { value: b.title, style: "margin-bottom:.2rem",
+        onkeydown: (e) => { if (e.key === "Enter") e.target.blur(); },
+        onblur: (e) => {
+          const v = e.target.value.trim();
+          if (v) b.title = v;
+          UI.editTitleId = null;
+          commit();
+        } });
+      body.appendChild(inp);
+      setTimeout(() => { inp.focus(); inp.select(); }, 0);
+    } else {
+      body.appendChild(el("p", { class: "btitle", onclick: () => { UI.editTitleId = b.id; render(); } }, b.title));
+    }
+    body.appendChild(el("p", { class: "btime" },
+      formatClock(sch.startMin) + " – " + formatClock(sch.endMin) + " · " + formatDuration(b.durationMin)));
+    const ctl = el("div", { class: "bctl" },
+      el("button", { onclick: () => { b.durationMin = Math.max(MIN_DURATION, b.durationMin - 15); commit(); }, "aria-label": "15 minutes shorter" }, "−15"),
+      el("button", { onclick: () => { b.durationMin = Math.min(MAX_DURATION, b.durationMin + 15); commit(); }, "aria-label": "15 minutes longer" }, "+15"),
+      el("button", { style: "color:" + tmeta.color, onclick: () => {
+        b.type = BLOCK_TYPES[(BLOCK_TYPES.indexOf(b.type) + 1) % BLOCK_TYPES.length]; commit();
+      }, title: "Tap to change type" }, "● " + tmeta.label),
+      el("button", { style: b.goal ? "color:" + GOAL_META[b.goal].color : "", onclick: () => {
+        b.goal = GOAL_CYCLE[(GOAL_CYCLE.indexOf(b.goal) + 1) % GOAL_CYCLE.length]; commit();
+      }, title: "Tag this block to a goal" }, b.goal ? "◈ " + GOAL_META[b.goal].short : "◇ goal"),
+      el("button", { "aria-label": "Move up", onclick: () => moveBlock(day, i, -1) }, "↑"),
+      el("button", { "aria-label": "Move down", onclick: () => moveBlock(day, i, 1) }, "↓"),
+      el("button", { "aria-label": "Delete block", style: "color:var(--rose)", onclick: () => deleteBlock(day, b, i) }, "✕"));
+    body.appendChild(ctl);
+    row.appendChild(body);
+    wrap.appendChild(row);
+  });
+  wrap.appendChild(el("button", { class: "btn btn-ghost", style: "width:100%", onclick: () => {
+    day.blocks.push({ id: makeId(), type: "work", title: "New block", durationMin: 30, completed: false, completedAt: null, goal: null });
+    syncCleanCredit(todayKey());
+    commit();
+  } }, "+ Add block"));
+  return wrap;
+}
+function moveBlock(day, index, dir) {
+  const t = index + dir;
+  if (t < 0 || t >= day.blocks.length) return;
+  const tmp = day.blocks[index];
+  day.blocks[index] = day.blocks[t];
+  day.blocks[t] = tmp;
+  commit();
+}
+function deleteBlock(day, b, index) {
+  day.blocks = day.blocks.filter((x) => x.id !== b.id);
+  syncCleanCredit(todayKey());
+  commit();
+  showToast('Deleted "' + b.title + '"', 6000, () => {
+    const d = todayPlan();
+    if (!d) return;
+    const idx = Math.min(Math.max(0, index), d.blocks.length);
+    d.blocks.splice(idx, 0, b);
+    syncCleanCredit(todayKey());
+    commit();
+  });
+}
+
+function renderCaptures(day) {
+  const card = el("div", { class: "card" });
+  card.appendChild(el("p", { class: "label" }, "Capture — park the thought, stay in the block"));
+  const inp = el("input", { placeholder: "A thought, a to-do, a worry — park it here…",
+    onkeydown: (e) => {
+      if (e.key !== "Enter") return;
+      const v = e.target.value.trim();
+      if (!v) return;
+      day.captures.push({ id: makeId("cap"), ts: new Date().toISOString(), text: v });
+      commit();
+    } });
+  card.appendChild(inp);
+  if (day.captures.length) {
+    const list = el("div", { style: "margin-top:.6rem;display:flex;flex-direction:column;gap:.35rem" });
+    for (const c of day.captures.slice().reverse()) {
+      list.appendChild(el("div", { class: "row" },
+        el("span", { class: "micro dim", style: "flex:none" }, istDateOfIso(c.ts) === day.date ? formatClock(minutesOfIso(c.ts)) : c.ts.slice(0, 10)),
+        el("span", { class: "tiny muted", style: "flex:1" }, c.text),
+        el("button", { class: "dim", "aria-label": "Delete capture", onclick: () => {
+          day.captures = day.captures.filter((x) => x.id !== c.id); commit();
+        } }, "✕")));
+    }
+    card.appendChild(list);
+  }
+  return card;
+}
+function minutesOfIso(iso) {
+  try {
+    const parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date(iso));
+    const get = (t) => Number((parts.find((p) => p.type === t) || {}).value || 0);
+    return get("hour") * 60 + get("minute");
+  } catch (e) { return 0; }
+}
+
+function renderCelebration() {
+  const milestoneTitle = S.streak >= 30 ? "Thirty days. This is who you are now."
+    : S.streak >= 14 ? "Two full weeks."
+    : S.streak >= 7 ? "A whole week, kept."
+    : S.streak >= 3 ? "Three in a row — momentum."
+    : "Day complete.";
+  const milestoneBody = S.streak >= 30 ? "A month of kept word. The self-image isn't aspiration anymore — it's record."
+    : S.streak >= 14 ? "Fourteen days of evidence. The man you're becoming is just… you, lately."
+    : S.streak >= 7 ? "Seven clean days — that's a grace shield earned and a week of proof banked."
+    : S.streak >= 3 ? "Three days of kept word. The servo is locking on."
+    : "Every block done. That's not luck — that's evidence you showed up as the man you're becoming.";
+  const host = el("div", { class: "celebrate", role: "status" },
+    el("div", { class: "inner", onclick: () => { UI.celebrate = false; host.remove(); } },
+      el("p", { style: "font-size:34px" }, "🏆"),
+      el("p", { style: "font-size:19px;font-weight:800;margin:.3rem 0" }, milestoneTitle),
+      el("p", { class: "tiny", style: "color:#ede9fe" }, milestoneBody),
+      S.streak > 0 ? el("p", { class: "tiny bold", style: "color:var(--amber);margin-top:.5rem" }, "🔥 " + S.streak + "-day streak") : null));
+  document.body.appendChild(host);
+  setTimeout(() => { UI.celebrate = false; host.remove(); }, 5200);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   9 · OVERLAYS — morning · pre-sleep+bridge · SOS · settings · help
+   ════════════════════════════════════════════════════════════════ */
+function openMorning() {
+  const key = todayKey(), day = S.days[key];
+  const yday = S.days[addDays(key, -1)];
+  const overnight = S.nudges.filter((n) => (n.date === key || n.date === addDays(key, -1)) && n.kind !== "line_resonance").slice(-3);
+  const hasIntro = !!(yday && yday.note) || overnight.length > 0;
+  const rehearsal = pickRehearsalGoal(S, key);
+  const steps = [];
+  if (hasIntro) steps.push({ kind: "listened" });
+  MORNING_STEPS.forEach((st, i) => steps.push({ kind: "step", st, i }));
+  steps.push({ kind: "focus" });
+  let idx = 0, focusVal = day.goal || "";
+
+  openOverlay(function build(panel, close) {
+    function paint() {
+      panel.textContent = "";
+      overlayHeader(panel, "Morning prime", close);
+      panel.appendChild(stepDots(steps.length, idx));
+      const s = steps[idx];
+      if (s.kind === "listened") {
+        panel.appendChild(el("p", { class: "label" }, "While you slept, it listened"));
+        if (yday && yday.note) panel.appendChild(el("p", { class: "tiny muted", style: "font-style:italic;border-left:3px solid var(--violet);padding-left:.7rem;margin:.5rem 0" }, "“" + yday.note + "” — you, last night"));
+        for (const nd of overnight) panel.appendChild(el("p", { class: "tiny dim", style: "margin:.3rem 0" }, "· " + nd.text));
+      } else if (s.kind === "step") {
+        const st = s.st;
+        panel.appendChild(el("p", { class: "label" }, st.title + " · ~" + st.seconds + "s"));
+        panel.appendChild(el("p", { style: "font-size:15px;line-height:1.6;margin:.5rem 0" },
+          st.body === null ? S.settings.identityStatement : st.body));
+        if (s.i === 1) { // rehearsal step — the servo aims it
+          panel.appendChild(el("div", { style: "margin-top:.7rem;border:1px solid rgba(91,33,182,.4);border-radius:12px;padding:.7rem;background:var(--violet-dim)" },
+            el("p", { class: "micro", style: "color:var(--violet-soft);margin-bottom:.25rem" }, REASON_INTRO[rehearsal.reason]),
+            el("p", { class: "tiny", style: "font-weight:600" },
+              rehearsal.reason === "missed" && rehearsal.missedTitle
+                ? 'See "' + rehearsal.missedTitle + '" going well today — started on time, finished, done.'
+                : REHEARSAL_LINE[rehearsal.goal])));
+        }
+      } else {
+        panel.appendChild(el("p", { class: "label" }, "Today's one thing"));
+        panel.appendChild(el("input", { value: focusVal, placeholder: "The single thing that makes today a win…",
+          oninput: (e) => { focusVal = e.target.value; } }));
+      }
+      panel.appendChild(el("div", { class: "row", style: "margin-top:1rem" },
+        idx > 0 ? el("button", { class: "btn btn-ghost", onclick: () => { idx--; paint(); } }, "Back") : null,
+        el("button", { class: "btn btn-primary", style: "flex:1", onclick: () => {
+          if (idx < steps.length - 1) { idx++; paint(); return; }
+          day.morningPrimeDone = true;
+          if (focusVal.trim()) day.goal = focusVal.trim();
+          closeOverlay(); commit();
+        } }, idx < steps.length - 1 ? "Next" : "Sealed. Begin the day.")));
+    }
+    paint();
+  });
+}
+
+function openPresleep() {
+  const key = todayKey(), day = S.days[key];
+  const scheduled = computeSchedule(day.dayStartMin, day.blocks);
+  const presleepLine = pickPresleepLine(S, key);
+  const candidates = S.reminderLines.filter((l) =>
+    day.shownLineIds.includes(l.id) || (presleepLine && l.id === presleepLine.id));
+  const resonanceDone = !!day.resonanceLineId;
+  // steps: 0..2 guided, 3 reflect, 4 resonance (maybe skipped), 5 bridge
+  const showResonance = !resonanceDone && candidates.length > 0;
+  const totalSteps = 4 + (showResonance ? 1 : 0) + 1;
+  let idx = 0, note = day.note || "", pasteVal = "";
+
+  openOverlay(function build(panel, close) {
+    function paint() {
+      panel.textContent = "";
+      overlayHeader(panel, "Pre-sleep impression", close);
+      panel.appendChild(stepDots(totalSteps, idx));
+
+      const finish = () => {
+        day.preSleepDone = true;
+        if (note.trim()) day.note = note.trim();
+        closeOverlay(); commit();
+      };
+      const nav = (nextLabel, onNext) => el("div", { class: "row", style: "margin-top:1rem" },
+        idx > 0 ? el("button", { class: "btn btn-ghost", onclick: () => { idx--; paint(); } }, "Back") : null,
+        el("button", { class: "btn btn-primary", style: "flex:1", onclick: onNext }, nextLabel));
+
+      if (idx <= 2) {
+        const st = PRESLEEP_STEPS[idx];
+        panel.appendChild(el("p", { class: "label" }, st.title + " · ~" + st.seconds + "s"));
+        panel.appendChild(el("p", { style: "font-size:15px;line-height:1.6;margin:.5rem 0" }, st.body));
+        if (idx === 2 && presleepLine) {
+          panel.appendChild(el("div", { style: "margin-top:.7rem;border:1px solid rgba(91,33,182,.4);border-radius:12px;padding:.7rem;background:var(--violet-dim)" },
+            el("p", { class: "micro", style: "color:var(--violet-soft);margin-bottom:.25rem" }, "Tonight's line — fall asleep on this one:"),
+            el("p", { class: "tiny", style: "font-weight:600;font-style:italic" }, presleepLine.text)));
+        }
+        panel.appendChild(nav("Next", () => { idx++; paint(); }));
+      } else if (idx === 3) {
+        panel.appendChild(el("p", { class: "label" }, "One honest line about today"));
+        const ta = el("textarea", { rows: 3, placeholder: "What actually happened in you today…", oninput: (e) => { note = e.target.value; } });
+        ta.value = note;
+        panel.appendChild(ta);
+        panel.appendChild(nav("Next", () => { idx++; paint(); }));
+      } else if (showResonance && idx === 4) {
+        panel.appendChild(el("p", { class: "label" }, "Which line carried you today?"));
+        panel.appendChild(el("p", { class: "tiny muted", style: "margin-bottom:.6rem" }, "One tap. That line earns a little more airtime — the rotation learns what actually lands."));
+        const wrap = el("div", { style: "display:flex;flex-direction:column;gap:.4rem" });
+        for (const l of candidates) {
+          wrap.appendChild(el("button", { class: "chip", style: "text-align:left;white-space:normal;padding:.5rem .7rem", onclick: () => {
+            markResonance(l.id); saveState(S); idx++; paint();
+          } }, l.text));
+        }
+        panel.appendChild(wrap);
+        panel.appendChild(nav("Skip", () => { idx++; paint(); }));
+      } else {
+        // bridge
+        panel.appendChild(el("p", { class: "label" }, "The Claude bridge (optional)"));
+        panel.appendChild(el("p", { class: "tiny muted", style: "margin-bottom:.6rem" },
+          "1 · Copy the Today card. 2 · Paste it to Claude in your own Claude app and talk the day through. 3 · Ask for tomorrow's plan, paste Claude's reply below, Apply. The planner adapts on its own either way — this is the richer layer, never a dependency."));
+        panel.appendChild(el("button", { class: "btn btn-ghost", style: "width:100%;margin-bottom:.6rem", onclick: () => {
+          const finalized = Object.keys(S.alignment).sort().slice(-14);
+          const avg14 = finalized.length
+            ? Math.round(finalized.reduce((acc, d) => acc + S.alignment[d], 0) / finalized.length) : null;
+          const card = buildTodayCard({
+            date: key,
+            identityStatement: S.settings.identityStatement,
+            carLine: S.settings.car.line,
+            goal: day.goal,
+            scheduled,
+            xp: S.xp, level: levelFromXp(S.xp), streak: S.streak,
+            graceRemaining: S.graceRemaining,
+            sosCount: sosCountOnDate(S, key),
+            reflectionNote: note.trim(),
+            alignmentToday: computeAlignment(day, sosCountOnDate(S, key)),
+            alignmentAvg14: avg14,
+            goalAreas: S.goalAreas,
+            weakestGoalLabel: GOAL_META[weakestGoal(S.goalWeights)].label,
+            recentNudges: S.nudges.slice(-3),
+          });
+          copyText(card, "Today card copied — paste it to Claude.");
+        } }, "⧉ Copy Today card for Claude"));
+        const ta = el("textarea", { rows: 4, placeholder: "Paste Claude's reply (or just its ```planner block) here…",
+          oninput: (e) => { pasteVal = e.target.value; } });
+        ta.value = pasteVal;
+        panel.appendChild(ta);
+        const msg = el("p", { class: "micro dim", style: "margin-top:.35rem" });
+        panel.appendChild(msg);
+        panel.appendChild(el("div", { class: "row", style: "margin-top:.6rem" },
+          el("button", { class: "btn btn-ghost", style: "flex:1", onclick: () => {
+            const patch = parseTomorrow(pasteVal);
+            if (!patch) { msg.textContent = "Couldn't find a valid planner block in that paste — nothing was changed."; return; }
+            const applied = applyTomorrow(patch);
+            saveState(S);
+            msg.textContent = "Applied for tomorrow: " + applied.join(", ") + ".";
+          } }, "Apply to tomorrow"),
+          el("button", { class: "btn btn-primary", style: "flex:1", onclick: finish }, "Done — lights out")));
+      }
+    }
+    paint();
+  });
+}
+
+function openSos() {
+  const seedIndex = S.sosEvents.length;
+  const pair = S.pleasureJoyPairs[seedIndex % Math.max(1, S.pleasureJoyPairs.length)];
+  let step = 0, loops = 0, maxStep = 0, reached = false;
+  const startTs = new Date().toISOString();
+  const finish = (outcome) => {
+    logSos({ id: makeId("sos"), ts: startTs, triggerTag: null, maxStepReached: maxStep, reachedPerson: reached, outcome });
+    closeOverlay(); commit();
+    if (outcome === "passed") showToast("+5 xp — you used the tool. That's the win.", 3500);
+  };
+  openOverlay(function build(panel, close) {
+    function paint() {
+      panel.textContent = "";
+      overlayHeader(panel, "Redirect", () => { finish("abandoned"); });
+      maxStep = Math.min(3, Math.max(maxStep, step)); // 4 is UI-only; 0-3 on the wire (matches React)
+      if (step === 0) {
+        panel.appendChild(el("p", { style: "font-size:15px;line-height:1.65" }, SOS_LINE));
+        panel.appendChild(el("button", { class: "btn btn-primary", style: "width:100%;margin-top:1rem", onclick: () => { step = 1; paint(); } }, "Start the redirect"));
+      } else if (step === 1) {
+        panel.appendChild(el("p", { class: "label" }, "1 · Physical reset"));
+        panel.appendChild(el("p", { style: "line-height:1.65;margin:.4rem 0" }, "Stand up. Four slow breaths. Cold water on the face — or 20 pushups. Change what the body is doing and the signal loses its grip."));
+        panel.appendChild(el("button", { class: "btn btn-primary", style: "width:100%;margin-top:.8rem", onclick: () => { step = 2; paint(); } }, "Body reset — next"));
+      } else if (step === 2) {
+        panel.appendChild(el("p", { class: "label" }, "2 · Reach a real person"));
+        panel.appendChild(el("p", { style: "line-height:1.65;margin:.4rem 0" }, "The pull thrives in isolation. One message, one call — presence beats the screen."));
+        if (S.settings.contactPhone) {
+          panel.appendChild(el("div", { class: "row", style: "margin:.5rem 0" },
+            el("a", { class: "btn btn-ghost", style: "flex:1;text-align:center;text-decoration:none;display:block", href: "tel:" + encodeURIComponent(S.settings.contactPhone) }, "📞 Call " + (S.settings.contactName || "them")),
+            el("a", { class: "btn btn-ghost", style: "flex:1;text-align:center;text-decoration:none;display:block", href: "sms:" + encodeURIComponent(S.settings.contactPhone) }, "💬 Text")));
+        }
+        panel.appendChild(el("div", { class: "row", style: "margin-top:.6rem" },
+          el("button", { class: "btn btn-ghost", style: "flex:1", onclick: () => { step = 3; paint(); } }, "Skip"),
+          el("button", { class: "btn btn-primary", style: "flex:1", onclick: () => { reached = true; step = 3; paint(); } }, "Reached out — next")));
+      } else if (step === 3) {
+        panel.appendChild(el("p", { class: "label" }, "3 · Become the man"));
+        panel.appendChild(el("p", { style: "line-height:1.6;margin:.4rem 0;font-weight:600" }, S.settings.identityStatement));
+        if (pair) panel.appendChild(el("div", { style: "border:1px solid var(--border);border-radius:12px;padding:.7rem;margin:.6rem 0" },
+          el("p", { class: "tiny", style: "color:var(--rose)" }, "Pleasure: " + pair.pleasure),
+          el("p", { class: "tiny", style: "color:var(--emerald);margin-top:.4rem" }, "Joy: " + pair.joy)));
+        panel.appendChild(el("p", { class: "tiny muted", style: "margin:.5rem 0" }, "Did it pass?"));
+        panel.appendChild(el("div", { class: "row" },
+          el("button", { class: "btn btn-ghost", style: "flex:1", onclick: () => {
+            if (loops >= 1) { step = 4; paint(); } else { loops += 1; step = 1; paint(); }
+          } }, loops >= 1 ? "Still here — again" : "Not yet — run it again"),
+          el("button", { class: "btn btn-primary", style: "flex:1", onclick: () => finish("passed") }, "It passed ✓")));
+      } else {
+        panel.appendChild(el("p", { style: "line-height:1.65" }, "Logged. That's not nothing — you stood in it and used the tool twice. Step away from the screen now: water, air, a different room. Tomorrow's rehearsal will aim right here."));
+        panel.appendChild(el("button", { class: "btn btn-primary", style: "width:100%;margin-top:1rem", onclick: () => finish("escalated") }, "Close"));
+      }
+    }
+    paint();
+  });
+}
+
+function openSettings() {
+  const s = S.settings;
+  let identity = s.identityStatement, cname = s.contactName, cphone = s.contactPhone;
+  let carLine = s.car.line, carNumbers = s.car.numbers, cadence = s.reminderCadenceMin;
+  openOverlay(function build(panel, close) {
+    overlayHeader(panel, "Settings", close);
+    const field = (labelText, value, oninput, rows) => el("div", { style: "margin-bottom:.8rem" },
+      el("p", { class: "label" }, labelText),
+      rows ? el("textarea", { rows, oninput }, value) : el("input", { value, oninput }));
+    panel.appendChild(field("Identity statement", identity, (e) => { identity = e.target.value; }, 3));
+    panel.appendChild(el("div", { class: "row", style: "gap:.6rem;margin-bottom:.8rem" },
+      el("div", { style: "flex:1" }, el("p", { class: "label" }, "Go-to person"),
+        el("input", { value: cname, placeholder: "Name", oninput: (e) => { cname = e.target.value; } })),
+      el("div", { style: "flex:1" }, el("p", { class: "label" }, "Their number"),
+        el("input", { value: cphone, placeholder: "+91…", inputmode: "tel", oninput: (e) => { cphone = e.target.value; } }))));
+    panel.appendChild(field("Car — ownership line", carLine, (e) => { carLine = e.target.value; }));
+    panel.appendChild(field("Car — the numbers", carNumbers, (e) => { carNumbers = e.target.value; }));
+    const cadenceLabel = el("p", { class: "label" }, "Reminder rhythm — every " + Math.round((cadence / 60) * 10) / 10 + "h");
+    panel.appendChild(el("div", { style: "margin-bottom:.8rem" }, cadenceLabel,
+      el("input", { type: "range", min: 30, max: 240, step: 30, value: cadence, oninput: (e) => {
+        cadence = Number(e.target.value);
+        cadenceLabel.textContent = "Reminder rhythm — every " + Math.round((cadence / 60) * 10) / 10 + "h";
+      } })));
+    panel.appendChild(el("button", { class: "btn btn-primary", style: "width:100%", onclick: () => {
+      S.settings.identityStatement = identity.trim() || s.identityStatement;
+      S.settings.contactName = cname.trim();
+      S.settings.contactPhone = cphone.trim();
+      S.settings.car.line = carLine.trim();
+      S.settings.car.numbers = carNumbers.trim();
+      S.settings.reminderCadenceMin = Math.min(360, Math.max(30, cadence));
+      closeOverlay(); commit();
+    } }, "Save"));
+
+    // notifications
+    panel.appendChild(el("div", { style: "margin-top:1.1rem;padding-top:.9rem;border-top:1px solid var(--border)" },
+      el("p", { class: "label" }, "Reminders while this tab is open"),
+      el("p", { class: "tiny muted", style: "margin-bottom:.5rem" },
+        "At your reminder rhythm, the current identity line appears as a system notification (or an in-page banner if notifications aren't allowed). Only works while the planner is open — this file has no server."),
+      el("button", { class: "btn btn-ghost", style: "width:100%", onclick: (e) => {
+        if (localStorage.getItem(NOTIFY_KEY) === "1") {
+          localStorage.removeItem(NOTIFY_KEY);
+          e.target.textContent = "Enable reminders";
+          showToast("Reminders off.", 2500);
+          return;
+        }
+        localStorage.setItem(NOTIFY_KEY, "1");
+        e.target.textContent = "Disable reminders";
+        if (typeof Notification !== "undefined" && Notification.permission === "default") {
+          Notification.requestPermission().then((p) => {
+            showToast(p === "granted" ? "Reminders on — you'll get system notifications." : "Reminders on — in-page banners (notifications blocked).", 4000);
+          });
+        } else {
+          showToast("Reminders on.", 2500);
+        }
+      } }, localStorage.getItem(NOTIFY_KEY) === "1" ? "Disable reminders" : "Enable reminders")));
+
+    // data
+    const fileInput = el("input", { type: "file", accept: "application/json,.json", style: "display:none",
+      onchange: (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const imported = importStateJson(String(reader.result || ""));
+          if (!imported) { showToast("That file isn't a planner backup.", 4000); return; }
+          S = imported;
+          ensureAndTick();
+          closeOverlay(); commit();
+          showToast("Imported — your data is loaded.", 3500);
+        };
+        reader.readAsText(file);
+        e.target.value = "";
+      } });
+    panel.appendChild(el("div", { style: "margin-top:1.1rem;padding-top:.9rem;border-top:1px solid var(--border)" },
+      el("p", { class: "label" }, "Your data"),
+      el("div", { class: "row" },
+        el("button", { class: "btn btn-ghost", style: "flex:1", onclick: () => {
+          const blob = new Blob([exportStateJson(S)], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = el("a", { href: url, download: "becoming-backup-" + todayKey() + ".json" });
+          document.body.appendChild(a); a.click(); a.remove();
+          URL.revokeObjectURL(url);
+        } }, "⬇ Export backup"),
+        el("button", { class: "btn btn-ghost", style: "flex:1", onclick: () => fileInput.click() }, "⬆ Import"),
+        fileInput),
+      el("p", { class: "micro dim", style: "margin-top:.5rem" },
+        "Everything lives in this browser, on this device. Export before clearing browser data — the same file also imports into the planner on your website, and vice-versa.")));
+  });
+}
+
+function openHelp() {
+  openOverlay(function build(panel, close) {
+    overlayHeader(panel, "How to operate", close);
+    const sec = el("div", { class: "helpsec" });
+    function h(t) { sec.appendChild(el("h3", null, t)); }
+    function p(t) { sec.appendChild(el("p", null, t)); }
+    function ul(items) { const u = el("ul"); for (const it of items) u.appendChild(el("li", null, it)); sec.appendChild(u); }
+
+    h("What this is");
+    p("A daily planner that doubles as an identity anchor. You set a target picture of who you're becoming (the four goal areas), live your day in blocks, and the system measures the gap and makes small automatic corrections — like a thermostat for your self-image. Every correction is visible in the Training log. Nothing changes silently.");
+
+    h("The daily rhythm — three touches");
+    ul([
+      "Morning (2–3 min): tap Morning prime. Read who you are, rehearse the day going well, feel it as already true, set today's ONE thing.",
+      "During the day: live the blocks. Tap the checkbox when one is done. Use ±15 if a block needs more or less time, ↑↓ to reorder, and Capture to park stray thoughts without leaving the block.",
+      "Night (2–3 min): tap Pre-sleep. Review the day as feedback, write one honest line, pick the line that carried you, and fall asleep on tonight's affirmation.",
+    ]);
+
+    h("The Claude bridge (optional but powerful)");
+    ul([
+      "In the Pre-sleep flow, tap “Copy Today card”.",
+      "Open your own Claude app (claude.ai — phone or desktop) and paste it. Talk the day through like a coaching session.",
+      "When you're done, ask Claude for tomorrow's plan. It replies with a small ```planner code block.",
+      "Copy Claude's reply, paste it into the box in the Pre-sleep flow, tap Apply. Tomorrow's plan, focus, and emphasis update automatically.",
+      "No account is connected and nothing is sent anywhere — you are the bridge. The planner adapts on its own even if you skip this.",
+    ]);
+
+    h("How it learns you (the servo)");
+    ul([
+      "Alignment (0–100): 80% finishing blocks + 10% each ritual + a small bonus for every redirect you run. Finalized overnight; the sparkline shows 14 days.",
+      "Weekly check-in: rate the four areas 1–10. The weakest area becomes your growth edge — reminders, the morning rehearsal, and tonight's line lean toward it.",
+      "Chronically missed block: quietly trimmed by 15 minutes (never below 15) so the plan matches reality — logged in the Training log.",
+      "Blocks that ran long: tell it in the morning reflection card and they grow 15 minutes.",
+      "Which line carried you: your nightly one-tap makes that line show up more often.",
+    ]);
+
+    h("Streak, shield, and never quitting");
+    ul([
+      "A clean day = every block done. Clean days build your streak and lifetime count.",
+      "One grace shield absorbs a missed day — the streak holds. It refills after 7 clean days.",
+      "A reset only ever touches the streak number. Your level, XP, and lifetime clean days are permanent evidence.",
+      "Miss a day entirely? The system counts it honestly and moves on. Feedback, not verdict.",
+    ]);
+
+    h("The redirect (SOS)");
+    p("When the pull toward the screen shows up: tap “I feel the pull”. Body reset → reach a real person → become the man. Using the tool earns XP — reaching for it IS the win, and tomorrow's morning rehearsal will aim at that exact moment.");
+
+    h("Your data");
+    ul([
+      "Everything stays in this browser on this device. No internet, no account, no tracking.",
+      "Settings → Export backup gives you a JSON file. Import it here, on another device, or into the planner on your website — they speak the same format.",
+      "If you clear browser data without exporting, the planner's memory is gone. Export weekly.",
+    ]);
+
+    h("Reminders");
+    p("Settings → Enable reminders. While the tab is open, the current identity line surfaces at your chosen rhythm as a system notification (or an in-page banner if notifications are blocked). For all-day nudges when the file is closed, set recurring phone alarms at the same cadence — the sticky bar always has your current line when you check in.");
+
+    panel.appendChild(sec);
+    panel.appendChild(el("button", { class: "btn btn-primary", style: "width:100%;margin-top:1rem", onclick: close }, "Got it"));
+  });
+}
+
+function openOnboarding() {
+  const screens = [
+    { title: "This file is your planner.", body: "No install, no account, no internet. Everything you do is saved privately in this browser, on this device. Bookmark this tab — or Add to Home Screen on your phone — so it's one tap away." },
+    { title: "The loop: prime → live → impress.", body: "Morning prime sets the frequency (2 min). The blocks are your day — one tap to complete. Pre-sleep closes the loop and plants tomorrow's impression. Do the two rituals daily; they're 10% of your Alignment score each." },
+    { title: "It trains toward who you're becoming.", body: "Rate your four goal areas weekly. The planner measures the gap between that target and how you actually live, then makes small corrections — trimming what chronically misses, growing what runs long, leaning reminders toward your growth edge. Every adjustment shows in the Training log. Nothing changes silently." },
+    { title: "At night, bring in the coach.", body: "The Pre-sleep flow builds a Today card. Copy it, paste it to Claude in your own Claude app, and talk the day through. Ask for tomorrow's plan, paste Claude's reply back, tap Apply — tomorrow rebuilds itself. First step now: the check-in card at the top. Rate the four areas to set your target." },
+  ];
+  let idx = 0;
+  openOverlay(function build(panel, close) {
+    function paint() {
+      panel.textContent = "";
+      panel.appendChild(stepDots(screens.length, idx));
+      panel.appendChild(el("p", { style: "font-size:19px;font-weight:800;margin:.4rem 0 .5rem" }, screens[idx].title));
+      panel.appendChild(el("p", { class: "muted", style: "line-height:1.65" }, screens[idx].body));
+      panel.appendChild(el("div", { class: "row", style: "margin-top:1.2rem" },
+        idx > 0 ? el("button", { class: "btn btn-ghost", onclick: () => { idx--; paint(); } }, "Back") : null,
+        el("button", { class: "btn btn-primary", style: "flex:1", onclick: () => {
+          if (idx < screens.length - 1) { idx++; paint(); return; }
+          try { localStorage.setItem(ONBOARD_KEY, "1"); } catch (e) {}
+          close();
+        } }, idx < screens.length - 1 ? "Next" : "Set my target →")));
+    }
+    paint();
+  }, function onclose() {
+    try { localStorage.setItem(ONBOARD_KEY, "1"); } catch (e) {}
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════
+   10 · TICK — midnight rollover, line rotation, optional reminders
+   ════════════════════════════════════════════════════════════════ */
+function currentSlot() {
+  const day = todayPlan();
+  const start = day ? day.dayStartMin : S.settings.dayStartMin;
+  const cadence = Math.max(30, S.settings.reminderCadenceMin);
+  return Math.floor(Math.max(0, istNowMinutes() - start) / cadence);
+}
+function minuteTick() {
+  const key = todayKey();
+  const hadToday = !!S.days[key];
+  const evaluated = S.lastEvalDate === addDays(key, -1);
+  if (!hadToday || !evaluated) {
+    ensureAndTick();
+    saveState(S);
+    render();
+  } else {
+    // refresh rotating line / now card without stomping on typing or overlays
+    const typing = document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+    const overlayOpen = !!document.querySelector(".ovl");
+    if (!typing && !overlayOpen) {
+      const day = S.days[key];
+      const line = weightedReminderLine(S, key, day.dayStartMin);
+      if (line && line.id !== UI.lastLineId) render();
+    }
+  }
+  // optional reminder notification at each cadence slot
+  if (localStorage.getItem(NOTIFY_KEY) === "1") {
+    const slot = currentSlot();
+    if (UI.lastNotifySlot === null) { UI.lastNotifySlot = slot; return; }
+    if (slot > UI.lastNotifySlot) {
+      UI.lastNotifySlot = slot;
+      const day = todayPlan();
+      const line = day ? weightedReminderLine(S, key, day.dayStartMin) : null;
+      const text = line ? line.text : S.settings.identityStatement;
+      if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+        try { new Notification("Becoming", { body: text, tag: "becoming-reminder" }); }
+        catch (e) { showToast(text, 8000); }
+      } else {
+        showToast(text, 8000);
+      }
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   11 · BOOT
+   ════════════════════════════════════════════════════════════════ */
+S = loadState();
+ensureAndTick();
+S.hydrated = true;
+saveState(S);
+UI.lastNotifySlot = currentSlot();
+render();
+
+let onboarded = false;
+try { onboarded = localStorage.getItem(ONBOARD_KEY) === "1"; } catch (e) {}
+if (!onboarded) openOnboarding();
+
+setInterval(minuteTick, 60000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") minuteTick();
+});
+</script>
+</body>
+</html>

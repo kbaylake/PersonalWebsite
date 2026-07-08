@@ -36,6 +36,22 @@ export function friendlyDate(dateStr: string): string {
   }
 }
 
+/** Whole days between two YYYY-MM-DD strings (b - a). */
+export function daysBetween(a: string, b: string): number {
+  const da = new Date(a + "T12:00:00Z").getTime();
+  const db = new Date(b + "T12:00:00Z").getTime();
+  return Math.round((db - da) / (24 * 60 * 60 * 1000));
+}
+
+/** IST calendar date of an ISO timestamp (for bucketing SOS events). */
+export function istDateOfIso(iso: string): string {
+  try {
+    return istDateString(new Date(iso));
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
+
 /** Minutes since local midnight, in IST. */
 export function istNowMinutes(): number {
   const parts = new Intl.DateTimeFormat("en-GB", {

@@ -5,6 +5,27 @@ import { Trophy } from "lucide-react";
 
 const COLORS = ["#8b5cf6", "#d946ef", "#f59e0b", "#10b981", "#06b6d4", "#f43f5e"];
 
+// Milestones get their own words — identical copy every night goes numb.
+function milestoneTitle(streak: number): string {
+  if (streak >= 30) return "Thirty days. This is who you are now.";
+  if (streak >= 14) return "Two full weeks.";
+  if (streak >= 7) return "A whole week, kept.";
+  if (streak >= 3) return "Three in a row — momentum.";
+  return "Day complete.";
+}
+
+function milestoneBody(streak: number): string {
+  if (streak >= 30)
+    return "A month of kept word. The self-image isn't aspiration anymore — it's record.";
+  if (streak >= 14)
+    return "Fourteen days of evidence. The man you're becoming is just… you, lately.";
+  if (streak >= 7)
+    return "Seven clean days — that's a grace shield earned and a week of proof banked.";
+  if (streak >= 3)
+    return "Three days of kept word. The servo is locking on.";
+  return "Every block done. That's not luck — that's evidence you showed up as the man you're becoming.";
+}
+
 export interface CelebrationProps {
   show: boolean;
   streak: number;
@@ -70,10 +91,11 @@ export default function CelebrationBanner({ show, streak, onClose }: Celebration
         onClick={onClose}
       >
         <Trophy size={40} className="text-amber-300" />
-        <p className="text-xl font-bold text-white text-center">Day complete.</p>
+        <p className="text-xl font-bold text-white text-center">
+          {milestoneTitle(streak)}
+        </p>
         <p className="text-sm text-violet-100 text-center max-w-xs">
-          Every block done. That&rsquo;s not luck — that&rsquo;s evidence you
-          showed up as the man you&rsquo;re becoming.
+          {milestoneBody(streak)}
         </p>
         {streak > 0 && (
           <p className="mt-1 text-sm font-semibold text-amber-200">

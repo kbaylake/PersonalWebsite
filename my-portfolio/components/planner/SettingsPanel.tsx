@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useRef, useState } from "react";
+import { X, Download, Upload } from "lucide-react";
 import type { PlannerSettings } from "./types";
+import { useOverlay } from "./useOverlay";
 
 export interface SettingsPanelProps {
   settings: PlannerSettings;
   onSave: (partial: Partial<PlannerSettings>) => void;
+  onExport: () => void;
+  onImport: (raw: string) => boolean;
   onClose: () => void;
 }
 
@@ -18,6 +21,9 @@ export default function SettingsPanel(props: SettingsPanelProps) {
   const [carLine, setCarLine] = useState(s.car.line);
   const [carNumbers, setCarNumbers] = useState(s.car.numbers);
   const [cadence, setCadence] = useState(s.reminderCadenceMin);
+  const [importMsg, setImportMsg] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const overlayRef = useOverlay(props.onClose);
 
   function save() {
     props.onSave({
@@ -42,7 +48,10 @@ export default function SettingsPanel(props: SettingsPanelProps) {
       aria-label="Settings"
     >
       <div className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm" onClick={props.onClose} />
-      <div className="relative w-full max-w-md rounded-2xl border border-violet-800/40 bg-zinc-900 p-5 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto no-scrollbar">
+      <div
+        ref={overlayRef}
+        className="relative w-full max-w-md rounded-2xl border border-violet-800/40 bg-zinc-900 p-5 shadow-2xl animate-scale-in max-h-[90vh] overflow-y-auto no-scrollbar"
+      >
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold text-zinc-100">Settings</h2>
           <button
@@ -123,6 +132,55 @@ export default function SettingsPanel(props: SettingsPanelProps) {
         >
           Save
         </button>
+
+        {/* Data — the backup moves between this site and the standalone file */}
+        <div className="mt-5 pt-4 border-t border-zinc-800">
+          <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">
+            Your data
+          </p>
+          <div className="flex gap-2">
+            <button
+              onClick={props.onExport}
+              className="btn-press flex-1 flex items-center justify-center gap-2 rounded-xl border border-zinc-700 py-2.5 text-sm text-zinc-300 hover:border-violet-600/60"
+            >
+              <Download size={14} /> Export backup
+            </button>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="btn-press flex-1 flex items-center justify-center gap-2 rounded-xl border border-zinc-700 py-2.5 text-sm text-zinc-300 hover:border-violet-600/60"
+            >
+              <Upload size={14} /> Import
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const ok = props.onImport(String(reader.result ?? ""));
+                  setImportMsg(
+                    ok
+                      ? "Imported — your data is loaded."
+                      : "That file isn't a planner backup."
+                  );
+                };
+                reader.readAsText(file);
+                e.target.value = "";
+              }}
+            />
+          </div>
+          {importMsg && (
+            <p className="mt-2 text-xs text-zinc-400">{importMsg}</p>
+          )}
+          <p className="mt-2 text-[11px] text-zinc-600">
+            Everything lives in this browser. Export before clearing site data —
+            the same file also imports into the standalone planner.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ import {
   Palette,
 } from "lucide-react";
 import type { Block, BlockType } from "./types";
-import { BLOCK_TYPE_META, BLOCK_TYPES } from "./blockConfig";
+import { BLOCK_TYPE_META, BLOCK_TYPES, GOAL_META } from "./blockConfig";
 import { formatClock, formatDuration, nextDayFlag } from "./util";
 import BlockTypePicker from "./BlockTypePicker";
 
@@ -26,6 +26,7 @@ export interface BlockCardProps {
   onStep: (delta: number) => void;
   onEditTitle: (title: string) => void;
   onSetType: (type: BlockType) => void;
+  onCycleGoal: () => void;
   onDelete: () => void;
   onMove: (dir: -1 | 1) => void;
   // Desktop DnD
@@ -74,8 +75,17 @@ export default function BlockCard(props: BlockCardProps) {
 
   return (
     <li
-      draggable
-      onDragStart={props.onDragStart}
+      draggable={!editing}
+      onDragStart={(e) => {
+        // Only the grip/arrow handle starts a drag — never the checkbox,
+        // title, or steppers (confirmed v1 bug: text selection hijacked).
+        const target = e.target as HTMLElement;
+        if (!target.closest?.("[data-drag-handle]")) {
+          e.preventDefault();
+          return;
+        }
+        props.onDragStart();
+      }}
       onDragOver={props.onDragOver}
       onDrop={props.onDrop}
       onDragEnd={props.onDragEnd}
@@ -100,8 +110,11 @@ export default function BlockCard(props: BlockCardProps) {
         {/* Accent bar */}
         <span className={`w-1.5 shrink-0 ${meta.accent}`} aria-hidden />
 
-        {/* Reorder controls */}
-        <div className="flex flex-col items-center justify-center px-1 gap-0.5">
+        {/* Reorder controls — this cluster is the only drag handle */}
+        <div
+          data-drag-handle
+          className="flex flex-col items-center justify-center px-1 gap-0.5"
+        >
           <button
             onClick={() => props.onMove(-1)}
             disabled={props.index === 0}
@@ -193,6 +206,27 @@ export default function BlockCard(props: BlockCardProps) {
             )}
             <span className="text-zinc-700">·</span>
             <span>{formatDuration(block.durationMin)}</span>
+            <button
+              onClick={props.onCycleGoal}
+              aria-label={
+                block.goal
+                  ? `Goal: ${GOAL_META[block.goal].label}. Tap to change.`
+                  : "No goal tagged. Tap to tag a goal."
+              }
+              title="Which goal does this block serve?"
+              className={`btn-press flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-sans ${
+                block.goal
+                  ? `border-zinc-700 ${GOAL_META[block.goal].text}`
+                  : "border-zinc-800 text-zinc-600"
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  block.goal ? GOAL_META[block.goal].dot : "bg-zinc-700"
+                }`}
+              />
+              {block.goal ? GOAL_META[block.goal].short : "goal"}
+            </button>
           </div>
         </div>
 
