@@ -228,3 +228,66 @@ nav a:hover .nav-underline,
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* ══ Planner ══════════════════════════════════════════════════════ */
+
+/* Block completion glow pulse */
+@keyframes plannerCompletePulse {
+  0%   { box-shadow: 0 0 18px 2px var(--glow, rgba(139,92,246,0.35)); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}
+.planner-complete-pulse {
+  animation: plannerCompletePulse 0.7s ease-out;
+}
+
+/* XP counter bump */
+@keyframes plannerXpBump {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.planner-xp-bump {
+  animation: plannerXpBump 0.4s ease-out;
+}
+
+/* Confetti */
+@keyframes plannerConfettiFall {
+  0%   { transform: translateY(-12vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(112vh) rotate(var(--rot, 360deg)); opacity: 0; }
+}
+.planner-confetti-piece {
+  position: absolute;
+  top: 0;
+  border-radius: 2px;
+  animation: plannerConfettiFall var(--dur, 2s) linear var(--delay, 0s) forwards;
+}
+
+/* Breathing circle (rituals) */
+@keyframes plannerBreathe {
+  0%, 100% { transform: scale(0.82); opacity: 0.55; }
+  50%      { transform: scale(1.1);  opacity: 1; }
+}
+.planner-breathe {
+  animation: plannerBreathe 5s ease-in-out infinite;
+}
+.planner-breathe-slow {
+  animation-duration: 8s;
+}
+
+/* Drag ghost */
+.drag-ghost {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .planner-complete-pulse,
+  .planner-xp-bump,
+  .planner-breathe {
+    animation: none !important;
+  }
+  .planner-confetti-piece {
+    display: none !important;
+  }
+}
