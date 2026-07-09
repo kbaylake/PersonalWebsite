@@ -40,8 +40,9 @@
   <span class="pill">User guide</span>
   <h1>Becoming — the planner that trains you toward who you're becoming</h1>
   <p class="lead">One page. Everything about how to operate the planner at
-    <b>bedifutureworks.com/planner</b> — the daily rhythm, the Claude coaching loop,
-    phone reminders, calendar sync, and how the learning system works underneath.</p>
+    <b>bedifutureworks.com/planner</b> — the daily rhythm, the automatic loop that
+    runs your day through real life, the Claude coaching, phone reminders, and how
+    the learning system works underneath.</p>
 
   <div class="card">
     <b>Contents</b>
@@ -49,9 +50,10 @@
       <li><a href="#idea">The idea in 60 seconds</a></li>
       <li><a href="#day">Your daily rhythm</a></li>
       <li><a href="#blocks">Working with blocks</a></li>
-      <li><a href="#claude">The Claude coaching loop</a></li>
-      <li><a href="#reminders">Phone reminders (.ics)</a></li>
-      <li><a href="#calendar">Google Calendar sync</a></li>
+      <li><a href="#loop">The automatic loop</a></li>
+      <li><a href="#claude">The Claude coaching</a></li>
+      <li><a href="#reminders">Phone reminders</a></li>
+      <li><a href="#setup">One-time setup</a></li>
       <li><a href="#learning">How it learns you</a></li>
       <li><a href="#streak">Streak, shield, XP</a></li>
       <li><a href="#sos">The redirect (SOS)</a></li>
@@ -70,6 +72,11 @@
   <p>It also carries the other two books: rotating first-person identity lines all day
   (Murphy — repeated impression), and two short rituals at the day's open and close, when
   the mind is most impressionable (Murphy + Dispenza — feel the future as already real).</p>
+  <p>What makes it more than a planner: two scheduled <b>Claude routines</b> — running on
+  your own subscription, no API keys — close the loop through your real life. At night one
+  measures your day and proposes tomorrow; each morning the other lays that day onto your
+  calendar and phone. You wake up to a day already built around who you're becoming, and you
+  stay in control: it proposes, you approve.</p>
 
   <h2 id="day">2 · Your daily rhythm — three touches</h2>
   <div class="card">
@@ -91,9 +98,33 @@
     <li><b>Capture:</b> a stray thought mid-block? Park it in the Capture box and stay in the block.</li>
   </ul>
 
-  <h2 id="claude">4 · The Claude coaching loop (end of day)</h2>
-  <p>This uses your normal <b>Claude.ai subscription</b> — no API keys, nothing connected.
-  You are the bridge:</p>
+  <h2 id="loop">4 · The automatic loop (the cybernetic part)</h2>
+  <p>Two scheduled Claude routines run every day on your subscription and keep the planner
+  in sync with your real life through a small shared cloud store. They <b>sense</b> what you
+  actually did and <b>act</b> in the real world — but they only ever propose changes; you
+  approve them.</p>
+  <div class="card">
+    <div class="step"><span class="num">🌙</span><span><b>Evening — 22:00 IST.</b> Reads your day, scores your Alignment, notices your weak hours, then reads tomorrow's real meetings (Google Calendar) and due tasks (Asana). It writes you a personal coaching note and <b>proposes tomorrow's plan</b>. All of it is waiting in the app when you do your pre-sleep ritual.</span></div>
+    <div class="step"><span class="num">☀️</span><span><b>Morning — 07:00 IST.</b> Takes the plan you approved (or auto-applies it with a one-tap revert if you didn't get to it), puts every block on your <b>Google Calendar</b> with popup reminders, pre-plants <b>phone pings</b> in your weak hours, and emails you a <b>morning digest</b>. You wake at 07:30 to a day already set up.</span></div>
+  </div>
+  <p><b>You stay in charge.</b> At pre-sleep the app shows a <b>proposal card</b> — Approve,
+  Apply now, or Dismiss. If a morning plan was auto-applied, the card offers a one-tap Revert.
+  The routines never mark blocks done, never touch your XP or streak — those are your real
+  actions. And the whole thing degrades gracefully: no sync key → the planner just works
+  offline as before; a routine can't reach a connector → it still writes your plan and pings.</p>
+  <div class="card">
+    <b>The sync chip</b> (top-right of the board) tells you the state:
+    <span style="color:var(--emerald)">●</span> synced ·
+    <span style="color:var(--amber)">●</span> syncing ·
+    <span style="color:var(--text3)">●</span> offline. No chip at all = no sync key set (pure local mode).
+  </div>
+  <p>There's also an async <b>coach</b> card: leave it a message any time (“am I overloading
+  Tuesdays?”) and the next routine answers inside the app. The “Go deeper tonight” button
+  copies today's snapshot and opens claude.ai for a live conversation.</p>
+
+  <h2 id="claude">5 · The Claude coaching (the manual bridge)</h2>
+  <p>Even without the routines, you can coach any night by hand with your
+  <b>Claude.ai subscription</b> — no API keys. You are the bridge:</p>
   <div class="card">
     <div class="step"><span class="num">1</span><span>In the Pre-sleep flow, tap <b>Copy Today card</b>. It packages your day — blocks done/missed, alignment, goal ratings, your reflection — with coaching instructions.</span></div>
     <div class="step"><span class="num">2</span><span>Open your Claude app (phone or desktop), paste, and <b>talk the day through</b> like a coaching session. Claude knows to treat misses as feedback, help you feel the goal as real, and end on a pre-sleep impression.</span></div>
@@ -105,35 +136,30 @@
   ignored — a bad paste can never corrupt your plan. And the planner adapts on its own
   every night regardless; the Claude loop is the richer layer, never a dependency.</p>
 
-  <h2 id="reminders">5 · Phone reminders — the .ics file (no account needed)</h2>
-  <p>The planner can't ring your phone when it's closed — but your calendar can. One import,
-  and your identity lines fire as real notifications at your chosen rhythm, every day:</p>
+  <h2 id="reminders">6 · Phone reminders (two free ways, no Google Cloud)</h2>
+  <p>The planner can't ring your phone when it's closed — so it uses two free channels that can:</p>
   <div class="card">
-    <div class="step"><span class="num">1</span><span>Planner → ⚙ Settings → <b>Reminders (.ics)</b>. A file downloads (<code>becoming-reminders.ics</code>).</span></div>
-    <div class="step"><span class="num">2</span><span>On a computer, open <b>calendar.google.com</b> → ⚙ Settings → <b>Import &amp; export</b> → select the file → Import. (Apple Calendar / Outlook: just open the file.)</span></div>
-    <div class="step"><span class="num">3</span><span>Done. Each reminder is a small recurring daily event whose <b>title is the line itself</b>, so the notification on your phone reads like the planner speaking.</span></div>
+    <div class="step"><span class="num">A</span><span><b>ntfy pushes (best).</b> Install the free <b>ntfy</b> app, pick a secret topic word, and put it in Settings. The morning routine pushes real notifications to that topic — including extra pings pre-planted in your weak hours. Tap <b>Test</b> in Settings to confirm it reaches your phone.</span></div>
+    <div class="step"><span class="num">B</span><span><b>Calendar file (zero setup).</b> Settings → <b>Calendar reminders (.ics)</b> downloads <code>becoming-reminders.ics</code>. Import it once at <b>calendar.google.com</b> → ⚙ Settings → Import &amp; export (Apple Calendar / Outlook: just open the file). Each identity line becomes a recurring daily notification whose title <i>is</i> the line.</span></div>
   </div>
-  <p><b>Tip:</b> re-download and re-import after you change your reminder rhythm or after the
-  system's line weights have learned you for a few weeks (delete the old "Becoming" events
-  first, or import into a dedicated calendar you can clear in one tap).</p>
+  <p>Once the full loop is set up, the morning routine also puts every <b>block</b> on your
+  Google Calendar as a timed event with a popup reminder — via your claude.ai Google Calendar
+  connector, so there's no Google Cloud project or OAuth client to create. The .ics file stays
+  as the always-works fallback.</p>
 
-  <h2 id="calendar">6 · Google Calendar sync — today's blocks as real events</h2>
-  <p>Settings → <b>Sync today → Google</b> pushes every block of today's plan to your Google
-  Calendar as timed events with popup reminders. Re-sync after editing — it cleans up its own
-  previous events first, so there are never duplicates. Nothing is stored on any server; the
-  sync runs entirely in your browser.</p>
-  <h3>One-time setup (~15 min, needed once)</h3>
-  <p>The sync needs a Google OAuth <b>Client ID</b> (a public identifier — no secret involved):</p>
+  <h2 id="setup">7 · One-time setup (to switch the loop on)</h2>
+  <p>The planner works fully offline out of the box. These steps light up the automatic loop —
+  do them once. Everything here is free; no Anthropic API key, no Google Cloud, no paid service.</p>
   <div class="card">
-    <div class="step"><span class="num">1</span><span>Go to <b>console.cloud.google.com</b> → create a project (name it anything, e.g. <i>becoming-planner</i>).</span></div>
-    <div class="step"><span class="num">2</span><span><b>APIs &amp; Services → Library</b> → search "Google Calendar API" → <b>Enable</b>.</span></div>
-    <div class="step"><span class="num">3</span><span><b>APIs &amp; Services → OAuth consent screen</b> → External → fill the app name + your email → add yourself under <b>Test users</b>. (Staying in "Testing" mode is fine — it's just you.)</span></div>
-    <div class="step"><span class="num">4</span><span><b>Credentials → Create credentials → OAuth client ID</b> → type <b>Web application</b> → under <b>Authorized JavaScript origins</b> add <code>https://bedifutureworks.com</code> (and <code>http://localhost:3000</code> for local dev). Copy the Client ID.</span></div>
-    <div class="step"><span class="num">5</span><span>In <b>Vercel</b> → your project → Settings → Environment Variables → add <code>NEXT_PUBLIC_GOOGLE_CLIENT_ID</code> = the Client ID → <b>Redeploy</b>.</span></div>
-    <div class="step"><span class="num">6</span><span>Back in the planner: Settings → Sync today → Google → a Google popup asks permission once → done.</span></div>
+    <div class="step"><span class="num">1</span><span><b>Cloud store.</b> Vercel dashboard → <b>Marketplace → Upstash Redis</b> (free, no card) → connect to the project. It auto-adds two env vars. Then add one more, <code>PLANNER_SYNC_KEY</code>, set to a long random string you invent → <b>Redeploy</b>.</span></div>
+    <div class="step"><span class="num">2</span><span><b>Link your devices.</b> Open the planner → ⚙ Settings → paste that same key in <b>Sync key</b>. Do this on every device (phone, laptop). The sync chip turns green.</span></div>
+    <div class="step"><span class="num">3</span><span><b>Phone pings.</b> Install the <b>ntfy</b> app → subscribe to a secret topic → put the topic in Settings → tap <b>Test</b>. Turn on “pre-plant reminders in my weak hours” if you want them.</span></div>
+    <div class="step"><span class="num">4</span><span><b>Connectors.</b> In your Claude app → Settings → <b>Connectors</b> → make sure <b>Google Calendar</b>, <b>Gmail</b>, and <b>Asana</b> are connected. (Section 8 below has a ready-made prompt to test them.)</span></div>
+    <div class="step"><span class="num">5</span><span><b>Distraction sensor (optional).</b> iPhone <b>Shortcuts → Automation</b> → “When Instagram opened” → Get Contents of URL → <b>POST</b> <code>https://bedifutureworks.com/api/planner/event?key=YOUR_KEY</code>, body <code>{"type":"distraction","app":"instagram"}</code> → Run Immediately. Repeat per app. Now the loop learns your weak hours from real life.</span></div>
+    <div class="step"><span class="num">6</span><span><b>The routines.</b> They're scheduled to run 07:00 and 22:00 IST. They read <code>PLANNER_SYNC_KEY</code> from their environment — make sure it's available to them, and they'll do the rest.</span></div>
   </div>
 
-  <h2 id="learning">7 · How it learns you (the servo, in plain words)</h2>
+  <h2 id="learning">8 · How it learns you (the servo, in plain words)</h2>
   <table>
     <tr><th>Signal</th><th>What the system does</th></tr>
     <tr><td>Weekly check-in (rate 4 goals, 1–10)</td><td>The weakest area becomes your <b>growth edge</b> — reminders, the morning rehearsal, and tonight's line all lean toward it.</td></tr>
@@ -146,7 +172,7 @@
   <p>Every one of these lands in the <b>Training log</b> on the board, with its reason.
   If the system did it, you can read why.</p>
 
-  <h2 id="streak">8 · Streak, shield, XP — evidence, never judgment</h2>
+  <h2 id="streak">9 · Streak, shield, XP — evidence, never judgment</h2>
   <ul>
     <li>A <b>clean day</b> = every block done. Clean days build your streak and your lifetime count.</li>
     <li>One <b>grace shield</b> absorbs a missed day — the streak holds. It refills after 7 clean days.</li>
@@ -154,27 +180,28 @@
     <li>A day you never opened the planner counts as a miss — honestly — and the system moves on. Feedback, not verdict.</li>
   </ul>
 
-  <h2 id="sos">9 · The redirect (SOS)</h2>
+  <h2 id="sos">10 · The redirect (SOS)</h2>
   <p>When the pull toward the screen shows up, tap <b>“I feel the pull.”</b> Three steps,
   one at a time: physical reset → reach a real person → become the man (your identity line +
   a pleasure-vs-joy reframe). Using the tool earns XP — <b>reaching for it is the win</b> —
   and the next morning's rehearsal automatically aims at that exact moment.</p>
 
-  <h2 id="data">10 · Your data &amp; backups</h2>
+  <h2 id="data">11 · Your data &amp; backups</h2>
   <ul>
-    <li>Everything lives in <b>your browser on your device</b>. No account, no server, no tracking.</li>
-    <li>That also means data is <b>per-device</b> — your phone and laptop each have their own copy.</li>
+    <li><b>Without a sync key:</b> everything lives in your browser on that device — no account, no server, no tracking — and each device has its own copy.</li>
+    <li><b>With a sync key:</b> your state also mirrors to your private cloud store, so phone, laptop, and the routines all see the same plan live. The key itself is stored only on each device and is <b>never</b> included in a backup export.</li>
     <li>Settings → <b>Export backup</b> downloads a JSON file. <b>Import</b> loads it anywhere — another browser, another device, or the offline copy (<code>becoming-planner.html</code>, a single file that runs the whole planner without internet and speaks the same backup format).</li>
-    <li>Export weekly. If you clear browser data without a backup, the planner's memory of you is gone.</li>
+    <li>Export before clearing browser data. The cloud store is the live mirror, not a long-term archive — keep a JSON backup too.</li>
   </ul>
 
-  <h2 id="faq">11 · FAQ</h2>
+  <h2 id="faq">12 · FAQ</h2>
   <h3>I missed a whole day. Did I break it?</h3>
   <p>No. The shield absorbs it if you have one; otherwise only the streak number resets.
   Your level, XP, lifetime days, and everything it has learned about you are untouched.</p>
   <h3>Why don't I see the same data on my phone and laptop?</h3>
-  <p>Storage is per-device by design (no accounts). Move data with Export → Import. Pick one
-  primary device — usually the phone — and live there.</p>
+  <p>Set the same <b>sync key</b> in Settings on both (section 7). Once they share a key, every
+  device — and the nightly routines — read and write the same live plan. Without a key, storage
+  stays per-device; move data with Export → Import instead.</p>
   <h3>Can Claude write into the planner directly?</h3>
   <p>No — and that's deliberate. You're on a Claude subscription (no API keys), so the
   copy-paste is the write step. It also means you consciously read every change before
@@ -184,8 +211,10 @@
   block on its own. If Claude didn't produce one, ask: <i>"give me tomorrow's plan in the
   planner format from my card."</i></p>
   <h3>Do the reminders work when the planner is closed?</h3>
-  <p>The .ics calendar reminders do — that's their whole point. The in-app rotation and
-  optional browser notifications only run while the planner is open.</p>
+  <p>Yes. Three of the four channels fire with the planner shut: ntfy phone pushes (sent by the
+  morning routine), Google Calendar popups (the routine writes timed events with reminders), and
+  the .ics calendar you imported once. Only the in-app rotation and optional browser notifications
+  need the planner open.</p>
   <h3>What if a nudge is wrong — it trimmed a block I care about?</h3>
   <p>Just resize the block back with +15. Your manual choice becomes the new data, and the
   cooldown stops the system from fighting you. You always outrank the servo.</p>
