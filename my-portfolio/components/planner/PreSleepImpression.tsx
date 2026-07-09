@@ -12,6 +12,7 @@ import { useOverlay } from "./useOverlay";
 export interface PreSleepProps {
   cardInput: Omit<TodayCardInput, "reflectionNote">;
   scheduled: ScheduledBlock[];
+  coachEveningNote: string; // the routine's personal reframe for tonight
   presleepLine: ReminderLine | undefined; // tonight's servo-chosen affirmation
   resonanceCandidates: ReminderLine[]; // lines actually shown today
   resonanceDone: boolean;
@@ -126,6 +127,12 @@ export default function PreSleepImpression(props: PreSleepProps) {
               <p className="text-sm text-zinc-300 leading-relaxed">
                 {PRESLEEP_STEPS[step].body}
               </p>
+              {/* First step carries the routine's personal coaching reframe */}
+              {step === 0 && props.coachEveningNote && (
+                <p className="mt-4 rounded-xl border border-violet-800/40 bg-violet-950/25 px-4 py-3 text-sm text-violet-100 leading-relaxed text-left">
+                  {props.coachEveningNote}
+                </p>
+              )}
               {/* Final guided step: tonight's servo-chosen line to sleep on */}
               {step === GUIDED - 1 && props.presleepLine && (
                 <p className="mt-4 rounded-xl border border-violet-800/40 bg-violet-950/20 px-4 py-3 text-sm italic text-violet-200">

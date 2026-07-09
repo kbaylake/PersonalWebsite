@@ -186,7 +186,7 @@ export const DEFAULT_DAY: TemplateBlock[] = [
   { type: "sleep", title: "Pre-sleep impression", durationMin: 20 },
 ];
 
-export const DEFAULT_DAY_START_MIN = 6 * 60; // 06:00
+export const DEFAULT_DAY_START_MIN = 7 * 60 + 30; // 07:30 IST wake
 
 /**
  * Single source for a template title's baseline duration — used by both the

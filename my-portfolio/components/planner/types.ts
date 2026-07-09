@@ -134,6 +134,13 @@ export interface PlannerState {
   titleStats: Record<string, ("done" | "miss")[]>; // rolling last-7 outcomes per template title
   titleNudgeDates: Record<string, string>; // title → date of last auto duration nudge
   claudeEmphasis: { category: ReminderCategory; date: string } | null; // one-day override from the bridge
+  // ── v3 cybernetic-loop state (written by the scheduled routines) ──
+  proposal: PlanProposal | null;
+  coachNote: CoachNote | null;
+  coachInbox: CoachMessage[]; // async chat with the coach; cap 50
+  distractionEvents: DistractionEvent[]; // merged from the sensor endpoint; cap 200
+  pingPrefs: PingPrefs;
+  routineLog: RoutineLogEntry[]; // last 14 routine runs
 }
 
 // The strictly-validated shape a pasted `planner` block from Claude may contain.
@@ -142,4 +149,54 @@ export interface TomorrowPatch {
   focus?: string;
   weightGoal?: ReminderCategory;
   presleepAffirmation?: string;
+}
+
+// ── v3: the real-life cybernetic loop (controller = scheduled Claude agent) ──
+
+export interface ProposalBlock {
+  type: BlockType;
+  title: string;
+  durationMin: number;
+  goal: GoalId | null;
+  fixed?: boolean; // a real calendar meeting — surfaced but not reshuffled
+}
+
+/** Tomorrow's plan, proposed by the evening routine, approved at pre-sleep. */
+export interface PlanProposal {
+  date: string; // the day this plan is for
+  focus: string;
+  blocks: ProposalBlock[];
+  rationale: string; // one short paragraph: why this shape, from what it sensed
+  status: "pending" | "approved" | "applied" | "reverted";
+  createdBy: string; // "evening-routine" | "morning-routine"
+}
+
+/** The routine's written coaching, surfaced in the rituals. */
+export interface CoachNote {
+  date: string;
+  morning?: string; // 2-line rehearsal cue → MorningPrime step 0
+  evening?: string; // Maltz/Dispenza/Murphy reframe → pre-sleep guided text
+}
+
+export interface CoachMessage {
+  id: string;
+  ts: string;
+  from: "user" | "coach";
+  text: string;
+}
+
+export interface DistractionEvent {
+  ts: string; // ISO
+  app: string;
+}
+
+export interface PingPrefs {
+  ntfyTopic: string; // free ntfy.sh push topic (syncs across devices + routines)
+  weakHourPings: boolean; // let the loop pre-plant reminders in weak hours
+}
+
+export interface RoutineLogEntry {
+  ts: string;
+  kind: "morning" | "evening";
+  summary: string;
 }

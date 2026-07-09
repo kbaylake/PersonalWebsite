@@ -7,6 +7,7 @@ import type {
   SosEvent,
   TomorrowPatch,
   PlannerSettings,
+  PingPrefs,
 } from "./types";
 import { istDateString, addDays, makeId } from "./util";
 import {
@@ -62,7 +63,14 @@ export type Action =
   | { type: "DISMISS_CHECKIN" }
   | { type: "MARK_RESONANCE"; lineId: string }
   | { type: "RECORD_SHOWN_LINE"; lineId: string }
-  | { type: "UPDATE_SETTINGS"; partial: Partial<PlannerSettings> };
+  | { type: "UPDATE_SETTINGS"; partial: Partial<PlannerSettings> }
+  // ── v3 cybernetic loop ──
+  | { type: "APPROVE_PROPOSAL" }
+  | { type: "APPLY_PROPOSAL" }
+  | { type: "REVERT_PROPOSAL" }
+  | { type: "DISMISS_PROPOSAL" }
+  | { type: "COACH_SEND"; text: string }
+  | { type: "SET_PING_PREFS"; partial: Partial<PingPrefs> };
 
 function today(): string {
   return istDateString();
@@ -397,9 +405,111 @@ export function reducer(state: PlannerState, action: Action): PlannerState {
         },
       };
 
+    case "APPROVE_PROPOSAL": {
+      if (!state.proposal || state.proposal.status !== "pending") return state;
+      return {
+        ...state,
+        proposal: { ...state.proposal, status: "approved" },
+      };
+    }
+
+    case "APPLY_PROPOSAL":
+      return applyProposal(state);
+
+    case "REVERT_PROPOSAL":
+      return revertProposal(state);
+
+    case "DISMISS_PROPOSAL":
+      return { ...state, proposal: null };
+
+    case "COACH_SEND": {
+      const text = action.text.trim();
+      if (!text) return state;
+      return {
+        ...state,
+        coachInbox: [
+          ...state.coachInbox,
+          {
+            id: makeId("msg"),
+            ts: new Date().toISOString(),
+            from: "user" as const,
+            text: text.slice(0, 1000),
+          },
+        ].slice(-50),
+      };
+    }
+
+    case "SET_PING_PREFS":
+      return {
+        ...state,
+        pingPrefs: { ...state.pingPrefs, ...action.partial },
+      };
+
     default:
       return state;
   }
+}
+
+// ── Proposal apply / revert (the hybrid-servo checkpoint) ────────
+
+function proposalBlocks(state: PlannerState): Block[] {
+  const p = state.proposal;
+  if (!p) return [];
+  return p.blocks.map((b) => ({
+    id: makeId(),
+    type: b.type,
+    title: b.title,
+    durationMin: b.durationMin,
+    completed: false,
+    completedAt: null,
+    goal: b.goal ?? null,
+  }));
+}
+
+function applyProposal(state: PlannerState): PlannerState {
+  const p = state.proposal;
+  if (!p) return state;
+  const base =
+    state.days[p.date] ??
+    seedDay(p.date, state.settings.dayStartMin, state.templateOverrides);
+  const day: DayPlan = { ...base, blocks: proposalBlocks(state), goal: p.focus || base.goal };
+  const next: PlannerState = {
+    ...state,
+    days: { ...state.days, [p.date]: day },
+    proposal: { ...p, status: "applied" },
+    nudges: [
+      ...state.nudges,
+      {
+        id: makeId("nudge"),
+        date: today(),
+        kind: "claude_emphasis" as const,
+        text: `Applied the plan proposed for ${p.date}: ${p.blocks.length} blocks, focus "${p.focus || "—"}".`,
+      },
+    ].slice(-NUDGE_LOG_MAX),
+  };
+  // If the applied day is today, keep streak credit honest.
+  return syncCleanCredit(next, today());
+}
+
+function revertProposal(state: PlannerState): PlannerState {
+  const p = state.proposal;
+  if (!p) return state;
+  const day = seedDay(p.date, state.settings.dayStartMin, state.templateOverrides);
+  const next: PlannerState = {
+    ...state,
+    days: { ...state.days, [p.date]: day },
+    proposal: { ...p, status: "reverted" },
+    nudges: [
+      ...state.nudges,
+      {
+        id: makeId("nudge"),
+        date: today(),
+        kind: "claude_emphasis" as const,
+        text: `Reverted the auto-applied plan for ${p.date} — back to your default day.`,
+      },
+    ].slice(-NUDGE_LOG_MAX),
+  };
+  return syncCleanCredit(next, today());
 }
 
 // ── Completion with XP + symmetric streak credit ─────────────────

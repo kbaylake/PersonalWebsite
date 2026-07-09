@@ -5,7 +5,7 @@
 import type { PlannerState } from "./types";
 import { expandTickets, lineForSlot } from "./servo";
 
-const LAST_SLOT_MIN = 22 * 60; // never ring into the night
+const LAST_SLOT_MIN = 23 * 60; // 11:00 PM IST — end of the waking day
 const EVENT_MINUTES = 5;
 
 function escapeIcs(text: string): string {

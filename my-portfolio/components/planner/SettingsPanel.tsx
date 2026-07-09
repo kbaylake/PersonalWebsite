@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { X, Download, Upload } from "lucide-react";
-import type { PlannerSettings } from "./types";
+import { X, Download, Upload, Bell } from "lucide-react";
+import type { PlannerSettings, PingPrefs } from "./types";
 import { useOverlay } from "./useOverlay";
 
 export interface SettingsPanelProps {
@@ -12,8 +12,11 @@ export interface SettingsPanelProps {
   onImport: (raw: string) => boolean;
   /** Download the recurring-reminders .ics file. */
   onDownloadReminders: () => void;
-  /** Push today's blocks to Google Calendar; null = client ID not configured. */
-  onSyncCalendar: (() => Promise<number>) | null;
+  // ── v3 cybernetic loop ──
+  syncKey: string;
+  onSaveSyncKey: (key: string) => void;
+  pingPrefs: PingPrefs;
+  onSetPingPrefs: (partial: Partial<PingPrefs>) => void;
   onClose: () => void;
 }
 
@@ -26,8 +29,10 @@ export default function SettingsPanel(props: SettingsPanelProps) {
   const [carNumbers, setCarNumbers] = useState(s.car.numbers);
   const [cadence, setCadence] = useState(s.reminderCadenceMin);
   const [importMsg, setImportMsg] = useState<string | null>(null);
-  const [syncMsg, setSyncMsg] = useState<string | null>(null);
-  const [syncing, setSyncing] = useState(false);
+  const [syncKey, setSyncKeyLocal] = useState(props.syncKey);
+  const [ntfyTopic, setNtfyTopic] = useState(props.pingPrefs.ntfyTopic);
+  const [weakHourPings, setWeakHourPings] = useState(props.pingPrefs.weakHourPings);
+  const [pingMsg, setPingMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const overlayRef = useOverlay(props.onClose);
 
@@ -39,7 +44,28 @@ export default function SettingsPanel(props: SettingsPanelProps) {
       reminderCadenceMin: Math.min(360, Math.max(30, cadence)),
       car: { ...s.car, line: carLine.trim(), numbers: carNumbers.trim() },
     });
+    props.onSaveSyncKey(syncKey.trim());
+    props.onSetPingPrefs({ ntfyTopic: ntfyTopic.trim(), weakHourPings });
     props.onClose();
+  }
+
+  async function testPing() {
+    const topic = ntfyTopic.trim();
+    if (!topic) {
+      setPingMsg("Enter a topic name first.");
+      return;
+    }
+    setPingMsg("Sending…");
+    try {
+      await fetch(`https://ntfy.sh/${encodeURIComponent(topic)}`, {
+        method: "POST",
+        body: "Becoming — test ping. If you see this, your reminders are wired.",
+        headers: { Title: "Becoming" },
+      });
+      setPingMsg("Sent — check your phone's ntfy app.");
+    } catch {
+      setPingMsg("Couldn't reach ntfy.sh — check your connection.");
+    }
   }
 
   const field =
@@ -139,49 +165,67 @@ export default function SettingsPanel(props: SettingsPanelProps) {
           Save
         </button>
 
-        {/* Integrations — phone reminders + Google Calendar */}
+        {/* Cybernetic loop — cloud sync + phone pings */}
         <div className="mt-5 pt-4 border-t border-zinc-800">
           <p className="text-xs uppercase tracking-widest text-zinc-500 mb-2">
-            Phone reminders & calendar
+            The loop — sync &amp; reminders
           </p>
+
+          <label className={label}>Sync key</label>
+          <input
+            value={syncKey}
+            onChange={(e) => setSyncKeyLocal(e.target.value)}
+            placeholder="Same key on every device + the routines"
+            type="password"
+            className={field}
+          />
+          <p className="mt-1 text-[11px] text-zinc-600">
+            Links this device to the shared cloud state, so your phone, laptop,
+            and the morning/evening Claude routines all see the same plan. Leave
+            blank to stay fully offline (localStorage only). Never included in a
+            backup export.
+          </p>
+
+          <label className={`${label} mt-3`}>ntfy push topic</label>
           <div className="flex gap-2">
+            <input
+              value={ntfyTopic}
+              onChange={(e) => setNtfyTopic(e.target.value)}
+              placeholder="a secret word, e.g. becoming-k7f2q"
+              className={field}
+            />
             <button
-              onClick={props.onDownloadReminders}
-              className="btn-press flex-1 flex items-center justify-center gap-2 rounded-xl border border-zinc-700 py-2.5 text-sm text-zinc-300 hover:border-violet-600/60"
+              onClick={testPing}
+              className="btn-press flex items-center justify-center gap-1.5 rounded-xl border border-zinc-700 px-3 text-sm text-zinc-300 hover:border-violet-600/60 whitespace-nowrap"
             >
-              <Download size={14} /> Reminders (.ics)
-            </button>
-            <button
-              disabled={syncing}
-              onClick={async () => {
-                if (!props.onSyncCalendar) {
-                  setSyncMsg(
-                    "Setup needed: create a Google OAuth Client ID and add NEXT_PUBLIC_GOOGLE_CLIENT_ID in Vercel — steps are in the guide."
-                  );
-                  return;
-                }
-                setSyncing(true);
-                setSyncMsg("Syncing…");
-                try {
-                  const n = await props.onSyncCalendar();
-                  setSyncMsg(`Synced — ${n} blocks are on your Google Calendar with popup reminders.`);
-                } catch (err) {
-                  setSyncMsg(err instanceof Error ? err.message : "Sync failed — try again.");
-                } finally {
-                  setSyncing(false);
-                }
-              }}
-              className="btn-press flex-1 flex items-center justify-center gap-2 rounded-xl border border-zinc-700 py-2.5 text-sm text-zinc-300 hover:border-violet-600/60 disabled:opacity-50"
-            >
-              {syncing ? "Syncing…" : "Sync today → Google"}
+              <Bell size={14} /> Test
             </button>
           </div>
-          {syncMsg && <p className="mt-2 text-xs text-zinc-400">{syncMsg}</p>}
+          {pingMsg && <p className="mt-1 text-[11px] text-zinc-400">{pingMsg}</p>}
+
+          <label className="mt-3 flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={weakHourPings}
+              onChange={(e) => setWeakHourPings(e.target.checked)}
+              className="accent-violet-500"
+            />
+            <span className="text-sm text-zinc-300">
+              Let the loop pre-plant reminders in my weak hours
+            </span>
+          </label>
+
+          <button
+            onClick={props.onDownloadReminders}
+            className="btn-press mt-3 w-full flex items-center justify-center gap-2 rounded-xl border border-zinc-700 py-2.5 text-sm text-zinc-300 hover:border-violet-600/60"
+          >
+            <Download size={14} /> Calendar reminders (.ics) — no-setup fallback
+          </button>
           <p className="mt-2 text-[11px] text-zinc-600">
-            The .ics file adds your identity lines to any calendar as recurring
-            daily notifications — import it once, no account linking. “Sync
-            today” pushes today’s blocks to Google Calendar as real events
-            (re-sync any time; it never duplicates).
+            Install the free <b>ntfy</b> app, subscribe to your secret topic, and
+            the routines push real notifications there. The .ics file is the
+            zero-setup alternative: import it once into any calendar for recurring
+            daily reminders.
           </p>
         </div>
 

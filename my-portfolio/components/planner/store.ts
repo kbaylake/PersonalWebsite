@@ -13,7 +13,10 @@ import {
 import { istDateString, makeId } from "./util";
 
 const STORAGE_KEY = "planner_state_v1"; // key kept stable across versions
-const STATE_VERSION = 2;
+const STATE_VERSION = 3;
+
+// v3 servo-loop defaults.
+const DEFAULT_PING_PREFS = { ntfyTopic: "", weakHourPings: false };
 
 // Grace-token tuning.
 export const MAX_GRACE = 1;
@@ -99,10 +102,40 @@ export function createDefaultState(): PlannerState {
     titleStats: {},
     titleNudgeDates: {},
     claudeEmphasis: null,
+    proposal: null,
+    coachNote: null,
+    coachInbox: [],
+    distractionEvents: [],
+    pingPrefs: { ...DEFAULT_PING_PREFS },
+    routineLog: [],
   };
 }
 
 // ── Migration & hydration ────────────────────────────────────────
+
+/** Default-fill the v3 servo-loop fields onto any older state. */
+function fillV3Fields(s: Partial<PlannerState>): Pick<
+  PlannerState,
+  | "proposal"
+  | "coachNote"
+  | "coachInbox"
+  | "distractionEvents"
+  | "pingPrefs"
+  | "routineLog"
+> {
+  return {
+    proposal: s.proposal ?? null,
+    coachNote: s.coachNote ?? null,
+    coachInbox: Array.isArray(s.coachInbox) ? s.coachInbox : [],
+    distractionEvents: Array.isArray(s.distractionEvents) ? s.distractionEvents : [],
+    pingPrefs: {
+      ntfyTopic:
+        typeof s.pingPrefs?.ntfyTopic === "string" ? s.pingPrefs.ntfyTopic : "",
+      weakHourPings: !!s.pingPrefs?.weakHourPings,
+    },
+    routineLog: Array.isArray(s.routineLog) ? s.routineLog.slice(-14) : [],
+  };
+}
 
 /** Fill any missing v2 fields on a day (covers v1 days and partial blobs). */
 function hydrateDay(d: Partial<DayPlan> & { date: string }): DayPlan {
@@ -159,6 +192,30 @@ function migrateV1toV2(old: Partial<PlannerState>): PlannerState {
     titleStats: {},
     titleNudgeDates: {},
     claudeEmphasis: null,
+    ...fillV3Fields({}),
+  };
+}
+
+/** v2 → v3: preserve everything; default-fill only the servo-loop fields. */
+function migrateV2toV3(old: Partial<PlannerState>): PlannerState {
+  const base = createDefaultState();
+  const days: Record<string, DayPlan> = {};
+  for (const [date, day] of Object.entries(old.days ?? {})) {
+    days[date] = hydrateDay({ ...(day as DayPlan), date });
+  }
+  return {
+    ...base,
+    ...old,
+    version: STATE_VERSION,
+    hydrated: false,
+    notice: null,
+    settings: {
+      ...base.settings,
+      ...(old.settings ?? {}),
+      car: { ...base.settings.car, ...(old.settings?.car ?? {}) },
+    },
+    days: Object.keys(days).length ? days : base.days,
+    ...fillV3Fields(old),
   };
 }
 
@@ -199,6 +256,7 @@ function hydrateMissing(s: PlannerState): PlannerState {
     titleStats: s.titleStats ?? {},
     titleNudgeDates: s.titleNudgeDates ?? {},
     claudeEmphasis: s.claudeEmphasis ?? null,
+    ...fillV3Fields(s),
   };
 }
 
@@ -207,7 +265,12 @@ export function normalizeLoaded(parsed: Partial<PlannerState>): PlannerState {
   if (parsed.version === STATE_VERSION) {
     return hydrateMissing(parsed as PlannerState);
   }
+  if (parsed.version === 2) {
+    return migrateV2toV3(parsed);
+  }
   if (parsed.version === 1) {
+    // v1 → current: migrateV1toV2 default-fills from createDefaultState (which
+    // already carries the v3 fields), so one hop lands a complete v3 state.
     return migrateV1toV2(parsed);
   }
   return createDefaultState();
@@ -250,7 +313,9 @@ export function importStateJson(raw: string): PlannerState | null {
   try {
     const parsed = JSON.parse(raw) as Partial<PlannerState>;
     if (!parsed || typeof parsed !== "object") return null;
-    if (parsed.version !== 1 && parsed.version !== STATE_VERSION) return null;
+    // Accept any known schema version — normalizeLoaded migrates it forward.
+    if (parsed.version !== 1 && parsed.version !== 2 && parsed.version !== STATE_VERSION)
+      return null;
     if (!parsed.days || typeof parsed.days !== "object") return null;
     return normalizeLoaded(parsed);
   } catch {

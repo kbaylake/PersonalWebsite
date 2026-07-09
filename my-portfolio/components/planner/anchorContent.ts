@@ -70,7 +70,7 @@ export const DEFAULT_GOAL_AREAS: GoalArea[] = [
 
 export const DEFAULT_SETTINGS: PlannerSettings = {
   identityStatement: IDENTITY_STATEMENT,
-  dayStartMin: 6 * 60,
+  dayStartMin: 7 * 60 + 30, // 07:30 IST
   reminderCadenceMin: 120,
   contactName: "",
   contactPhone: "",

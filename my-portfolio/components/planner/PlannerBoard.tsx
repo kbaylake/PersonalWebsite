@@ -36,8 +36,16 @@ import {
   checkinDue,
 } from "./servo";
 import { buildReminderIcs } from "./icsExport";
-import { syncDayToGoogle } from "./googleSync";
+import {
+  initialPull,
+  schedulePush,
+  getSyncKey,
+  setSyncKey,
+  type SyncStatus,
+} from "./sync";
 import IdentityBar from "./IdentityBar";
+import ProposalCard from "./ProposalCard";
+import CoachCard from "./CoachCard";
 import NowCard from "./NowCard";
 import ProgressHud from "./ProgressHud";
 import TrendPanel from "./TrendPanel";
@@ -84,10 +92,17 @@ export default function PlannerBoard() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [sosOpen, setSosOpen] = useState(false);
   const [toast, setToast] = useState<{ text: string; meta: BlockMeta; key: number } | null>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>("off");
 
   // Hydrate from localStorage; the reducer seeds today + runs the servo tick.
+  // Then pull shared cloud state (if a sync key is set) and adopt if newer.
   useEffect(() => {
-    dispatch({ type: "HYDRATE", state: loadState() });
+    const local = loadState();
+    dispatch({ type: "HYDRATE", state: local });
+    void initialPull(local, {
+      onStatus: setSyncStatus,
+      onAdopt: (server) => dispatch({ type: "IMPORT_STATE", state: server }),
+    });
   }, []);
 
   // Midnight while open / returning to the tab: re-seed + tick (no-op otherwise).
@@ -103,10 +118,15 @@ export default function PlannerBoard() {
     };
   }, []);
 
-  // Persist on every change once hydrated (transient fields are stripped).
+  // Persist on every change once hydrated (transient fields are stripped),
+  // and mirror to the cloud store (debounced; no-op without a sync key).
   useEffect(() => {
     if (state.hydrated) {
       import("./store").then(({ saveState }) => saveState(state));
+      schedulePush(state, {
+        onStatus: setSyncStatus,
+        onAdopt: (server) => dispatch({ type: "IMPORT_STATE", state: server }),
+      });
     }
   }, [state]);
 
@@ -210,16 +230,33 @@ export default function PlannerBoard() {
           <p className="text-xs text-zinc-500">{friendlyDate(todayKey)}</p>
           <h1 className="text-lg font-bold text-zinc-100">{greeting()}.</h1>
         </div>
-        <button
-          onClick={() => setSettingsOpen(true)}
-          aria-label="Settings"
-          className="btn-press p-2 rounded-lg text-zinc-500 hover:text-violet-300 hover:bg-zinc-900"
-        >
-          <Settings2 size={18} />
-        </button>
+        <div className="flex items-center gap-2">
+          <SyncChip status={syncStatus} />
+          <button
+            onClick={() => setSettingsOpen(true)}
+            aria-label="Settings"
+            className="btn-press p-2 rounded-lg text-zinc-500 hover:text-violet-300 hover:bg-zinc-900"
+          >
+            <Settings2 size={18} />
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
+        {/* Hybrid-servo checkpoint: approve tomorrow / revert an auto-applied day */}
+        {state.proposal &&
+          (state.proposal.date === todayKey ||
+            state.proposal.date === addDays(todayKey, 1)) && (
+            <ProposalCard
+              proposal={state.proposal}
+              isToday={state.proposal.date === todayKey}
+              onApprove={() => dispatch({ type: "APPROVE_PROPOSAL" })}
+              onApply={() => dispatch({ type: "APPLY_PROPOSAL" })}
+              onRevert={() => dispatch({ type: "REVERT_PROPOSAL" })}
+              onDismiss={() => dispatch({ type: "DISMISS_PROPOSAL" })}
+            />
+          )}
+
         {/* The first fold: one next action */}
         <NowCard
           day={day}
@@ -259,6 +296,22 @@ export default function PlannerBoard() {
             Pre-sleep
           </button>
         </div>
+
+        {(state.coachNote || state.coachInbox.length > 0 || getSyncKey()) && (
+          <CoachCard
+            note={state.coachNote}
+            today={todayKey}
+            inbox={state.coachInbox}
+            onSend={(text) => dispatch({ type: "COACH_SEND", text })}
+            onGoDeeper={() => {
+              const snapshot = buildCoachSnapshot(state, todayKey, alignmentToday);
+              if (navigator.clipboard?.writeText) {
+                navigator.clipboard.writeText(snapshot).catch(() => {});
+              }
+              window.open("https://claude.ai/new", "_blank", "noopener");
+            }}
+          />
+        )}
 
         {showCheckin && (
           <WeeklyCheckin
@@ -378,6 +431,9 @@ export default function PlannerBoard() {
         <MorningPrime
           initialFocus={day.goal}
           lastNightNote={yday?.note ?? ""}
+          coachMorningNote={
+            state.coachNote?.date === todayKey ? state.coachNote.morning ?? "" : ""
+          }
           overnightNudges={overnightNudges}
           rehearsalGoal={rehearsal.goal}
           rehearsalReason={rehearsal.reason}
@@ -410,6 +466,9 @@ export default function PlannerBoard() {
             recentNudges: state.nudges.slice(-3),
           }}
           scheduled={scheduled}
+          coachEveningNote={
+            state.coachNote?.date === todayKey ? state.coachNote.evening ?? "" : ""
+          }
           presleepLine={presleepLine}
           resonanceCandidates={resonanceCandidates}
           resonanceDone={!!day.resonanceLineId}
@@ -438,16 +497,17 @@ export default function PlannerBoard() {
             a.click();
             URL.revokeObjectURL(url);
           }}
-          onSyncCalendar={
-            process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
-              ? () =>
-                  syncDayToGoogle(
-                    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
-                    todayKey,
-                    scheduled
-                  )
-              : null
-          }
+          syncKey={getSyncKey()}
+          onSaveSyncKey={(key) => {
+            setSyncKey(key);
+            const local = loadState();
+            void initialPull(local, {
+              onStatus: setSyncStatus,
+              onAdopt: (server) => dispatch({ type: "IMPORT_STATE", state: server }),
+            });
+          }}
+          pingPrefs={state.pingPrefs}
+          onSetPingPrefs={(partial) => dispatch({ type: "SET_PING_PREFS", partial })}
           onExport={() => {
             const blob = new Blob([exportStateJson(state)], {
               type: "application/json",
@@ -498,4 +558,50 @@ function CompletionToast({
       <span className="text-xs text-zinc-200 italic truncate">{text}</span>
     </div>
   );
+}
+
+// Cloud-sync status pill; hidden entirely when no sync key is configured.
+function SyncChip({ status }: { status: SyncStatus }) {
+  if (status === "off") return null;
+  const meta: Record<Exclude<SyncStatus, "off">, { dot: string; label: string }> = {
+    syncing: { dot: "bg-amber-400 animate-pulse", label: "syncing" },
+    synced: { dot: "bg-emerald-400", label: "synced" },
+    offline: { dot: "bg-zinc-500", label: "offline" },
+    conflict: { dot: "bg-rose-400", label: "merged" },
+  };
+  const m = meta[status];
+  return (
+    <span className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/60 px-2 py-1 text-[10px] text-zinc-400">
+      <span className={`w-1.5 h-1.5 rounded-full ${m.dot}`} />
+      {m.label}
+    </span>
+  );
+}
+
+// Compact day snapshot copied to the clipboard when the user taps
+// "Go deeper" — seeds a live claude.ai conversation with today's reality.
+function buildCoachSnapshot(
+  state: PlannerState,
+  todayKey: string,
+  alignmentToday: number
+): string {
+  const day = state.days[todayKey];
+  const done = day ? day.blocks.filter((b) => b.completed).length : 0;
+  const total = day ? day.blocks.length : 0;
+  const goals = state.goalAreas.map((g) => `${g.label} ${g.rating}/10`).join(", ");
+  const missed = day
+    ? day.blocks.filter((b) => !b.completed).map((b) => b.title).join("; ") || "none"
+    : "none";
+  return [
+    "You are my Psycho-Cybernetics coach (Murphy / Maltz / Dispenza). Talk with me about today, then help me hold the wish fulfilled as I fall asleep. Treat any miss as feedback, never failure.",
+    "",
+    `Identity: ${state.settings.identityStatement}`,
+    `Today (${todayKey}): alignment ${alignmentToday}/100, ${done}/${total} blocks done.`,
+    `One thing: ${day?.goal || "(none set)"}`,
+    `Goal ratings: ${goals}`,
+    `Didn't get to: ${missed}`,
+    state.coachNote?.evening ? `Tonight's note from my routine: ${state.coachNote.evening}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }

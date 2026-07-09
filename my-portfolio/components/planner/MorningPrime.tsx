@@ -10,6 +10,7 @@ import { useOverlay } from "./useOverlay";
 export interface MorningPrimeProps {
   initialFocus: string;
   lastNightNote: string; // yesterday's pre-sleep note, quoted back
+  coachMorningNote: string; // the routine's 2-line rehearsal cue for today
   overnightNudges: NudgeLogEntry[]; // adjustments since yesterday
   rehearsalGoal: GoalId;
   rehearsalReason: "claude" | "sos" | "missed" | "weakest";
@@ -36,7 +37,10 @@ const REASON_INTRO: Record<MorningPrimeProps["rehearsalReason"], string> = {
 };
 
 export default function MorningPrime(props: MorningPrimeProps) {
-  const hasIntro = props.overnightNudges.length > 0 || !!props.lastNightNote;
+  const hasIntro =
+    props.overnightNudges.length > 0 ||
+    !!props.lastNightNote ||
+    !!props.coachMorningNote;
   const [step, setStep] = useState(hasIntro ? -1 : 0);
   const [focus, setFocus] = useState(props.initialFocus);
   const overlayRef = useOverlay(props.onClose);
@@ -81,6 +85,11 @@ export default function MorningPrime(props: MorningPrimeProps) {
                 While you slept, it listened
               </h2>
             </div>
+            {props.coachMorningNote && (
+              <p className="mb-3 rounded-xl border border-violet-800/40 bg-violet-950/30 p-3 text-sm text-violet-100 leading-relaxed">
+                {props.coachMorningNote}
+              </p>
+            )}
             {props.lastNightNote && (
               <blockquote className="mb-3 border-l-2 border-slate-500/50 pl-3 text-sm italic text-slate-300">
                 Last night you said: &ldquo;{props.lastNightNote}&rdquo;
