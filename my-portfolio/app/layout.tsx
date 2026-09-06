@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Karan Bedi | AI Engineer × Automotive Architect",
-  description: "AI Engineer, Agentic AI & MCP systems builder, and automotive architecture writer.",
+  description: "AI & Forward-Deployed Engineer open to roles in Mumbai — agentic AI, voice agents, multi-LLM orchestration, and MCP systems, with a parallel focus on automotive architecture.",
 };
 
 export default function RootLayout({

@@ -34,13 +34,13 @@ export default function ResumeSection() {
   return (
     <div className="animate-fade-in-up">
       {/* HERO */}
-      <section className="mb-16">
+      <section className="mb-12">
         <div className="inline-flex items-center space-x-2 bg-zinc-900 border border-zinc-800 rounded-full px-4 py-1.5 text-sm font-medium text-amber-400 mb-6 animate-slide-in-down">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
           </span>
-          <span>Agent Engineer @ Prodigal</span>
+          <span>Open to AI &amp; Forward-Deployed Engineer roles · Mumbai</span>
         </div>
 
         <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 tracking-tight mb-6">
@@ -48,12 +48,12 @@ export default function ResumeSection() {
           Designing <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Mobility.</span>
         </h1>
 
-        <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8 max-w-2xl">
-          Agent Engineer at <span className="text-zinc-300 font-medium">Prodigal</span>, building agentic AI for consumer finance — voice agents and orchestration for collections calls.
+        <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-6 max-w-2xl">
+          Building agentic AI for consumer finance — voice agents and orchestration for collections calls.
           I specialise in <span className="text-zinc-300 font-medium">MCP-orchestrated pipelines</span>, production RAG, and LLM systems that reason, retrieve, and act autonomously — with the same precision-engineering mindset I bring to <span className="text-amber-500/80 font-medium">automotive architecture</span>.
         </p>
 
-        <div className="flex flex-wrap items-center gap-6 text-sm text-zinc-400 mb-10">
+        <div className="flex flex-wrap items-center gap-6 text-sm text-zinc-400 mb-8">
           <a href="mailto:kbedi03@gmail.com" className="flex items-center space-x-2 hover:text-amber-400 transition-colors group">
             <Mail size={18} className="group-hover:scale-110 transition-transform" />
             <span>kbedi03@gmail.com</span>
@@ -66,15 +66,34 @@ export default function ResumeSection() {
           </div>
         </div>
 
-        <div className="flex space-x-4">
-          <button className="btn-press bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2">
+        <div className="flex flex-wrap gap-4">
+          <a
+            href="https://www.linkedin.com/in/karan-bedi-9414a9241/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-press bg-amber-600 hover:bg-amber-500 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
+          >
             <Linkedin size={18} />
-            <span><a href='https://www.linkedin.com/in/karan-bedi-9414a9241/' target="_blank" rel="noopener noreferrer">LinkedIn Connect</a></span>
-          </button>
-          <button className="btn-press bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2">
+            <span>LinkedIn Connect</span>
+          </a>
+          <a
+            href="https://github.com/kbaylake"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-press bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
+          >
             <Github size={18} />
-            <span><a href="https://github.com/kbaylake" target="_blank" rel="noopener noreferrer">GitHub</a></span>
-          </button>
+            <span>GitHub</span>
+          </a>
+          <a
+            href="https://drive.google.com/file/d/1IVTXFP4fK2_c0eW31BI77TIU7MrqQsqD/view?usp=sharing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-press bg-zinc-800 hover:bg-zinc-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
+          >
+            <FileText size={18} />
+            <span>Resume</span>
+          </a>
         </div>
       </section>
 
@@ -158,12 +177,13 @@ export default function ResumeSection() {
             <div className="md:w-1/3">
               <h3 className="font-medium text-zinc-200">Agent Engineer</h3>
               <p className="text-sm text-amber-500">Prodigal</p>
-              <p className="text-xs text-zinc-500 mt-1">May 2026 - Present</p>
+              <p className="text-xs text-zinc-500 mt-1">May 2026 - Sep 2026</p>
             </div>
             <div className="md:w-2/3 space-y-2">
-              <p className="text-sm text-zinc-400">• Building agentic AI for consumer finance, focused on collections calls — voice agents, orchestration, and production LLM pipelines.</p>
-              <p className="text-sm text-zinc-400">• Designing MCP-orchestrated systems that reason, retrieve context, and act autonomously in regulated financial workflows.</p>
-              <p className="text-sm text-zinc-400">• Shipping production RAG and tool-calling architectures for real-time customer interactions at scale.</p>
+              <p className="text-sm text-zinc-400">• Built production voice AI agents for US consumer-finance clients — multi-LLM orchestration on Vertex AI (Claude Sonnet for reasoning, Claude Haiku for deterministic RPC flows), with Twilio, TCN, and LiveKit telephony, Deepgram STT, and ElevenLabs TTS.</p>
+              <p className="text-sm text-zinc-400">• Cut agent response latency &gt;33% (3s → sub-2s) and worst-case latency 50% (6s → 3s).</p>
+              <p className="text-sm text-zinc-400">• Built an evaluation suite on Cekura MCP to simulate calls and score agent behavior, tracing quality and failure modes across Langfuse, CloudWatch, and TrueFoundry.</p>
+              <p className="text-sm text-zinc-400">• Supported live C-suite client demos alongside the GTM team, contributing to two signed enterprise deals.</p>
             </div>
           </div>
         </div>
@@ -171,15 +191,15 @@ export default function ResumeSection() {
         <div className="border-b border-zinc-800/50 pb-6">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="md:w-1/3">
-              <h3 className="font-medium text-zinc-200">Senior Assistant Engineer (Intern)</h3>
+              <h3 className="font-medium text-zinc-200">Senior Assistant Engineer, AI &amp; ML</h3>
               <p className="text-sm text-amber-500">Samsung India, Noida</p>
-              <p className="text-xs text-zinc-500 mt-1">Jan 2026 - May 2026</p>
+              <p className="text-xs text-zinc-500 mt-1">Jan 2026 - Apr 2026</p>
             </div>
             <div className="md:w-2/3 space-y-2">
-              <p className="text-sm text-zinc-400">• Built AI-driven computer vision pipelines for defect detection and pattern analysis.</p>
-              <p className="text-sm text-zinc-400">• Developed ETL workflows using Pandas, NumPy, and MySQL for large-scale data processing.</p>
-              <p className="text-sm text-zinc-400">• Created Power BI dashboards to visualize operational metrics and defect trends.</p>
-              <p className="text-sm text-zinc-400">• Collaborated with cross-functional teams to drive ML-based process optimization.</p>
+              <p className="text-sm text-zinc-400">• Built and deployed 3 LLM-powered workflows from requirements through production, cutting manual reporting effort &gt;60%.</p>
+              <p className="text-sm text-zinc-400">• Designed a RAG pipeline integrating internal knowledge bases with LLM inference, reducing hallucination rate ~35% across 50+ evaluation cases.</p>
+              <p className="text-sm text-zinc-400">• Built automated ETL pipelines processing 10,000+ daily records, exposed via FastAPI REST APIs and shipped with CI/CD through GitHub Actions.</p>
+              <p className="text-sm text-zinc-400">• Nominated for Samsung&apos;s advanced AI training program in Vietnam — a selective initiative for the top 2% of AI engineering interns nationally.</p>
             </div>
           </div>
         </div>
@@ -193,19 +213,21 @@ export default function ResumeSection() {
         </div>
         <div className="flex flex-wrap gap-3">
           {[
-            "Python for AI/ML",
-            "Machine Learning (Supervised & Unsupervised)",
-            "Computer Vision (OpenCV, Image Processing)",
+            "LLM Orchestration (multi-model)",
             "Agentic AI Systems",
             "MCP (Model Context Protocol)",
-            "Data Preprocessing & Feature Engineering",
-            "Model Evaluation & Optimization",
-            "Pandas & NumPy",
-            "SQL (MySQL) for Data Pipelines",
+            "Production RAG",
+            "LLM Evaluation (Langfuse, Cekura)",
+            "Voice AI (LiveKit, Twilio, TCN)",
+            "Speech (Deepgram STT, ElevenLabs TTS)",
+            "Vertex AI · Claude (Sonnet / Haiku)",
+            "Prompt & Context Engineering",
+            "Python for AI/ML",
+            "FastAPI & REST APIs",
             "ETL & Data Pipelines",
-            "REST APIs & AI Integration",
-            "Power BI (AI-driven Analytics)",
-            "Data Visualization",
+            "Observability (CloudWatch, TrueFoundry)",
+            "CI/CD (GitHub Actions)",
+            "Machine Learning (Supervised & Unsupervised)",
             "Git & Docker"
           ].map((skill, idx) => (
             <span
@@ -250,7 +272,7 @@ export default function ResumeSection() {
         <div className="card-elevate bg-zinc-900/30 border border-zinc-800 rounded-xl p-6">
           <div className="flex flex-col md:flex-row justify-between mb-2">
             <h3 className="text-lg font-medium text-zinc-200">B.Tech in Artificial Intelligence</h3>
-            <span className="text-amber-400 font-medium">CGPA 3.16/4.0</span>
+            <span className="text-amber-400 font-medium">CGPA 3.19/4.0</span>
           </div>
           <p className="text-zinc-400 mb-4">MPSTME, NMIMS University <span className="text-zinc-600">|</span> 2021 - 2026</p>
           <div className="space-y-2 pt-4 border-t border-zinc-800/50 text-sm">

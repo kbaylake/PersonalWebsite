@@ -34,7 +34,7 @@ export const projects: Project[] = [
     subtitle: "LangChain Agents, ChromaDB & Llama Fine-Tuning",
     category: "Agentic AI",
     summary: "A fully autonomous AI system that ingests documents, reasons across them in multi-step chains, and generates context-aware responses — running entirely on local hardware at zero cloud cost.",
-    impact: "500+ post training dataset · Zero cloud cost · Full local GPU stack · MLflow experiment tracking",
+    impact: "Fine-tuned Llama on 500+ examples · 100% local GPU inference · zero cloud API cost · MLflow-tracked",
     stack: ["LangChain Agents", "ChromaDB", "RAG", "Llama (Fine-Tuned)", "CUDA", "cuDNN", "WSL2", "PyTorch", "TensorFlow", "MLflow"],
     points: [
       "Architected a production-grade agentic GenAI pipeline: ingested and embedded documents into ChromaDB vector database, implemented RAG for context-aware LLM retrieval, and orchestrated multi-step reasoning using LangChain Agents with tool calling across sequential tasks.",
@@ -48,7 +48,7 @@ export const projects: Project[] = [
     subtitle: "Anomaly Detection on Commercial Fleet Telemetry",
     category: "Automotive AI",
     summary: "An ML system that predicts mechanical failures in commercial truck fleets before they happen — using real sensor data and geospatial mapping to show where failures cluster across regions.",
-    impact: "F1-score: 0.82 · SMOTE class balancing · Interactive geospatial risk maps · Reduced manual fleet monitoring",
+    impact: "F1 0.82 on the minority fault class · SMOTE-balanced · interactive geospatial risk maps",
     stack: ["Python", "Scikit-learn", "SMOTE", "Pandas", "NumPy", "Folium", "Google Maps API", "Feature Engineering", "Statistical Modelling", "MLflow"],
     points: [
       "Engineered end-to-end classification pipeline on Scania truck telemetry data to predict early-stage component failures; resolved severe class imbalance using SMOTE — achieving F1-score of 0.82 on the minority fault-event class.",
@@ -77,7 +77,7 @@ export const projects: Project[] = [
     subtitle: "Computer Vision Pipeline + Gemini Vision API",
     category: "GenAI",
     summary: "A full-stack AI web app that takes any image upload and generates a branded colour palette — from dominant colour extraction to final hex codes — in a single automated pipeline. Built and deployed in under 2 weeks.",
-    impact: "End-to-end in < 2 weeks · REST API containerised with Docker · Multi-step agentic tool pipeline",
+    impact: "Image → branded hex palette in one pipeline · shipped in <2 weeks · Dockerised REST API",
     stack: ["Python", "FastAPI", "OpenCV", "Gemini Vision API", "Docker", "REST API", "Prompt Engineering"],
     points: [
       "Built a full-stack agentic web application: Python FastAPI microservice processes image uploads, OpenCV clusters dominant colour embeddings via k-means, Gemini Vision API generates branded hex-code palettes — complete multi-step pipeline from image input to structured output.",
@@ -91,7 +91,7 @@ export const projects: Project[] = [
     subtitle: "Hybrid Q-Learning + PPO · Published Research Paper",
     category: "Reinforcement Learning",
     summary: "A fighting game AI boss that learns from every match — adapting its strategy in real-time to the human player's patterns. Built as a capstone project and published as a peer-reviewed research paper.",
-    impact: "95% win rate vs beginner AI · 72% vs advanced AI · 2,590 training episodes · Published at NMIMS MPSTME",
+    impact: "95% win vs beginner AI, 72% vs advanced · 2,590 training episodes · peer-reviewed paper",
     stack: ["Python", "Godot Engine", "PPO", "Q-Learning", "N-gram Pattern Recognition", "Multithreading", "MLflow", "Reward Shaping"],
     points: [
       "Designed and implemented a hybrid reinforcement learning architecture combining Proximal Policy Optimization (PPO) for policy learning and Q-Learning for value estimation — achieving 15% higher win rates than pure PPO implementations in ablation studies.",
@@ -177,7 +177,7 @@ export const projects: Project[] = [
     subtitle: "ML Risk Scoring Model — Inditrade Capital",
     category: "ML · FinTech",
     summary: "A machine learning risk model built during an internship at a financial services firm — predicting high-risk loan defaults from historical data, with outputs directly used by the collections team.",
-    impact: "78% precision on high-risk accounts · 30% improvement in risk identification · Deployed to collections team",
+    impact: "78% precision on high-risk accounts · +30% risk identification · shipped to the collections team",
     stack: ["Python", "Random Forests", "Scikit-learn", "SMOTE", "Pandas", "NumPy", "AUC-ROC", "Cross-Validation", "Power BI", "MLflow"],
     points: [
       "Engineered a Random Forest risk-scoring model to identify high-risk loan defaults from historical financial datasets — addressed severe class imbalance using targeted SMOTE sampling strategies, achieving 78% precision on the minority (default) class.",

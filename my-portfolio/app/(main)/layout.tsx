@@ -8,7 +8,7 @@ export default function MainLayout({
   return (
     <>
       <Navbar />
-      <main className="max-w-4xl mx-auto px-6 pt-32 pb-20">
+      <main className="max-w-4xl mx-auto px-6 pt-24 pb-20">
         {children}
       </main>
       <footer className="border-t border-zinc-800 py-8 text-center text-zinc-500 text-sm">
